@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title', __('home.home'))
-
+<!-- section css -->
 @section('css')
 <style>
  .app-dash-row .app-dash-box {

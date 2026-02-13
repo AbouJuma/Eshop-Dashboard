@@ -1,0 +1,3419 @@
+{
+    "variables": [],
+    "info": {
+        "name": "SmartDuka Pro API",
+        "_postman_id": "695cfebc-2dc2-4e54-bde8-884d771ebd39",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.0.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Attendance management",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get Attendance",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/get-attendance\/:user_id",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "user_id",
+                                    "key": "user_id",
+                                    "value": "1",
+                                    "description": "id of the user"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Clock In",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/clock-in",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"user_id\": 1,\n    \"clock_in_time\": \"2000-06-13 13:13:00\",\n    \"clock_in_note\": \"ullam\",\n    \"ip_address\": \"cupiditate\",\n    \"latitude\": \"qui\",\n    \"longitude\": \"possimus\"\n}"
+                        },
+                        "description": "[User must have \"essentials.allow_users_for_attendance_from_api\" permission to Clock in]",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Clock Out",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/clock-out",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"user_id\": 1,\n    \"clock_out_time\": \"2000-06-13 13:13:00\",\n    \"clock_out_note\": \"ducimus\",\n    \"latitude\": \"reprehenderit\",\n    \"longitude\": \"labore\"\n}"
+                        },
+                        "description": "[User must have \"essentials.allow_users_for_attendance_from_api\" permission to Clock out]",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "List Holidays",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/holidays",
+                            "query": [
+                                {
+                                    "key": "location_id",
+                                    "value": "1",
+                                    "description": "id of the location",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2020-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2020-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Brand management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List brands",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/brand",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified brand",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/brand\/:brand",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "brand",
+                                    "key": "brand",
+                                    "value": "1",
+                                    "description": "comma separated ids of the brands"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Business Location management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List business locations",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/business-location",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified business location",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/business-location\/:business_location",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "CRM",
+            "description": "",
+            "item": [
+                {
+                    "name": "List Follow ups",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/crm\/follow-ups",
+                            "query": [
+                                {
+                                    "key": "start_date",
+                                    "value": "2020-12-16",
+                                    "description": "format: Y-m-d (Ex: 2020-12-16)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2020-12-16",
+                                    "description": "format: Y-m-d (Ex: 2020-12-16)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "voluptatem",
+                                    "description": "filter the result through status, get status from getFollowUpResources->statuses",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "follow_up_type",
+                                    "value": "sed",
+                                    "description": "filter the result through follow_up_type, get follow_up_type from getFollowUpResources->follow_up_types",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "order_by",
+                                    "value": "start_datetime",
+                                    "description": "Column name to sort the result, Column: start_datetime",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "direction",
+                                    "value": "desc",
+                                    "description": "Direction to sort the result, Required if using 'order_by', direction: desc, asc",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Add follow up",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/crm\/follow-ups",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Meeting with client\",\n    \"contact_id\": 2,\n    \"description\": \"velit\",\n    \"schedule_type\": \"blanditiis\",\n    \"user_id\": \"[2,3,5]\",\n    \"notify_before\": 5,\n    \"notify_type\": \"minute\",\n    \"status\": \"open\",\n    \"notify_via\": \"['sms' => 0 ,'mail' => 1]\",\n    \"start_datetime\": \"2021-01-06 13:05:00\",\n    \"end_datetime\": \"2021-01-06 13:05:00\",\n    \"followup_additional_info\": \"['call duration' => '1 hour']\",\n    \"allow_notification\": true\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified followup",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/crm\/follow-ups\/:follow_up",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "follow_up",
+                                    "key": "follow_up",
+                                    "value": "1%2C2",
+                                    "description": "comma separated ids of the follow_ups"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Update follow up",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/crm\/follow-ups\/:follow_up",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "follow_up",
+                                    "key": "follow_up",
+                                    "value": "20",
+                                    "description": "id of the follow up to be updated"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Meeting with client\",\n    \"contact_id\": 2,\n    \"description\": \"debitis\",\n    \"schedule_type\": \"provident\",\n    \"user_id\": \"[2,3,5]\",\n    \"notify_before\": 5,\n    \"notify_type\": \"minute\",\n    \"status\": \"open\",\n    \"notify_via\": \"['sms' => 0 ,'mail' => 1]\",\n    \"followup_additional_info\": \"['call duration' => '1 hour']\",\n    \"start_datetime\": \"2021-01-06 13:05:00\",\n    \"end_datetime\": \"2021-01-06 13:05:00\",\n    \"allow_notification\": true\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get follow up resources",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/crm\/follow-up-resources",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "List lead",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/crm\/leads",
+                            "query": [
+                                {
+                                    "key": "assigned_to",
+                                    "value": "1%2C2%2C3",
+                                    "description": "comma separated ids of users to whom lead is assigned (Ex: 1,2,3)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "corporis",
+                                    "description": "Search term for lead name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "biz_name",
+                                    "value": "eligendi",
+                                    "description": "Search term for lead's business name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "mobile_num",
+                                    "value": "15",
+                                    "description": "Search term for lead's mobile number",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "contact_id",
+                                    "value": "placeat",
+                                    "description": "Search term for lead's contact_id. Ex(CO0005)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "order_by",
+                                    "value": "vitae",
+                                    "description": "Column name to sort the result, Column: name, supplier_business_name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "direction",
+                                    "value": "desc",
+                                    "description": "Direction to sort the result, Required if using 'order_by', direction: desc, asc",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Save Call Logs",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/crm\/call-logs",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"call_logs\": [\n        {\n            \"mobile_number\": \"tempora\",\n            \"mobile_name\": \"omnis\",\n            \"call_type\": \"call\",\n            \"start_time\": \"fugit\",\n            \"end_time\": \"labore\",\n            \"duration\": \"architecto\"\n        }\n    ]\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Cash register management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List Cash Registers",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/cash-register",
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "open",
+                                    "description": "status of the register (open, close)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "user_id",
+                                    "value": "10",
+                                    "description": "id of the user",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2018-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2018-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "location_id",
+                                    "value": "1",
+                                    "description": "id of the location",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Create Cash Register",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/cash-register",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"location_id\": 1,\n    \"initial_amount\": 9,\n    \"created_at\": \"2020-5-7 15:20:22\",\n    \"closed_at\": \"2020-5-7 15:20:22\",\n    \"status\": \"close\",\n    \"closing_amount\": 235990.7999999999883584678173065185546875,\n    \"total_card_slips\": 11,\n    \"total_cheques\": 4,\n    \"closing_note\": \"est\",\n    \"transaction_ids\": \"1,2,3\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified Register",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/cash-register\/:cash_register",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "cash_register",
+                                    "key": "cash_register",
+                                    "value": "59",
+                                    "description": "comma separated ids of the cash registers"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Contact management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List contact",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/contactapi",
+                            "query": [
+                                {
+                                    "key": "type",
+                                    "value": "et",
+                                    "description": "Type of contact (supplier, customer)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "temporibus",
+                                    "description": "Search term for contact name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "biz_name",
+                                    "value": "earum",
+                                    "description": "Search term for contact's business name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "mobile_num",
+                                    "value": "12",
+                                    "description": "Search term for contact's mobile number",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "contact_id",
+                                    "value": "perferendis",
+                                    "description": "Search term for contact's contact_id. Ex(CO0005)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "order_by",
+                                    "value": "iste",
+                                    "description": "Column name to sort the result, Column: name, supplier_business_name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "direction",
+                                    "value": "ipsa",
+                                    "description": "Direction to sort the result, Direction: desc, asc",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Create contact",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/contactapi",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"type\": \"customer\",\n    \"supplier_business_name\": \"qui\",\n    \"prefix\": \"sequi\",\n    \"first_name\": \"quia\",\n    \"middle_name\": \"eius\",\n    \"last_name\": \"recusandae\",\n    \"tax_number\": \"8787fefef\",\n    \"pay_term_number\": 3,\n    \"pay_term_type\": \"months\",\n    \"mobile\": \"4578691009\",\n    \"landline\": \"5487-8454-4145\",\n    \"alternate_number\": \"841847541222\",\n    \"address_line_1\": \"rerum\",\n    \"address_line_2\": \"consequatur\",\n    \"city\": \"molestias\",\n    \"state\": \"laboriosam\",\n    \"country\": \"fugiat\",\n    \"zip_code\": \"impedit\",\n    \"customer_group_id\": \"illum\",\n    \"contact_id\": \"praesentium\",\n    \"dob\": \"2000-06-13\",\n    \"custom_field1\": \"voluptas\",\n    \"custom_field2\": \"a\",\n    \"custom_field3\": \"nesciunt\",\n    \"custom_field4\": \"qui\",\n    \"email\": \"voluptatem\",\n    \"shipping_address\": \"aut\",\n    \"position\": \"et\",\n    \"opening_balance\": 0,\n    \"source_id\": 2,\n    \"life_stage_id\": 13,\n    \"assigned_to\": []\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified contact",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/contactapi\/:contactapi",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Update contact",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/contactapi\/:contactapi",
+                            "query": []
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"type\": \"customer\",\n    \"supplier_business_name\": \"laboriosam\",\n    \"prefix\": \"laboriosam\",\n    \"first_name\": \"iusto\",\n    \"middle_name\": \"aut\",\n    \"last_name\": \"blanditiis\",\n    \"tax_number\": \"488744dwd\",\n    \"pay_term_number\": 3,\n    \"pay_term_type\": \"months\",\n    \"mobile\": \"8795461009\",\n    \"landline\": \"65484-848-848\",\n    \"alternate_number\": \"9898795220\",\n    \"address_line_1\": \"voluptate\",\n    \"address_line_2\": \"fugit\",\n    \"city\": \"dolorem\",\n    \"state\": \"quia\",\n    \"country\": \"reprehenderit\",\n    \"zip_code\": \"enim\",\n    \"customer_group_id\": \"dolorem\",\n    \"contact_id\": \"unde\",\n    \"dob\": \"2000-06-13\",\n    \"custom_field1\": \"quas\",\n    \"custom_field2\": \"sit\",\n    \"custom_field3\": \"cum\",\n    \"custom_field4\": \"officia\",\n    \"email\": \"vitae\",\n    \"shipping_address\": \"veniam\",\n    \"position\": \"accusantium\",\n    \"opening_balance\": 10.300000000000000710542735760100185871124267578125,\n    \"source_id\": 6,\n    \"life_stage_id\": 19,\n    \"assigned_to\": []\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Contact payment",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/contactapi-payment",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"contact_id\": 17,\n    \"amount\": 453.1299999999999954525264911353588104248046875,\n    \"method\": \"cash\",\n    \"paid_on\": \"2020-07-22 15:48:29\",\n    \"account_id\": 14,\n    \"card_number\": \"quasi\",\n    \"card_holder_name\": \"provident\",\n    \"card_transaction_number\": \"dolorem\",\n    \"card_type\": \"molestias\",\n    \"card_month\": \"maiores\",\n    \"card_year\": \"dolorem\",\n    \"card_security\": \"vitae\",\n    \"transaction_no_1\": \"possimus\",\n    \"transaction_no_2\": \"qui\",\n    \"transaction_no_3\": \"quo\",\n    \"cheque_number\": \"aut\",\n    \"bank_account_number\": \"maiores\",\n    \"note\": \"aut\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Expense management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List expenses",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/expense",
+                            "query": [
+                                {
+                                    "key": "location_id",
+                                    "value": "1",
+                                    "description": "id of the location",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "payment_status",
+                                    "value": "paid",
+                                    "description": "payment status",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2018-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2018-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "expense_for",
+                                    "value": "sint",
+                                    "description": "id of the user for which expense is created",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Create expense \/ expense refund",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/expense",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"location_id\": 1,\n    \"final_total\": 40.59247400000000283171175397001206874847412109375,\n    \"transaction_date\": \"2020-5-7 15:20:22\",\n    \"tax_rate_id\": 2,\n    \"expense_for\": 11,\n    \"contact_id\": 15,\n    \"expense_category_id\": 14,\n    \"expense_sub_category_id\": 2,\n    \"additional_notes\": \"reiciendis\",\n    \"is_refund\": 0,\n    \"is_recurring\": 0,\n    \"recur_interval\": 4,\n    \"recur_interval_type\": \"months\",\n    \"subscription_repeat_on\": 15,\n    \"subscription_no\": \"nulla\",\n    \"recur_repetitions\": 8,\n    \"payment\": [\n        {\n            \"amount\": 453.1299999999999954525264911353588104248046875,\n            \"method\": \"cash\",\n            \"account_id\": 3,\n            \"card_number\": \"dolorem\",\n            \"card_holder_name\": \"commodi\",\n            \"card_transaction_number\": \"ut\",\n            \"card_type\": \"qui\",\n            \"card_month\": \"beatae\",\n            \"card_year\": \"cum\",\n            \"card_security\": \"odio\",\n            \"transaction_no_1\": \"repellendus\",\n            \"transaction_no_2\": \"unde\",\n            \"transaction_no_3\": \"iure\",\n            \"note\": \"iste\",\n            \"cheque_number\": \"provident\"\n        }\n    ]\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified expense \/ expense refund",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/expense\/:expense",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "expense",
+                                    "key": "expense",
+                                    "value": "59",
+                                    "description": "comma separated ids of the expenses"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Update expense \/ expense refund",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/expense\/:expense",
+                            "query": []
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"final_total\": 3.72543999999999986272314345114864408969879150390625,\n    \"transaction_date\": \"2020-5-7 15:20:22\",\n    \"tax_rate_id\": 18,\n    \"expense_for\": 17,\n    \"contact_id\": 5,\n    \"expense_category_id\": 1,\n    \"expense_sub_category_id\": 10,\n    \"additional_notes\": \"corrupti\",\n    \"is_recurring\": 0,\n    \"recur_interval\": 20,\n    \"recur_interval_type\": \"months\",\n    \"subscription_repeat_on\": 15,\n    \"subscription_no\": \"perspiciatis\",\n    \"recur_repetitions\": 2,\n    \"payment\": []\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "List expense refunds",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/expense-refund",
+                            "query": [
+                                {
+                                    "key": "location_id",
+                                    "value": "1",
+                                    "description": "id of the location",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "payment_status",
+                                    "value": "paid",
+                                    "description": "payment status",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2018-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2018-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "expense_for",
+                                    "value": "sed",
+                                    "description": "id of the user for which expense is created",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "List expense categories",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/expense-categories",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Field Force",
+            "description": "",
+            "item": [
+                {
+                    "name": "List visits",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/field-force",
+                            "query": [
+                                {
+                                    "key": "contact_id",
+                                    "value": "rem",
+                                    "description": "id of the contact",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "assigned_to",
+                                    "value": "magni",
+                                    "description": "id of the assigned user",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "placeat",
+                                    "description": "status of the visit (assigned, finished)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2018-06-25",
+                                    "description": "Start date filter for visit on format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2018-06-25",
+                                    "description": "End date filter for visit on format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "order_by_date",
+                                    "value": "desc",
+                                    "description": "Sort visit by visit on date ('asc', 'desc')",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Create Visit",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/field-force\/create",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"contact_id\": 13,\n    \"visit_to\": \"delectus\",\n    \"visit_address\": \"voluptas\",\n    \"assigned_to\": 20,\n    \"visit_on\": \"2021-12-28 17:23:00\",\n    \"visit_for\": \"labore\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Update Visit status",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/field-force\/update-visit-status\/:id",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "17",
+                                    "description": "id of the visit to be updated"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"finished\",\n    \"reason_to_not_meet_contact\": \"porro\",\n    \"visited_on\": \"2021-12-28 17:23:00\",\n    \"visited_address\": \"Radhanath Mullick Ln, Tiretta Bazaar, Bow Bazaar, Kolkata, West Bengal, 700 073, India\",\n    \"latitude\": \"41.40338\",\n    \"longitude\": \"2.17403\",\n    \"comments\": \"ex\",\n    \"photo\": \"omnis\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "New end points",
+            "description": "",
+            "item": [
+                {
+                    "name": "New List products",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/new_product",
+                            "query": [
+                                {
+                                    "key": "order_by",
+                                    "value": "autem",
+                                    "description": "Values: product_name or newest",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "order_direction",
+                                    "value": "optio",
+                                    "description": "Values: asc or desc",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "location_custom_field_1",
+                                    "value": "qui",
+                                    "description": "Custom field 1 of the location",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "category_id",
+                                    "value": "inventore",
+                                    "description": "comma separated ids of one or multiple category",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "sub_category_id",
+                                    "value": "consequatur",
+                                    "description": "comma separated ids of one or multiple sub-category",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "location_id",
+                                    "value": "1",
+                                    "description": "",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "not_for_sell",
+                                    "value": "assumenda",
+                                    "description": "(1, 0)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "send_lot_detail",
+                                    "value": "hic",
+                                    "description": "Send lot details in each variation location details(1, 0)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "nulla",
+                                    "description": "Search term for product name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "sku",
+                                    "value": "totam",
+                                    "description": "Search term for product sku",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "product_ids",
+                                    "value": "1%2C2",
+                                    "description": "comma separated ids of products",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "New List sells",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/new_sell",
+                            "query": [
+                                {
+                                    "key": "location_id",
+                                    "value": "1",
+                                    "description": "id of the location",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "contact_id",
+                                    "value": "commodi",
+                                    "description": "id of the customer",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "payment_status",
+                                    "value": "due%2Cpartial",
+                                    "description": "Comma separated values of payment statuses. Available values due, partial, paid, overdue",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2018-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2018-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "user_id",
+                                    "value": "commodi",
+                                    "description": "id of the user who created the sale",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "service_staff_id",
+                                    "value": "voluptatum",
+                                    "description": "id of the service staff assigned with the sale",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "shipping_status",
+                                    "value": "ordered",
+                                    "description": "Shipping Status of the sale ('ordered', 'packed', 'shipped', 'delivered', 'cancelled')",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "source",
+                                    "value": "ea",
+                                    "description": "Source of the sale",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "customer_group_id",
+                                    "value": "ex",
+                                    "description": "id of the customer group",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "product_name",
+                                    "value": "et",
+                                    "description": "name of the product",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "product_sku",
+                                    "value": "tempora",
+                                    "description": "sku of the product or variation",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "product_custom_field_1",
+                                    "value": "dolorem",
+                                    "description": "custome field 1 of the product",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "location_custom_field_1",
+                                    "value": "ducimus",
+                                    "description": "custome field 1 of the location",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "location_invoice_scheme_prefix",
+                                    "value": "incidunt",
+                                    "description": "Invoice scheme prefix of the location",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "product_category_id",
+                                    "value": "non",
+                                    "description": "category id of the product",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "product_sub_category_id",
+                                    "value": "consequatur",
+                                    "description": "Sub category id of the product",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "sell_ids",
+                                    "value": "55%2C64",
+                                    "description": "comma separated ids of the sells",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "only_subscriptions",
+                                    "value": "vel",
+                                    "description": "Filter only subcription invoices (1, 0)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "send_purchase_details",
+                                    "value": "veniam",
+                                    "description": "Get purchase details of each sell line (1, 0)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "order_by_date",
+                                    "value": "desc",
+                                    "description": "Sort sell list by date ('asc', 'desc')",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "New List contact",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/new_contactapi",
+                            "query": [
+                                {
+                                    "key": "type",
+                                    "value": "soluta",
+                                    "description": "Type of contact (supplier, customer)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "customer_group_id",
+                                    "value": "nobis",
+                                    "description": "id of the customer group",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "custom_field_1",
+                                    "value": "est",
+                                    "description": "Custom field 1 of the contact",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "contact_ids",
+                                    "value": "2%2C3",
+                                    "description": "comma separated ids of contacts",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "eum",
+                                    "description": "Search term for contact name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "biz_name",
+                                    "value": "occaecati",
+                                    "description": "Search term for contact's business name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "mobile_num",
+                                    "value": "9",
+                                    "description": "Search term for contact's mobile number",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "contact_id",
+                                    "value": "animi",
+                                    "description": "Search term for contact's contact_id. Ex(CO0005)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "order_by",
+                                    "value": "eveniet",
+                                    "description": "Column name to sort the result, Column: name, supplier_business_name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "direction",
+                                    "value": "qui",
+                                    "description": "Direction to sort the result, Direction: desc, asc",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Product management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List products",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/product",
+                            "query": [
+                                {
+                                    "key": "order_by",
+                                    "value": "ullam",
+                                    "description": "Values: product_name or newest",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "order_direction",
+                                    "value": "nisi",
+                                    "description": "Values: asc or desc",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "brand_id",
+                                    "value": "ut",
+                                    "description": "comma separated ids of one or multiple brands",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "category_id",
+                                    "value": "voluptatum",
+                                    "description": "comma separated ids of one or multiple category",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "sub_category_id",
+                                    "value": "nesciunt",
+                                    "description": "comma separated ids of one or multiple sub-category",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "location_id",
+                                    "value": "1",
+                                    "description": "",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "selling_price_group",
+                                    "value": "nihil",
+                                    "description": "(1, 0)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "send_lot_detail",
+                                    "value": "officia",
+                                    "description": "Send lot details in each variation location details(1, 0)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "sunt",
+                                    "description": "Search term for product name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "sku",
+                                    "value": "alias",
+                                    "description": "Search term for product sku",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified product",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/product\/:product",
+                            "query": [
+                                {
+                                    "key": "selling_price_group",
+                                    "value": "iure",
+                                    "description": "(1, 0)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "send_lot_detail",
+                                    "value": "laborum",
+                                    "description": "Send lot details in each variation location details(1, 0)",
+                                    "disabled": false
+                                }
+                            ],
+                            "variable": [
+                                {
+                                    "id": "product",
+                                    "key": "product",
+                                    "value": "1",
+                                    "description": "comma separated ids of products"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "List Selling Price Group",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/selling-price-group",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "List Variations",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/variation\/:id",
+                            "query": [
+                                {
+                                    "key": "product_id",
+                                    "value": "maxime",
+                                    "description": "Filter by comma separated products ids",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "location_id",
+                                    "value": "1",
+                                    "description": "",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "brand_id",
+                                    "value": "delectus",
+                                    "description": "",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "category_id",
+                                    "value": "consequatur",
+                                    "description": "",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "sub_category_id",
+                                    "value": "delectus",
+                                    "description": "",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "not_for_selling",
+                                    "value": "ad",
+                                    "description": "Values: 0 or 1",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "praesentium",
+                                    "description": "Search term for product name",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "sku",
+                                    "value": "maxime",
+                                    "description": "Search term for product sku",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Sales management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List sells",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/sell",
+                            "query": [
+                                {
+                                    "key": "location_id",
+                                    "value": "1",
+                                    "description": "id of the location",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "contact_id",
+                                    "value": "saepe",
+                                    "description": "id of the customer",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "payment_status",
+                                    "value": "due%2Cpartial",
+                                    "description": "Comma separated values of payment statuses. Available values due, partial, paid, overdue",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2018-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2018-06-25",
+                                    "description": "format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "user_id",
+                                    "value": "corrupti",
+                                    "description": "id of the user who created the sale",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "service_staff_id",
+                                    "value": "officiis",
+                                    "description": "id of the service staff assigned with the sale",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "shipping_status",
+                                    "value": "ordered",
+                                    "description": "Shipping Status of the sale ('ordered', 'packed', 'shipped', 'delivered', 'cancelled')",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "source",
+                                    "value": "dolorem",
+                                    "description": "Source of the sale",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "only_subscriptions",
+                                    "value": "sit",
+                                    "description": "Filter only subcription invoices (1, 0)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "send_purchase_details",
+                                    "value": "qui",
+                                    "description": "Get purchase details of each sell line (1, 0)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "order_by_date",
+                                    "value": "desc",
+                                    "description": "Sort sell list by date ('asc', 'desc')",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Total records per page. default: 10, Set -1 for no pagination",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Create sell",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/sell",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"sells\": [\n        {\n            \"location_id\": 1,\n            \"contact_id\": 12,\n            \"transaction_date\": \"2020-07-22 15:48:29\",\n            \"invoice_no\": \"quia\",\n            \"source\": \"api, phone, woocommerce\",\n            \"status\": \"final\",\n            \"sub_status\": \"null\",\n            \"is_quotation\": true,\n            \"tax_rate_id\": 7,\n            \"discount_amount\": 10,\n            \"discount_type\": \"fixed\",\n            \"sale_note\": \"inventore\",\n            \"staff_note\": \"esse\",\n            \"commission_agent\": 18,\n            \"shipping_details\": \"Express Delivery\",\n            \"shipping_address\": \"quia\",\n            \"shipping_status\": \"ordered\",\n            \"delivered_to\": \"'Mr robin'\",\n            \"shipping_charges\": 10,\n            \"packing_charge\": 10,\n            \"exchange_rate\": 1,\n            \"selling_price_group_id\": 5,\n            \"pay_term_number\": 3,\n            \"pay_term_type\": \"months\",\n            \"is_suspend\": false,\n            \"is_recurring\": 0,\n            \"recur_interval\": 1,\n            \"recur_interval_type\": \"months\",\n            \"subscription_repeat_on\": 15,\n            \"subscription_no\": \"est\",\n            \"recur_repetitions\": 17,\n            \"rp_redeemed\": 5,\n            \"rp_redeemed_amount\": 13.5,\n            \"types_of_service_id\": 11,\n            \"service_custom_field_1\": \"quod\",\n            \"service_custom_field_2\": \"quo\",\n            \"service_custom_field_3\": \"necessitatibus\",\n            \"service_custom_field_4\": \"modi\",\n            \"service_custom_field_5\": \"deleniti\",\n            \"service_custom_field_6\": \"vel\",\n            \"round_off_amount\": 529221286.534815847873687744140625,\n            \"table_id\": 3,\n            \"service_staff_id\": 10,\n            \"change_return\": 0,\n            \"products\": [\n                {\n                    \"product_id\": 17,\n                    \"variation_id\": 58,\n                    \"quantity\": 1,\n                    \"unit_price\": 437.5,\n                    \"tax_rate_id\": 0,\n                    \"discount_amount\": 0,\n                    \"discount_type\": \"percentage\",\n                    \"sub_unit_id\": 16,\n                    \"note\": \"eveniet\"\n                }\n            ],\n            \"payments\": [\n                {\n                    \"amount\": 453.1299999999999954525264911353588104248046875,\n                    \"method\": \"cash\",\n                    \"account_id\": 1,\n                    \"card_number\": \"odit\",\n                    \"card_holder_name\": \"nemo\",\n                    \"card_transaction_number\": \"temporibus\",\n                    \"card_type\": \"distinctio\",\n                    \"card_month\": \"illo\",\n                    \"card_year\": \"tempora\",\n                    \"card_security\": \"et\",\n                    \"transaction_no_1\": \"voluptas\",\n                    \"transaction_no_2\": \"qui\",\n                    \"transaction_no_3\": \"et\",\n                    \"bank_account_number\": \"voluptatibus\",\n                    \"note\": \"est\",\n                    \"cheque_number\": \"in\"\n                }\n            ]\n        }\n    ]\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified sell",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/sell\/:sell",
+                            "query": [
+                                {
+                                    "key": "send_purchase_details",
+                                    "value": "vel",
+                                    "description": "Get purchase details of each sell line (1, 0)",
+                                    "disabled": false
+                                }
+                            ],
+                            "variable": [
+                                {
+                                    "id": "sell",
+                                    "key": "sell",
+                                    "value": "55",
+                                    "description": "comma separated ids of the sells"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Update sell",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/sell\/:sell",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "sell",
+                                    "key": "sell",
+                                    "value": "6",
+                                    "description": "id of sell to update"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"contact_id\": 1,\n    \"transaction_date\": \"2020-5-7 15:20:22\",\n    \"status\": \"final\",\n    \"sub_status\": \"null\",\n    \"is_quotation\": true,\n    \"tax_rate_id\": 17,\n    \"discount_amount\": 10,\n    \"discount_type\": \"fixed\",\n    \"sale_note\": \"unde\",\n    \"source\": \"dolorem\",\n    \"staff_note\": \"quas\",\n    \"is_suspend\": false,\n    \"commission_agent\": 19,\n    \"shipping_details\": \"Express Delivery\",\n    \"shipping_address\": \"ratione\",\n    \"shipping_status\": \"ordered\",\n    \"delivered_to\": \"Mr Robin\",\n    \"shipping_charges\": 10,\n    \"packing_charge\": 10,\n    \"exchange_rate\": 1,\n    \"selling_price_group_id\": 20,\n    \"pay_term_number\": 17,\n    \"pay_term_type\": \"months\",\n    \"is_recurring\": 0,\n    \"recur_interval\": 16,\n    \"recur_interval_type\": \"days\",\n    \"subscription_repeat_on\": 7,\n    \"subscription_no\": \"iure\",\n    \"recur_repetitions\": 17,\n    \"rp_redeemed\": 11,\n    \"rp_redeemed_amount\": 13.5,\n    \"types_of_service_id\": 14,\n    \"service_custom_field_1\": \"enim\",\n    \"service_custom_field_2\": \"ut\",\n    \"service_custom_field_3\": \"quisquam\",\n    \"service_custom_field_4\": \"itaque\",\n    \"service_custom_field_5\": \"laudantium\",\n    \"service_custom_field_6\": \"nostrum\",\n    \"round_off_amount\": 10968.043850000000020372681319713592529296875,\n    \"table_id\": 3,\n    \"service_staff_id\": 11,\n    \"change_return\": 0,\n    \"change_return_id\": 2,\n    \"products\": [\n        {\n            \"sell_line_id\": 11,\n            \"product_id\": 17,\n            \"variation_id\": 58,\n            \"quantity\": 1,\n            \"unit_price\": 437.5,\n            \"tax_rate_id\": 18,\n            \"discount_amount\": 0,\n            \"discount_type\": \"percentage\",\n            \"sub_unit_id\": 6,\n            \"note\": \"dolor\"\n        }\n    ],\n    \"payments\": [\n        {\n            \"payment_id\": 2,\n            \"amount\": 453.1299999999999954525264911353588104248046875,\n            \"method\": \"cash\",\n            \"account_id\": 10,\n            \"card_number\": \"eius\",\n            \"card_holder_name\": \"fugiat\",\n            \"card_transaction_number\": \"modi\",\n            \"card_type\": \"qui\",\n            \"card_month\": \"maxime\",\n            \"card_year\": \"quia\",\n            \"card_security\": \"est\",\n            \"transaction_no_1\": \"quidem\",\n            \"transaction_no_2\": \"enim\",\n            \"transaction_no_3\": \"consequuntur\",\n            \"note\": \"necessitatibus\",\n            \"cheque_number\": \"ut\",\n            \"bank_account_number\": \"et\"\n        }\n    ]\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Delete Sell",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/sell\/:sell",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "sell",
+                                    "key": "sell",
+                                    "value": "sunt",
+                                    "description": "id of the sell to be deleted"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Add Sell Return",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/sell-return",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"transaction_id\": 3,\n    \"transaction_date\": \"2020-5-7 15:20:22\",\n    \"invoice_no\": \"in\",\n    \"discount_amount\": 10,\n    \"discount_type\": \"fixed\",\n    \"products\": [\n        {\n            \"sell_line_id\": 18,\n            \"quantity\": 1,\n            \"unit_price_inc_tax\": 437.5\n        }\n    ]\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "List Sell Return",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/list-sell-return",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Update shipping status",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/update-shipping-status",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": 3,\n    \"shipping_status\": \"ordered\",\n    \"delivered_to\": \"iste\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Superadmin",
+            "description": "",
+            "item": [
+                {
+                    "name": "If SaaS installed get active subscription details, else return the enabled modules details in package_details",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/active-subscription",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get Superadmin Package List",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/packages",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Table management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List tables",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/table",
+                            "query": [
+                                {
+                                    "key": "location_id",
+                                    "value": "1",
+                                    "description": "int id of the location",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Show the specified table",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/table\/:table",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "table",
+                                    "key": "table",
+                                    "value": "5",
+                                    "description": "comma separated ids of required tables"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Tax management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List taxes",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/tax",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified tax",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/tax\/:tax",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "tax",
+                                    "key": "tax",
+                                    "value": "1",
+                                    "description": "comma separated ids of required taxes"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Taxonomy management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List taxonomy",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/taxonomy",
+                            "query": [
+                                {
+                                    "key": "type",
+                                    "value": "corporis",
+                                    "description": "Type of taxonomy (product, device, hrm_department)",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified taxonomy",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/taxonomy\/:taxonomy",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "taxonomy",
+                                    "key": "taxonomy",
+                                    "value": "1",
+                                    "description": "comma separated ids of product categories"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Types of service management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List types of service",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/types-of-service",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified types of service",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/types-of-service\/:types_of_service",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "types_of_service",
+                                    "key": "types_of_service",
+                                    "value": "1",
+                                    "description": "comma separated ids of required types of services"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Unit management",
+            "description": "",
+            "item": [
+                {
+                    "name": "List units",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/unit",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified unit",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/unit\/:unit",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "unit",
+                                    "key": "unit",
+                                    "value": "1",
+                                    "description": "comma separated ids of the units"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "User management",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get the loggedin user details.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/user\/loggedin",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Register User",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/user-registration",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"surname\": \"et\",\n    \"first_name\": \"soluta\",\n    \"last_name\": \"aliquid\",\n    \"email\": \"ullam\",\n    \"is_active\": \"omnis\",\n    \"user_type\": \"velit\",\n    \"crm_contact_id\": 3,\n    \"allow_login\": false,\n    \"username\": \"tempore\",\n    \"password\": \"ullam\",\n    \"role\": 1,\n    \"access_all_locations\": false,\n    \"location_permissions\": [],\n    \"cmmsn_percent\": \"accusantium\",\n    \"max_sales_discount_percent\": \"voluptatibus\",\n    \"selected_contacts\": true,\n    \"selected_contact_ids\": [],\n    \"dob\": \"deleniti\",\n    \"gender\": \"magnam\",\n    \"marital_status\": \"voluptatem\",\n    \"blood_group\": \"illo\",\n    \"contact_number\": \"dolorem\",\n    \"alt_number\": \"praesentium\",\n    \"family_number\": \"quo\",\n    \"fb_link\": \"aperiam\",\n    \"twitter_link\": \"voluptatem\",\n    \"social_media_1\": \"dicta\",\n    \"social_media_2\": \"debitis\",\n    \"custom_field_1\": \"quasi\",\n    \"custom_field_2\": \"non\",\n    \"custom_field_3\": \"deleniti\",\n    \"custom_field_4\": \"voluptate\",\n    \"guardian_name\": \"ab\",\n    \"id_proof_name\": \"at\",\n    \"id_proof_number\": \"fugit\",\n    \"permanent_address\": \"voluptatibus\",\n    \"current_address\": \"sed\",\n    \"bank_details\": [\n        {\n            \"account_holder_name\": \"totam\",\n            \"account_number\": \"culpa\",\n            \"bank_name\": \"dolorem\",\n            \"bank_code\": \"enim\",\n            \"branch\": \"quo\",\n            \"tax_payer_id\": \"nihil\"\n        }\n    ]\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "List users",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/user",
+                            "query": [
+                                {
+                                    "key": "service_staff",
+                                    "value": "non",
+                                    "description": "boolean Filter service staffs from users list (0, 1)",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get the specified user",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/user\/:user",
+                            "query": [],
+                            "variable": [
+                                {
+                                    "id": "user",
+                                    "key": "user",
+                                    "value": "1",
+                                    "description": "comma separated ids of the required users"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Update user password.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/update-password",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"current_password\": \"explicabo\",\n    \"new_password\": \"voluptates\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Recover forgotten password.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/forget-password",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"est\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "general",
+            "description": "",
+            "item": [
+                {
+                    "name": "List payment accounts",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/payment-accounts",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "List payment methods",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/payment-methods",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get business details",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/business-details",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get profit and loss report",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/profit-loss-report",
+                            "query": [
+                                {
+                                    "key": "location_id",
+                                    "value": "1",
+                                    "description": "optional id of the location",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2018-06-25",
+                                    "description": "optional format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2018-06-25",
+                                    "description": "optional format:Y-m-d",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "user_id",
+                                    "value": "1",
+                                    "description": "optional id of the user",
+                                    "disabled": false
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get product current stock",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/product-stock-report",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get notifications",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/notifications",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Get location details from coordinates",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "smartdukapro.online\/public",
+                            "path": "connector\/api\/get-location",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"lat\": \"41.40338\",\n    \"lon\": \"2.17403\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        }
+    ]
+}
