@@ -219,4 +219,35 @@ Log::alert($request->products);
     {
         //
     }
+
+    /**
+     * Update order status to 'satisfied' when customer receives and is satisfied.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function satisfy($id)
+    {
+        try {
+            $order = Order::find($id);
+            
+            if (!$order) {
+                return $this->sendError('NOT_FOUND', 'Order not found', 404);
+            }
+            
+            // Optionally, verify that the order belongs to the authenticated user
+            if (auth()->check() && $order->user_id !== auth()->user()->id) {
+                return $this->sendError('UNAUTHORIZED', 'You are not authorized to update this order', 403);
+            }
+            
+            $order->status = 'satisfied';
+            $order->save();
+            
+            return $this->sendResponse(new OrderResource($order), 'Order status updated to Customer Satisfied successfully')->response()->setStatusCode(200);
+            
+        } catch (\Exception $e) {
+            Log::error('Error updating order to satisfied: ' . $e->getMessage());
+            return $this->sendError('FAILED', 'Error updating order status: ' . $e->getMessage(), 500);
+        }
+    }
 }

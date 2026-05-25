@@ -119,9 +119,12 @@ class OrdersController extends Controller
             $newStatus = strtolower(trim((string) $request->input('status')));
             
             // Validate status
-            $validStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'denied'];
+            $validStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'denied', 'satisfied'];
             if (!in_array($newStatus, $validStatuses)) {
-                return redirect()->back()->with('error', 'Invalid status provided');
+                return redirect()->back()->with('status', [
+                    'success' => 0,
+                    'msg' => 'Invalid status provided'
+                ]);
             }
             
             // Update status
@@ -139,10 +142,16 @@ class OrdersController extends Controller
             
             $order->save();
             
-            return redirect()->back()->with('success', $message);
+            return redirect()->back()->with('status', [
+                'success' => 1,
+                'msg' => $message
+            ]);
             
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error updating order status: ' . $e->getMessage());
+            return redirect()->back()->with('status', [
+                'success' => 0,
+                'msg' => 'Error updating order status: ' . $e->getMessage()
+            ]);
         }
     }
 
@@ -157,7 +166,8 @@ class OrdersController extends Controller
             'delivered' => '<span class="badge badge-primary">Delivered</span>',
             'confirmed' => '<span class="badge badge-warning">Confirmed</span>',
             'shipped' => '<span class="badge badge-info">Shipped</span>',
-            'refunded' => '<span class="badge badge-secondary">Refunded</span>'
+            'refunded' => '<span class="badge badge-secondary">Refunded</span>',
+            'satisfied' => '<span class="badge badge-success">Customer Satisfied</span>'
         ];
 
         return $badges[$status] ?? '<span class="badge badge-secondary">' . ucfirst($status) . '</span>';

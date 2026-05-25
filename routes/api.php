@@ -141,6 +141,9 @@ Route::middleware(['auth:api', 'withoutlink'])->group(function () {
 
     /** Order routes */
     Route::apiResource('orders', OrderController::class);
+    
+    /** Order Satisfied route */
+    Route::post('orders/{order}/satisfy', [OrderController::class, 'satisfy']);
 
     /** Get records by type */
     Route::get('records/type/{type}', [RecordController::class, 'getRecordsByType']);
