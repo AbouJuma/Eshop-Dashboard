@@ -127,14 +127,19 @@ class OrdersController extends Controller
             // Update status
             $order->status = $newStatus;
             
+            $message = 'Order status updated successfully';
+            
             // Save cancellation reason if status is cancelled
-            if ($newStatus === 'cancelled' && $request->filled('cancellation_reason')) {
-                $order->cancellation_reason = $request->input('cancellation_reason');
+            if ($newStatus === 'cancelled') {
+                if ($request->filled('cancellation_reason')) {
+                    $order->cancellation_reason = $request->input('cancellation_reason');
+                }
+                $message = 'Your order has been cancelled';
             }
             
             $order->save();
             
-            return redirect()->back()->with('success', 'Order status updated successfully');
+            return redirect()->back()->with('success', $message);
             
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error updating order status: ' . $e->getMessage());
