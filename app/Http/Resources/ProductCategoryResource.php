@@ -22,7 +22,7 @@ class ProductCategoryResource extends JsonResource
                 'id' => $this->id,
                 'name' => $this->name,
                 // 'products' => ProductResource::collection($this->products->where('pin',1)->take(20)),
-                'products' => ProductResource::collection($this->products->take(20)),
+                'products' => ProductResource::collection($this->products),
             ];
     }
 }

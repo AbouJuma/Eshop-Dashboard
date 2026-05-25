@@ -113,6 +113,7 @@ class OrdersController extends Controller
             $order = Order::findOrFail($id);
             $request->validate([
                 'status' => 'required|string',
+                'cancellation_reason' => 'nullable|string'
             ]);
 
             $newStatus = strtolower(trim((string) $request->input('status')));
@@ -125,6 +126,12 @@ class OrdersController extends Controller
             
             // Update status
             $order->status = $newStatus;
+            
+            // Save cancellation reason if status is cancelled
+            if ($newStatus === 'cancelled' && $request->filled('cancellation_reason')) {
+                $order->cancellation_reason = $request->input('cancellation_reason');
+            }
+            
             $order->save();
             
             return redirect()->back()->with('success', 'Order status updated successfully');

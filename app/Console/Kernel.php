@@ -27,6 +27,9 @@ class Kernel extends ConsoleKernel
             $schedule->command('pos:updateRewardPoints')->dailyAt('23:45');
 
             $schedule->command('pos:autoSendPaymentReminder')->dailyAt('8:00');
+            
+            // SMS Balance Check - run every hour to monitor balance
+            $schedule->command('sms:check-balance')->hourly();
         }
 
         if ($env === 'demo' && ! empty($email)) {

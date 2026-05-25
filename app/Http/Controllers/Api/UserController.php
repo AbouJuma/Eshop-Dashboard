@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\UserResource;
-use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
@@ -26,10 +25,19 @@ class UserController extends BaseController
     //notifications
     public function notifications()
     {
-        $notifications= Notification::where('user_id', auth()->user()->id)->latest()->paginate(500);
-        if (!$notifications) return $this->sendError('NOT_FOUND', null, 404);
-        else
-        return $this->sendResponse( NotificationResource::collection($notifications),'RETRIEVE_SUCCESS');
+        $notifications = Notification::where('user_id', auth()->user()->id)
+            ->latest()
+            ->select('title', 'content', 'action_time', 'created_at')
+            ->paginate(500);
+        
+        $response = [
+            'status' => 'success',
+            'message' => 'RETRIEVE_SUCCESS',
+            'status_code' => 200,
+            'data' => $notifications
+        ];
+        
+        return response()->json($response, 200);
     }
 
     function delete(Request $request) {

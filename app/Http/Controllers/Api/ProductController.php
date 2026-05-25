@@ -51,7 +51,11 @@ class ProductController extends BaseController
     //get product categories
     public function getProductInCategories()
     {
-        $product_categories = Category::with('products.variations')->where('category_type', 'product')->get();
+        $product_categories = Category::with(['products' => function($query) {
+            $query->whereHas('product_locations', function($subQuery) {
+                $subQuery->where('product_locations.location_id', 9); // DOL SPARE SHOP NJIA YA NG'OMBE
+            })->with(['variations', 'variations.product_variation', 'media']);
+        }])->where('category_type', 'product')->get();
         
         // Filter out categories with empty products
         $filtered_categories = $product_categories->filter(function($category) {

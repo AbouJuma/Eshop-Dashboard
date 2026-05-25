@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
-use App\Models\Product;
 use App\Models\Order;
+use App\Services\NotificationService;
+use App\Models\Product;
 use App\Models\OrderProduct;
 use App\Models\User;
 
@@ -170,6 +170,9 @@ Log::alert($request->products);
             if($order != null){
                 $message = "Order ".$order->reference_no. " is created by ". $user->username. " just now";
                 $this->sendBeemSMS($message);
+                
+                // Create notification for the user
+                NotificationService::orderCreated($user->id, $order->reference_no);
             }
         
         } catch (\Throwable $th) {

@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Billboard')
+@section('title', 'Billboard Gallery')
 
 @section('content')
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Service Schedule</h1>
+                <h1 class="m-0">Billboard Gallery</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -19,7 +19,7 @@
     </div>
 </div>
 
-<section class="content">
+<section class="content mb-5">
     <div class="container-fluid">
         @if(session('success'))
             <div class="alert alert-success alert-dismissible">
@@ -32,37 +32,30 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">Service Schedule</h3>
-                        <a href="{{ route('billboard.create') }}" class="btn btn-primary">
+                        <h3 class="card-title">Billboard Gallery</h3>
+                        <a href="{{ route('billboard.create') }}" class="btn btn-primary mb-3">
                             <i class="fas fa-plus"></i> Create New
                         </a>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
+                        
+                    </div><br>
+                    
+                    <div class="card-body pb-4">
+                        <div class="row mb-4">
                             @forelse($schedules as $schedule)
                                 <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                                    <div class="card">
+                                    <div class="card h-100">
                                         @if(!empty($schedule->image))
-                                            <img src="{{ asset('uploads/' . $schedule->image) }}" class="card-img-top" alt="{{ $schedule->title }}" style="height: 200px; object-fit: cover;">
+                                            <img src="{{ asset('uploads/' . $schedule->image) }}" class="card-img-top" alt="{{ $schedule->title }}" style="height: 250px; object-fit: cover; width: 100%;">
                                         @else
-                                            <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                                            <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 250px;">
                                                 <i class="fas fa-image fa-3x text-muted"></i>
                                             </div>
                                         @endif
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $schedule->title }}</h5>
-                                            <p class="card-text">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-map-marker-alt"></i> {{ $schedule->location }}<br>
-                                                    <i class="fas fa-calendar"></i> {{ \Carbon\Carbon::parse($schedule->date)->format('M d, Y') }}<br>
-                                                    <i class="fas fa-clock"></i> {{ $schedule->from }} - {{ $schedule->to }}
-                                                </small>
-                                            </p>
-                                            <span class="badge badge-{{ $schedule->visibility == 'public' ? 'success' : 'warning' }}">
-                                                {{ ucfirst($schedule->visibility) }}
-                                            </span>
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title flex-grow-1">{{ $schedule->title }}</h5>
                                         </div>
-                                        <div class="card-footer bg-transparent d-flex justify-content-between">
+                                        
+                                        <div class="card-footer bg-transparent d-flex justify-content-between mt-auto">
                                             <a href="{{ route('billboard.edit', $schedule->id) }}" class="btn btn-sm btn-outline-primary">
                                                 <i class="fas fa-edit"></i> Edit
                                             </a>
@@ -80,8 +73,8 @@
                                 <div class="col-12">
                                     <div class="alert alert-info text-center">
                                         <i class="fas fa-info-circle fa-2x mb-2"></i>
-                                        <h5>No schedules found</h5>
-                                        <p>Click "Create New" to add your first service schedule.</p>
+                                        <h5>No billboards found</h5>
+                                        <p>Click "Create New" to add your first billboard.</p>
                                     </div>
                                 </div>
                             @endforelse

@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Create Schedule')
+@section('title', 'Create Billboard')
 
 @section('content')
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Create Schedule</h1>
+                <h1 class="m-0">Create Billboard</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -26,7 +26,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Schedule Information</h3>
+                        <h3 class="card-title">Billboard Information</h3>
                     </div>
                     <form action="{{ route('billboard.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -40,60 +40,12 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group">
-                                <label for="location">Location <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('location') is-invalid @enderror" 
-                                       id="location" name="location" value="{{ old('location') }}" required>
-                                @error('location')
-                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="date">Date <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control @error('date') is-invalid @enderror" 
-                                               id="date" name="date" value="{{ old('date') }}" required>
-                                        @error('date')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="from">From <span class="text-danger">*</span></label>
-                                        <input type="time" class="form-control @error('from') is-invalid @enderror" 
-                                               id="from" name="from" value="{{ old('from') }}" required>
-                                        @error('from')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="to">To <span class="text-danger">*</span></label>
-                                        <input type="time" class="form-control @error('to') is-invalid @enderror" 
-                                               id="to" name="to" value="{{ old('to') }}" required>
-                                        @error('to')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="visibility">Visibility <span class="text-danger">*</span></label>
-                                <select class="form-control @error('visibility') is-invalid @enderror" 
-                                        id="visibility" name="visibility" required>
-                                    <option value="">Select Visibility</option>
-                                    <option value="public" {{ old('visibility') == 'public' ? 'selected' : '' }}>Public</option>
-                                    <option value="private" {{ old('visibility') == 'private' ? 'selected' : '' }}>Private</option>
-                                </select>
-                                @error('visibility')
-                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                @enderror
-                            </div>
+                            <!-- Hidden fields for API compatibility -->
+                            <input type="hidden" name="location" value="default">
+                            <input type="hidden" name="date" value="{{ date('Y-m-d') }}">
+                            <input type="hidden" name="from" value="00:00">
+                            <input type="hidden" name="to" value="23:59">
+                            <input type="hidden" name="visibility" value="public">
 
                             <div class="form-group">
                                 <label for="image">Image</label>
@@ -112,7 +64,7 @@
                         </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Save Schedule
+                                <i class="fas fa-save"></i> Save Billboard
                             </button>
                             <a href="{{ route('billboard.index') }}" class="btn btn-secondary ml-2">
                                 <i class="fas fa-times"></i> Cancel
@@ -128,10 +80,17 @@
 @push('scripts')
 <script>
     // Show file name in custom file input
-    document.querySelector('input[type=file]').addEventListener('change', function(e) {
-        var fileName = e.target.files[0]?.name || 'Choose image...';
-        var nextSibling = e.target.nextElementSibling;
-        nextSibling.innerText = fileName;
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.querySelector('input[type=file]');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                var fileName = e.target.files[0]?.name || 'Choose image...';
+                var label = document.querySelector('label[for="image"]');
+                if (label) {
+                    label.innerText = fileName;
+                }
+            });
+        }
     });
 </script>
 @endpush

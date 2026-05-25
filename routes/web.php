@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\UserAccountDeletionController;
+use App\Http\Controllers\AccountDeletionRequestController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountReportsController;
 use App\Http\Controllers\AccountTypeController;
@@ -46,6 +48,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalesCommissionAgentController;
 use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\SellController;
+use App\Http\Controllers\SMSBalanceController;
 use App\Http\Controllers\SellingPriceGroupController;
 use App\Http\Controllers\SellPosController;
 use App\Http\Controllers\SellReturnController;
@@ -524,6 +527,13 @@ Route::post('orders/{id}/update-status', [\App\Http\Controllers\OrdersController
 //     Route::post('orders', [SellPosController::class, 'placeOrdersApi']);
 // });
 
+// SMS Balance Management Routes
+Route::middleware(['auth', 'SetSessionData', 'language', 'timezone'])->group(function () {
+    Route::get('/sms/balance', [SMSBalanceController::class, 'getBalance'])->name('sms.balance.api');
+    Route::post('/sms/balance/check', [SMSBalanceController::class, 'checkBalance'])->name('sms.balance.check');
+    Route::post('/sms/balance/update', [SMSBalanceController::class, 'updateBalance'])->name('sms.balance.update');
+});
+
 //common route
 Route::middleware(['auth'])->group(function () {
     Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
@@ -545,4 +555,21 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
         ->name('packing.downloadPdf');
     Route::get('/sells/invoice-url/{id}', [SellPosController::class, 'showInvoiceUrl']);
     Route::get('/show-notification/{id}', [HomeController::class, 'showNotification']);
+});
+
+// Account Deletion Routes (Public Access)
+Route::get('/account-deletion', [UserAccountDeletionController::class, 'showDeletionForm'])->name('account.deletion');
+Route::post('/account-deletion', [UserAccountDeletionController::class, 'processDeletion'])->name('account.deletion.process');
+
+// Account Deletion Request Routes (Public Access)
+Route::get('/request-account-deletion', [AccountDeletionRequestController::class, 'showRequestForm'])->name('account.deletion.request');
+Route::post('/request-account-deletion', [AccountDeletionRequestController::class, 'processRequest'])->name('account.deletion.request.process');
+
+// Privacy Policy Route (Public Access)
+Route::get('/privacy-policy', [AccountDeletionRequestController::class, 'showPrivacyPolicy'])->name('privacy.policy');
+
+// Admin Routes (Temporarily Public for Testing)
+Route::prefix('admin')->name('admin.')->group(function() {
+    Route::get('/account-deletion-requests', [AccountDeletionRequestController::class, 'adminIndex'])->name('account.deletion.requests');
+    Route::get('/account-deletion-requests/{id}', [AccountDeletionRequestController::class, 'adminProcess'])->name('account.deletion.admin.process');
 });

@@ -8,13 +8,13 @@
   border-radius: 12px;
   box-shadow: 0 18px 40px rgba(17, 24, 39, 0.10);
   border-top: 4px solid rgba(15, 23, 42, 0.06);
-  min-height: 170px;
+  min-height: 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 22px 18px;
+  padding: 12px 10px;
   transition: transform .2s ease, box-shadow .2s ease; }
 
  .app-dash-row .app-dash-box:hover {
@@ -24,11 +24,11 @@
  .app-dash-row .app-dash-box .info-box-icon {
   float: none;
   border-radius: 999px;
-  height: 56px;
-  width: 56px;
-  line-height: 56px;
-  font-size: 22px;
-  margin: 0 0 10px 0;
+  height: 36px;
+  width: 36px;
+  line-height: 36px;
+  font-size: 16px;
+  margin: 0 0 6px 0;
   box-shadow: 0 12px 22px rgba(17, 24, 39, 0.18);
   color: #fff;
   background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0)); }
@@ -40,23 +40,48 @@
 
  .app-dash-row .app-dash-box .info-box-text {
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 9px;
   letter-spacing: .08em;
   font-weight: 700;
   color: #6b7280;
-  margin-bottom: 6px; }
+  margin-bottom: 3px; }
 
  .app-dash-row .app-dash-box .info-box-number {
-  font-size: 36px;
+  font-size: 20px;
   font-weight: 800;
   color: #111827;
   line-height: 1.1;
-  margin: 2px 0 6px; }
+  margin: 1px 0 3px; }
 
  .app-dash-row .app-dash-box p {
   margin: 0;
-  font-size: 12px;
+  font-size: 10px;
   color: #9ca3af; }
+
+/* Section header styles */
+.section-header {
+  padding: 8px 12px !important;
+  min-height: 45px !important;
+}
+
+.section-header h4 {
+  font-size: 12px !important;
+  margin: 0 !important;
+}
+
+.section-header p {
+  font-size: 10px !important;
+  margin: 0 !important;
+}
+
+.section-header .fa {
+  font-size: 14px !important;
+}
+
+.section-header div[style*="width: 50px"] {
+  width: 30px !important;
+  height: 30px !important;
+}
 
  .app-dash-row > div:nth-child(1) .app-dash-box {
   border-top-color: #06b6d4; }
@@ -447,6 +472,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- SMS Balance Management Section -->
+            @include('sms.balance_widget')
 
             @if(!empty($widgets['after_sale_purchase_totals']))
                 @foreach($widgets['after_sale_purchase_totals'] as $widget)

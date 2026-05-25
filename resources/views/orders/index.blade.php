@@ -163,6 +163,7 @@
     $grandTotal = $products->sum(function($product) {
         return $product->p_price * $product->p_quantity;
     });
+    $currentStatus = $order['status'] ?? 'pending';
     ?>
     
     <div class="modal fade" id="orderModal{{ $order['id'] }}" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel{{ $order['id'] }}" aria-hidden="true">
@@ -187,6 +188,9 @@
                                             <p><strong>Order ID:</strong> #{{ $order['id'] }}</p>
                                             <p><strong>Reference No:</strong> {{ $order['reference_no'] }}</p>
                                             <p><strong>Status:</strong> {!! $order['status_badge'] !!}</p>
+                                            <?php if($currentStatus === 'cancelled' && !empty($orderDetails->cancellation_reason)): ?>
+                                                <p class="text-danger"><strong>Cancel Reason:</strong> <br><?php echo nl2br(e($orderDetails->cancellation_reason)); ?></p>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="col-md-4">
                                             <p><strong>Date:</strong> {{ $order['created_at'] }}</p>
@@ -263,12 +267,10 @@
                 </div>
                 <div class="modal-footer">
                     <div class="w-100">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <?php 
-                                $currentStatus = $order['status'] ?? 'pending';
-                                if ($currentStatus === 'pending'): ?>
-                                    <div class="btn-group" role="group">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <?php if ($currentStatus === 'pending'): ?>
+                                    <div class="btn-group mr-2" role="group">
                                         <form action="{{ route('orders.update-status', $order['id']) }}" method="POST" style="display: inline;">
                                             @csrf
                                             <input type="hidden" name="status" value="confirmed">
@@ -283,27 +285,24 @@
                                                 <i class="fas fa-times"></i> Deny
                                             </button>
                                         </form>
-                                        <form action="{{ route('orders.update-status', $order['id']) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            <input type="hidden" name="status" value="cancelled">
-                                            <button type="submit" class="btn btn-danger">
-                                                <i class="fas fa-times"></i> Cancel
-                                            </button>
-                                        </form>
                                     </div>
                                 <?php elseif ($currentStatus === 'confirmed'): ?>
-                                    <form action="{{ route('orders.update-status', $order['id']) }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('orders.update-status', $order['id']) }}" method="POST" style="display: inline;" class="mr-2">
                                         @csrf
                                         <input type="hidden" name="status" value="completed">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-check-circle"></i> Complete Order
                                         </button>
                                     </form>
-                                <?php else: ?>
-                                    <span class="text-muted">Order status cannot be updated</span>
+                                <?php endif; ?>
+                                
+                                <?php if (!in_array($currentStatus, ['completed', 'cancelled'])): ?>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#cancelModal{{ $order['id'] }}" data-dismiss="modal">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
                                 <?php endif; ?>
                             </div>
-                            <div class="col-md-6 text-right">
+                            <div class="col-md-4 text-right">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                         </div>
@@ -312,6 +311,37 @@
             </div>
         </div>
     </div>
+    
+    <!-- Cancel Order Modal -->
+    <?php if (!in_array($currentStatus, ['completed', 'cancelled'])): ?>
+    <div class="modal fade" id="cancelModal{{ $order['id'] }}" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel{{ $order['id'] }}" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ route('orders.update-status', $order['id']) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="status" value="cancelled">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="cancelModalLabel{{ $order['id'] }}">Cancel Order #{{ $order['id'] }}</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to cancel this order? This action cannot be undone.</p>
+                        <div class="form-group">
+                            <label for="cancellation_reason_{{ $order['id'] }}">Cancellation Reason <span class="text-danger">*</span></label>
+                            <textarea name="cancellation_reason" id="cancellation_reason_{{ $order['id'] }}" class="form-control" rows="3" required placeholder="Please provide a reason for cancelling this order..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#orderModal{{ $order['id'] }}">Back to Order</button>
+                        <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 @endforeach
 
 @endsection

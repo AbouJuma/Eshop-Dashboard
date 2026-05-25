@@ -13,6 +13,7 @@ use App\Models\Vehicle;
 use App\Models\Make;
 use App\Models\VehicleModel;
 use App\Http\Integration\Beem\BeemSMSController;
+use App\Services\NotificationService;
 
 use App\Http\Resources\RecordResource;
 
@@ -189,6 +190,9 @@ class BookingController extends BaseController
                     if($booking != null){
                         $message = "Service Booking ".$booking->id. " is created by ". $client->username. " just now";
                         $this->sendBeemSMS($message);
+                        
+                        // Create notification for the user with reference number
+                        NotificationService::bookingConfirmed($client->id, $booking->id, $booking->reference_number);
                     }
 
                 });
