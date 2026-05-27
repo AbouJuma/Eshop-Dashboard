@@ -21,7 +21,8 @@ class Booking extends Model
         'reference_number',
         'grand_total',
         'final_total',
-        'vehicle'
+        'vehicle',
+        'cancellation_reason'
     ];
 
     public function client()

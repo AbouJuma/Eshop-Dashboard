@@ -162,7 +162,7 @@ class OrdersController extends Controller
             'processing' => '<span class="badge badge-info">Processing</span>',
             'denied' => '<span class="badge badge-dark">Denied</span>',
             'completed' => '<span class="badge badge-success">Completed</span>',
-            'cancelled' => '<span class="badge badge-secondary">Cancelled</span>',
+            'cancelled' => '<span class="badge badge-danger">Cancelled</span>',
             'delivered' => '<span class="badge badge-primary">Delivered</span>',
             'confirmed' => '<span class="badge badge-warning">Confirmed</span>',
             'shipped' => '<span class="badge badge-info">Shipped</span>',

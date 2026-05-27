@@ -95,7 +95,8 @@ class BookingViewController extends Controller
                 'time' => $booking->from . ' - ' . $booking->to,
                 'vehicle' => $booking->vehicle,
                 'address' => $booking->address ? $booking->address->location : 'N/A',
-                'services_count' => $booking->bookingSubServices->count()
+                'services_count' => $booking->bookingSubServices->count(),
+                'cancellation_reason' => $booking->cancellation_reason
             ];
         });
 
@@ -131,6 +132,13 @@ class BookingViewController extends Controller
                     'grand_total' => 'numeric|min:0'
                 ]);
                 $booking->grand_total = $request->grand_total;
+            }
+
+            if ($newStatus === 'cancelled') {
+                $request->validate([
+                    'cancellation_reason' => 'required|string|max:1000'
+                ]);
+                $booking->cancellation_reason = $request->cancellation_reason;
             }
             
             $booking->status = $newStatus;
@@ -178,7 +186,7 @@ class BookingViewController extends Controller
             'accepted' => '<span class="badge badge-warning">Accepted</span>',
             'denied' => '<span class="badge badge-dark">Denied</span>',
             'completed' => '<span class="badge badge-success">Completed</span>',
-            'cancelled' => '<span class="badge badge-secondary">Cancelled</span>',
+            'cancelled' => '<span class="badge badge-danger">Cancelled</span>',
             'confirmed' => '<span class="badge badge-warning">Accepted</span>', // For backward compatibility
         ];
 
