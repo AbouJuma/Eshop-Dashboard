@@ -47,6 +47,9 @@ class AdminSidebarMenu
                 $sub->url('/booking', 'Booking', ['icon' => 'fa fas fa-calendar-check', 'active' => request()->is('booking*')]);
             }, ['icon' => 'fa fas fa-store'])->order(8);
 
+            //Car Maintenance
+            $menu->url('/car-maintenance', 'Car Maintenance', ['icon' => 'fa fas fa-car', 'active' => request()->segment(1) == 'car-maintenance'])->order(9);
+
             //User management dropdown
             if (auth()->user()->can('user.view') || auth()->user()->can('user.create') || auth()->user()->can('roles.view')) {
                 $menu->dropdown(

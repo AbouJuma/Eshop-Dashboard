@@ -92,7 +92,8 @@ class OrdersController extends Controller
                 'status_badge' => $this->getStatusBadge($order->status ?? 'pending'),
                 'created_at' => $order->created_at->format('Y-m-d H:i:s'),
                 'address' => $order->address ? $order->address->location : 'N/A',
-                'additional_info' => $order->address ? $order->address->additional_info : 'N/A'
+                'additional_info' => $order->address ? $order->address->additional_info : 'N/A',
+                'unsatisfied_reason' => $order->unsatisfied_reason
             ],
             'products' => $order->eshops->map(function ($product) {
                 return [
@@ -119,7 +120,7 @@ class OrdersController extends Controller
             $newStatus = strtolower(trim((string) $request->input('status')));
             
             // Validate status
-            $validStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'denied', 'satisfied'];
+            $validStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'denied', 'satisfied', 'not_satisfied'];
             if (!in_array($newStatus, $validStatuses)) {
                 return redirect()->back()->with('status', [
                     'success' => 0,
@@ -167,7 +168,8 @@ class OrdersController extends Controller
             'confirmed' => '<span class="badge badge-warning">Confirmed</span>',
             'shipped' => '<span class="badge badge-info">Shipped</span>',
             'refunded' => '<span class="badge badge-secondary">Refunded</span>',
-            'satisfied' => '<span class="badge badge-success">Customer Satisfied</span>'
+            'satisfied' => '<span class="badge badge-success">Customer Satisfied</span>',
+            'not_satisfied' => '<span class="badge badge-dark" style="background-color: #374151;">Customer Not Satisfied</span>'
         ];
 
         return $badges[$status] ?? '<span class="badge badge-secondary">' . ucfirst($status) . '</span>';

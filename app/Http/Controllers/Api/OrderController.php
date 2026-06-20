@@ -250,4 +250,44 @@ Log::alert($request->products);
             return $this->sendError('FAILED', 'Error updating order status: ' . $e->getMessage(), 500);
         }
     }
+
+    /**
+     * Update order status to 'not_satisfied' and save the reason.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function unsatisfy(Request $request, $id)
+    {
+        try {
+            $order = Order::find($id);
+            
+            if (!$order) {
+                return $this->sendError('NOT_FOUND', 'Order not found', 404);
+            }
+            
+            if (auth()->check() && $order->user_id !== auth()->user()->id) {
+                return $this->sendError('UNAUTHORIZED', 'You are not authorized to update this order', 403);
+            }
+            
+            $validator = Validator::make($request->all(), [
+                'reason' => 'required|string|max:1000'
+            ]);
+            
+            if ($validator->fails()) {
+                return $this->sendError('VALIDATION_FAILED', $validator->errors(), 422);
+            }
+            
+            $order->status = 'not_satisfied';
+            $order->unsatisfied_reason = $request->input('reason');
+            $order->save();
+            
+            return $this->sendResponse(new OrderResource($order), 'Order status updated to Customer Not Satisfied successfully')->response()->setStatusCode(200);
+            
+        } catch (\Exception $e) {
+            Log::error('Error updating order to unsatisfied: ' . $e->getMessage());
+            return $this->sendError('FAILED', 'Error updating order status: ' . $e->getMessage(), 500);
+        }
+    }
 }

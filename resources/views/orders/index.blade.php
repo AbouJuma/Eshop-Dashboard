@@ -381,6 +381,7 @@
                                     <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
                                     <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                                     <option value="satisfied" {{ request('status') == 'satisfied' ? 'selected' : '' }}>Customer Satisfied</option>
+                                    <option value="not_satisfied" {{ request('status') == 'not_satisfied' ? 'selected' : '' }}>Customer Not Satisfied</option>
                                 </select>
                             </div>
                         </div>
@@ -567,6 +568,17 @@
                             </div>
                             @endif
                             
+                            @if($currentStatus === 'not_satisfied' && !empty($orderDetails->unsatisfied_reason))
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="p-3 bg-red-light rounded" style="background-color: #fff1f2; border: 1px solid #ffe4e6; border-radius: 8px;">
+                                        <div class="info-label text-danger" style="color: #e11d48;"><i class="fas fa-exclamation-circle mr-1"></i> Customer Comment</div>
+                                        <div class="text-dark font-weight-bold" style="color: #9f1239; font-size: 13px;">{!! nl2br(e($orderDetails->unsatisfied_reason)) !!}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                            
                             <div class="row mt-3">
                                 <div class="col-12">
                                     <div class="info-label">Delivery Address</div>
@@ -660,8 +672,8 @@
                                     </form>
                                 @endif
                                 
-                                @if (!in_array($currentStatus, ['completed', 'cancelled', 'satisfied']))
-                                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#cancelModal{{ $order['id'] }}" data-dismiss="modal" style="border-radius: 8px; font-weight: 600; padding: 8px 16px;">
+                                @if (!in_array($currentStatus, ['completed', 'cancelled', 'satisfied', 'not_satisfied']))
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#cancelModal{{ $order['id'] }}" data-dismiss="modal" style="border-radius: 8px; font-weight: 600; padding: 8px 16px; background-color: #ef4444; border-color: #ef4444; color: #ffffff;">
                                         <i class="fas fa-times-circle mr-1"></i> Cancel Order
                                     </button>
                                 @endif
@@ -677,7 +689,7 @@
     </div>
     
     <!-- Cancel Order Modal -->
-    @if (!in_array($currentStatus, ['completed', 'cancelled', 'satisfied']))
+    @if (!in_array($currentStatus, ['completed', 'cancelled', 'satisfied', 'not_satisfied']))
     <div class="modal fade" id="cancelModal{{ $order['id'] }}" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel{{ $order['id'] }}" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

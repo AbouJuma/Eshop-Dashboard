@@ -261,4 +261,74 @@ class BookingController extends BaseController
     {
         //
     }
+
+    /**
+     * Update booking status to 'satisfied' when customer is satisfied.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function satisfy($id)
+    {
+        try {
+            $booking = Booking::find($id);
+            
+            if (!$booking) {
+                return $this->sendError('NOT_FOUND', 'Booking not found', 404);
+            }
+            
+            if (auth()->check() && $booking->user_id !== auth()->user()->id) {
+                return $this->sendError('UNAUTHORIZED', 'You are not authorized to update this booking', 403);
+            }
+            
+            $booking->status = 'satisfied';
+            $booking->save();
+            
+            return $this->sendResponse(new RecordResource($booking), 'Booking status updated to Customer Satisfied successfully')->response()->setStatusCode(200);
+            
+        } catch (\Exception $e) {
+            Log::error('Error updating booking to satisfied: ' . $e->getMessage());
+            return $this->sendError('FAILED', 'Error updating booking status: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Update booking status to 'not_satisfied' and save the reason.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function unsatisfy(Request $request, $id)
+    {
+        try {
+            $booking = Booking::find($id);
+            
+            if (!$booking) {
+                return $this->sendError('NOT_FOUND', 'Booking not found', 404);
+            }
+            
+            if (auth()->check() && $booking->user_id !== auth()->user()->id) {
+                return $this->sendError('UNAUTHORIZED', 'You are not authorized to update this booking', 403);
+            }
+            
+            $validator = Validator::make($request->all(), [
+                'reason' => 'required|string|max:1000'
+            ]);
+            
+            if ($validator->fails()) {
+                return $this->sendError('VALIDATION_FAILED', $validator->errors(), 422);
+            }
+            
+            $booking->status = 'not_satisfied';
+            $booking->unsatisfied_reason = $request->input('reason');
+            $booking->save();
+            
+            return $this->sendResponse(new RecordResource($booking), 'Booking status updated to Customer Not Satisfied successfully')->response()->setStatusCode(200);
+            
+        } catch (\Exception $e) {
+            Log::error('Error updating booking to unsatisfied: ' . $e->getMessage());
+            return $this->sendError('FAILED', 'Error updating booking status: ' . $e->getMessage(), 500);
+        }
+    }
 }

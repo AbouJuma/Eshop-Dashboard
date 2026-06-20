@@ -345,6 +345,8 @@
                                     <option value="denied" {{ request('status') == 'denied' ? 'selected' : '' }}>Denied</option>
                                     <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
                                     <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                    <option value="satisfied" {{ request('status') == 'satisfied' ? 'selected' : '' }}>Customer Satisfied</option>
+                                    <option value="not_satisfied" {{ request('status') == 'not_satisfied' ? 'selected' : '' }}>Customer Not Satisfied</option>
                                 </select>
                             </div>
                         </div>
@@ -525,6 +527,13 @@
                                         </div>
                                     </div>
                                     @endif
+                                    @if($booking['status'] === 'not_satisfied' && !empty($bookingDetails->unsatisfied_reason))
+                                    <div class="row mt-3 pt-3 border-top" style="border-top-color: #fee2e2 !important; background-color: #fef2f2; border-radius: 8px; padding: 12px 16px; margin: 8px 0 0 0;">
+                                        <div class="col-12">
+                                            <p class="mb-0" style="color: #991b1b;"><strong style="width: auto; color: #991b1b;"><i class="fas fa-exclamation-triangle mr-1"></i> Customer Comment:</strong> {{ $bookingDetails->unsatisfied_reason }}</p>
+                                        </div>
+                                    </div>
+                                    @endif
                                     <div class="row mt-3 pt-3 border-top" style="border-top-color: #f1f5f9 !important;">
                                         <div class="col-12">
                                             <p><strong>Service Address:</strong> <span class="font-weight-bold"><?php echo $bookingDetails->address->location ?? 'N/A'; ?></span></p>
@@ -588,55 +597,59 @@
                             <div class="col-md-8">
                                 <?php 
                                 $currentStatus = $booking['status'] ?? 'pending';
-                                if ($currentStatus === 'pending'): ?>
-                                    <div class="w-100">
-                                        <form id="acceptForm{{ $booking['id'] }}" action="{{ route('booking.update-status', $booking['id']) }}" method="POST">
+                                ?>
+                                <div class="d-flex align-items-center flex-wrap" style="gap: 8px;">
+                                    <?php if ($currentStatus === 'pending'): ?>
+                                        <form id="acceptForm{{ $booking['id'] }}" action="{{ route('booking.update-status', $booking['id']) }}" method="POST" style="display: inline-block; margin: 0;">
                                             @csrf
                                             <input type="hidden" name="status" value="accepted">
-                                            <div class="row align-items-end">
-                                                <div class="col-md-6 mb-2">
-                                                    <label class="small font-weight-bold mb-1 text-muted">Confirm Price / Grand Total</label>
-                                                    <div class="input-group">
+                                            <div class="d-inline-flex align-items-end" style="gap: 8px;">
+                                                <div style="width: 160px; text-align: left;">
+                                                    <label class="small font-weight-bold mb-1 text-muted" style="font-size: 10px; display: block; text-transform: uppercase;">Confirm Grand Total</label>
+                                                    <div class="input-group input-group-sm">
                                                         <div class="input-group-prepend">
-                                                            <span class="input-group-text" style="font-size: 12px; font-weight: 700; background-color: #f1f5f9; border-color: #cbd5e1;">TZS</span>
+                                                            <span class="input-group-text" style="font-size: 11px; font-weight: 700; background-color: #f1f5f9; border-color: #cbd5e1; padding: 4px 8px;">TZS</span>
                                                         </div>
-                                                        <input type="number" name="grand_total" class="form-control" value="{{ $grandTotal }}" step="0.01" min="0" required style="padding: 6px 12px;">
+                                                        <input type="number" name="grand_total" class="form-control form-control-sm" value="{{ $grandTotal }}" step="0.01" min="0" required style="padding: 4px 8px; height: 31px; font-size: 13px;">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6 mb-2 d-flex">
-                                                    <button type="submit" form="acceptForm{{ $booking['id'] }}" class="btn btn-success mr-2 font-weight-bold" style="border-radius: 8px; font-size: 13.5px; padding: 8px 16px;">
-                                                        <i class="fas fa-check mr-1"></i> Accept
-                                                    </button>
-                                        </form>
-                                                    <form action="{{ route('booking.update-status', $booking['id']) }}" method="POST" class="mr-2" style="display: inline;">
-                                                        @csrf
-                                                        <input type="hidden" name="status" value="denied">
-                                                        <button type="submit" class="btn btn-warning font-weight-bold text-white" style="border-radius: 8px; font-size: 13.5px; padding: 8px 16px; background-color: #f59e0b; border-color: #f59e0b;">
-                                                            <i class="fas fa-times mr-1"></i> Deny
-                                                        </button>
-                                                    </form>
-                                                    <button type="button" class="btn btn-danger font-weight-bold" data-toggle="modal" data-target="#cancelBookingModal{{ $booking['id'] }}" data-dismiss="modal" style="border-radius: 8px; font-size: 13.5px; padding: 8px 16px;">
-                                                        <i class="fas fa-ban mr-1"></i> Cancel
-                                                    </button>
-                                                </div>
+                                                <button type="submit" class="btn btn-success font-weight-bold" style="border-radius: 8px; font-size: 13.5px; padding: 6px 14px; height: 31px; display: inline-flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-check mr-1"></i> Accept
+                                                </button>
                                             </div>
-                                    </div>
-                                <?php elseif ($currentStatus === 'accepted'): ?>
-                                    <form action="{{ route('booking.update-status', $booking['id']) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        <input type="hidden" name="status" value="completed">
-                                        <button type="submit" class="btn btn-primary font-weight-bold" style="border-radius: 8px; padding: 8px 20px;">
-                                            <i class="fas fa-check-circle mr-1"></i> Complete Booking
+                                        </form>
+                                        
+                                        <form action="{{ route('booking.update-status', $booking['id']) }}" method="POST" style="display: inline-block; margin: 0;">
+                                            @csrf
+                                            <input type="hidden" name="status" value="denied">
+                                            <button type="submit" class="btn btn-warning font-weight-bold text-white" style="border-radius: 8px; font-size: 13.5px; padding: 6px 14px; background-color: #f59e0b; border-color: #f59e0b; height: 31px; display: inline-flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-times mr-1"></i> Deny
+                                            </button>
+                                        </form>
+                                    <?php elseif ($currentStatus === 'accepted'): ?>
+                                        <form action="{{ route('booking.update-status', $booking['id']) }}" method="POST" style="display: inline-block; margin: 0;">
+                                            @csrf
+                                            <input type="hidden" name="status" value="completed">
+                                            <button type="submit" class="btn btn-primary font-weight-bold" style="border-radius: 8px; padding: 8px 20px; font-size: 13.5px;">
+                                                <i class="fas fa-check-circle mr-1"></i> Complete Booking
+                                            </button>
+                                        </form>
+                                    <?php elseif ($currentStatus === 'denied'): ?>
+                                        <span class="text-muted font-weight-bold mr-2"><i class="fas fa-info-circle mr-1"></i> Booking has been denied</span>
+                                    <?php elseif ($currentStatus === 'cancelled'): ?>
+                                        <span class="text-danger font-weight-bold mr-2"><i class="fas fa-ban mr-1"></i> Booking has been cancelled</span>
+                                    <?php elseif ($currentStatus === 'satisfied'): ?>
+                                        <span class="text-success font-weight-bold mr-2"><i class="fas fa-smile mr-1"></i> Customer Satisfied</span>
+                                    <?php elseif ($currentStatus === 'not_satisfied'): ?>
+                                        <span class="text-danger font-weight-bold mr-2"><i class="fas fa-frown mr-1"></i> Customer Not Satisfied</span>
+                                    <?php endif; ?>
+                                    
+                                    <?php if (!in_array($currentStatus, ['completed', 'cancelled', 'satisfied', 'not_satisfied'])): ?>
+                                        <button type="button" class="btn btn-danger font-weight-bold" data-toggle="modal" data-target="#cancelBookingModal{{ $booking['id'] }}" data-dismiss="modal" style="border-radius: 8px; font-size: 13.5px; padding: 8px 16px; background-color: #ef4444; border-color: #ef4444; color: #ffffff; display: inline-flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-times-circle mr-1"></i> Cancel Booking
                                         </button>
-                                    </form>
-                                    <button type="button" class="btn btn-danger font-weight-bold ml-2" data-toggle="modal" data-target="#cancelBookingModal{{ $booking['id'] }}" data-dismiss="modal" style="border-radius: 8px; padding: 8px 20px;">
-                                        <i class="fas fa-ban mr-1"></i> Cancel Booking
-                                    </button>
-                                <?php elseif ($currentStatus === 'denied'): ?>
-                                    <span class="text-muted font-weight-bold"><i class="fas fa-info-circle mr-1"></i> Booking has been denied</span>
-                                <?php elseif ($currentStatus === 'cancelled'): ?>
-                                    <span class="text-danger font-weight-bold"><i class="fas fa-ban mr-1"></i> Booking has been cancelled</span>
-                                <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                             <div class="col-md-4 text-right">
                                 <button type="button" class="btn btn-secondary font-weight-bold" data-dismiss="modal" style="border-radius: 8px; padding: 8px 20px;">Close</button>
@@ -648,7 +661,7 @@
         </div>
     </div>
 
-    @if (in_array($currentStatus, ['pending', 'accepted']))
+    @if (!in_array($currentStatus, ['completed', 'cancelled', 'satisfied', 'not_satisfied']))
     <div class="modal fade" id="cancelBookingModal{{ $booking['id'] }}" tabindex="-1" role="dialog" aria-labelledby="cancelBookingModalLabel{{ $booking['id'] }}" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content" style="border: none; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">

@@ -241,6 +241,10 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
     Route::resource('users', ManageUserController::class);
 
+    Route::get('/car-maintenance/export-pdf', [\App\Http\Controllers\CarMaintenanceController::class, 'exportPdf'])->name('car-maintenance.export-pdf');
+    Route::get('/car-maintenance/{id}/print-label', [\App\Http\Controllers\CarMaintenanceController::class, 'printLabel'])->name('car-maintenance.print-label');
+    Route::resource('car-maintenance', \App\Http\Controllers\CarMaintenanceController::class);
+
     Route::resource('group-taxes', GroupTaxController::class);
 
     Route::get('/barcodes/set_default/{id}', [BarcodeController::class, 'setDefault']);

@@ -96,7 +96,8 @@ class BookingViewController extends Controller
                 'vehicle' => $booking->vehicle,
                 'address' => $booking->address ? $booking->address->location : 'N/A',
                 'services_count' => $booking->bookingSubServices->count(),
-                'cancellation_reason' => $booking->cancellation_reason
+                'cancellation_reason' => $booking->cancellation_reason,
+                'unsatisfied_reason' => $booking->unsatisfied_reason
             ];
         });
 
@@ -122,7 +123,7 @@ class BookingViewController extends Controller
                 return redirect()->back()->with('error', 'Status is required');
             }
             
-            $validStatuses = ['pending', 'accepted', 'completed', 'cancelled', 'denied'];
+            $validStatuses = ['pending', 'accepted', 'completed', 'cancelled', 'denied', 'satisfied', 'not_satisfied'];
             if (!in_array($newStatus, $validStatuses)) {
                 return redirect()->back()->with('error', 'Invalid status provided');
             }
@@ -188,6 +189,8 @@ class BookingViewController extends Controller
             'completed' => '<span class="badge badge-success">Completed</span>',
             'cancelled' => '<span class="badge badge-danger">Cancelled</span>',
             'confirmed' => '<span class="badge badge-warning">Accepted</span>', // For backward compatibility
+            'satisfied' => '<span class="badge badge-success">Customer Satisfied</span>',
+            'not_satisfied' => '<span class="badge badge-dark" style="background-color: #374151;">Customer Not Satisfied</span>'
         ];
 
         return $badges[$status] ?? '<span class="badge badge-secondary">' . ucfirst($status) . '</span>';

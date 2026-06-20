@@ -35,6 +35,24 @@ class OTPController extends BaseController
                 $dbPhone = '255' . $phone;
             }
             
+            // Check if user already exists
+            $existingUser = \App\Models\User::where('phone', $dbPhone)
+                            ->orWhere('phone', $request->phone)
+                            ->orWhere('phone', $phone)
+                            ->first();
+
+            if ($existingUser) {
+                $token = $existingUser->createToken('ClientAuthToken')->accessToken;
+                return response()->json([
+                    'success' => true,
+                    'is_existing' => true,
+                    'token' => $token,
+                    'client_id' => $existingUser->id,
+                    'username' => $existingUser->username,
+                    'message' => 'User exists, bypassing OTP'
+                ]);
+            }
+
             // Check if OTP already exists for this phone number
             $existingOTP = OTP::where('phone', $dbPhone)->first();
             

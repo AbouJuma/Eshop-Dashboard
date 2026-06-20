@@ -144,6 +144,15 @@ Route::middleware(['auth:api', 'withoutlink'])->group(function () {
     
     /** Order Satisfied route */
     Route::post('orders/{order}/satisfy', [OrderController::class, 'satisfy']);
+    
+    /** Order Unsatisfied route */
+    Route::post('orders/{order}/unsatisfy', [OrderController::class, 'unsatisfy']);
+
+    /** Booking Satisfied route */
+    Route::post('booking/{booking}/satisfy', [BookingController::class, 'satisfy']);
+
+    /** Booking Unsatisfied route */
+    Route::post('booking/{booking}/unsatisfy', [BookingController::class, 'unsatisfy']);
 
     /** Get records by type */
     Route::get('records/type/{type}', [RecordController::class, 'getRecordsByType']);
