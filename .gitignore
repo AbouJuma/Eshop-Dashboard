@@ -25,3 +25,5 @@
 # .scribe
 # /public/docs
 # /public/js/skins/
+# Firebase credentials
+firebase-credentials.json
