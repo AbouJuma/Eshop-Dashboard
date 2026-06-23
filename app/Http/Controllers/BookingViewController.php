@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\BookingSubService;
 use App\Models\User;
 use App\Models\SubService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 
 class BookingViewController extends Controller
@@ -133,6 +134,7 @@ class BookingViewController extends Controller
                     'grand_total' => 'numeric|min:0'
                 ]);
                 $booking->grand_total = $request->grand_total;
+                $booking->final_total = $request->grand_total; // App uses final_total for the "Grand Total" display
             }
 
             if ($newStatus === 'cancelled') {
@@ -144,6 +146,23 @@ class BookingViewController extends Controller
             
             $booking->status = $newStatus;
             $booking->save();
+            
+            // Send notification for status change
+            if ($booking->user_id) {
+                $client = User::find($booking->user_id);
+                if ($client) {
+                    $statusMessages = [
+                        'accepted' => 'Your booking has been accepted',
+                        'completed' => 'Your booking has been completed',
+                        'cancelled' => 'Your booking has been cancelled',
+                        'denied' => 'Your booking has been denied',
+                    ];
+                    
+                    if (isset($statusMessages[$newStatus])) {
+                        NotificationService::bookingStatusChanged($client->id, $booking->id, $booking->reference_number, $newStatus, $statusMessages[$newStatus]);
+                    }
+                }
+            }
             
             return redirect()->back()->with('success', 'Booking status updated successfully');
             

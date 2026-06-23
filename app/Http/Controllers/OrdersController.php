@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderEshop;
 use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 
 class OrdersController extends Controller
@@ -142,6 +143,25 @@ class OrdersController extends Controller
             }
             
             $order->save();
+            
+            // Send notification for status change
+            if ($order->user_id) {
+                $client = User::find($order->user_id);
+                if ($client) {
+                    $statusMessages = [
+                        'confirmed' => 'Your order has been confirmed',
+                        'completed' => 'Your order has been completed',
+                        'cancelled' => 'Your order has been cancelled',
+                        'denied' => 'Your order has been denied',
+                        'shipped' => 'Your order has been shipped',
+                        'delivered' => 'Your order has been delivered',
+                    ];
+                    
+                    if (isset($statusMessages[$newStatus])) {
+                        NotificationService::orderStatusChanged($client->id, $order->reference_no, $newStatus, $statusMessages[$newStatus]);
+                    }
+                }
+            }
             
             return redirect()->back()->with('status', [
                 'success' => 1,

@@ -27,7 +27,7 @@ class UserController extends BaseController
     {
         $notifications = Notification::where('user_id', auth()->user()->id)
             ->latest()
-            ->select('title', 'content', 'action_time', 'created_at')
+            ->select('id', 'title', 'content', 'action_time', 'created_at')
             ->paginate(500);
         
         $response = [
@@ -38,6 +38,30 @@ class UserController extends BaseController
         ];
         
         return response()->json($response, 200);
+    }
+
+    //delete single notification by id
+    public function deleteNotification($id)
+    {
+        $notification = Notification::where('id', $id)
+            ->where('user_id', auth()->user()->id)
+            ->first();
+
+        if (!$notification) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'NOT_FOUND',
+                'status_code' => 404
+            ], 404);
+        }
+
+        $notification->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'DELETE_SUCCESS',
+            'status_code' => 200
+        ], 200);
     }
 
     function delete(Request $request) {

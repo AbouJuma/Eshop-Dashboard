@@ -106,7 +106,6 @@ class BookingController extends BaseController
             "user_id" => "required|integer",
             "services" => "required",
             "address" => "required",
-            "vehicleData" => "required",
             "grandTotal" => "required",
             "appointmentDate" => "required",
             "appointmentTime" => "required",
@@ -329,6 +328,42 @@ class BookingController extends BaseController
         } catch (\Exception $e) {
             Log::error('Error updating booking to unsatisfied: ' . $e->getMessage());
             return $this->sendError('FAILED', 'Error updating booking status: ' . $e->getMessage(), 500);
+        }
+    }
+    public function cancel(Request $request, $id)
+    {
+        try {
+            $booking = Booking::find($id);
+            
+            if (!$booking) {
+                return $this->sendError('NOT_FOUND', 'Booking not found', 404);
+            }
+            
+            if (auth()->check() && $booking->user_id !== auth()->user()->id) {
+                return $this->sendError('UNAUTHORIZED', 'You are not authorized to update this booking', 403);
+            }
+            
+            if (!in_array($booking->status, ['pending', 'accepted'])) {
+                return $this->sendError('INVALID_STATUS', 'Only pending or accepted bookings can be cancelled', 400);
+            }
+            
+            $validator = Validator::make($request->all(), [
+                'reason' => 'required|string|max:1000'
+            ]);
+            
+            if ($validator->fails()) {
+                return $this->sendError('VALIDATION_FAILED', $validator->errors(), 422);
+            }
+            
+            $booking->status = 'cancelled';
+            $booking->cancellation_reason = $request->input('reason');
+            $booking->save();
+            
+            return $this->sendResponse(new RecordResource($booking), 'Booking cancelled successfully')->response()->setStatusCode(200);
+            
+        } catch (\Exception $e) {
+            Log::error('Error cancelling booking: ' . $e->getMessage());
+            return $this->sendError('FAILED', 'Error cancelling booking: ' . $e->getMessage(), 500);
         }
     }
 }

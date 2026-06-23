@@ -25,6 +25,9 @@ class RecordResource extends JsonResource
             'appointmentTime' => date('h:i:s A', strtotime($this->from)) . ' - ' . date('h:i:s A', strtotime($this->to)),
             'client' => new UserResource($this->client),
             'sub_services' => BookingSubServiceResource::collection($this->bookingSubServices),
+            'record_from' => 'booking',
+            'unsatisfied_reason' => $this->unsatisfied_reason,
+            'reference_number' => $this->reference_number,
         ];
     }
 }

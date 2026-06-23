@@ -42,6 +42,22 @@ class OTPController extends BaseController
                             ->first();
 
             if ($existingUser) {
+                // Update FCM token if provided
+                if ($request->has('fcm_token') && $request->fcm_token) {
+                    \Log::info('Before save - FCM token in user object', ['user_id' => $existingUser->id, 'current_fcm_token' => $existingUser->fcm_token, 'new_fcm_token' => $request->fcm_token]);
+                    $existingUser->fcm_token = $request->fcm_token;
+                    $saved = $existingUser->save();
+                    \Log::info('After save - FCM token in user object', ['user_id' => $existingUser->id, 'saved' => $saved, 'fcm_token_after_save' => $existingUser->fcm_token]);
+
+                    // Refresh from database to verify
+                    $existingUser->refresh();
+                    \Log::info('After refresh from database - FCM token', ['user_id' => $existingUser->id, 'fcm_token_from_db' => $existingUser->fcm_token]);
+
+                    \Log::info('FCM token updated for existing user (OTP auto-login)', ['user_id' => $existingUser->id, 'fcm_token' => substr($request->fcm_token, 0, 20) . '...']);
+                } else {
+                    \Log::warning('FCM token not provided in OTP request', ['user_id' => $existingUser->id]);
+                }
+
                 $token = $existingUser->createToken('ClientAuthToken')->accessToken;
                 return response()->json([
                     'success' => true,

@@ -20,6 +20,8 @@ class OrderResource extends JsonResource
             'status' => $this->status,
             'reference_no' => $this->reference_no,
             'products' => OrderProductResource::collection($this->products),
+            'record_from' => 'order',
+            'unsatisfied_reason' => $this->unsatisfied_reason,
         ];
     }
 }

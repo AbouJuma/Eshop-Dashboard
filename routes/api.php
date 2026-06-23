@@ -133,6 +133,9 @@ Route::middleware(['auth:api', 'withoutlink'])->group(function () {
     //all notifcations
     Route::get('notifications', [UserController::class, 'notifications']);
 
+    /** Delete single notification */
+    Route::delete('notifications/{notification}', [UserController::class, 'deleteNotification']);
+
     /** Question routes */
     Route::apiResource('questions', QuestionController::class);
 
@@ -147,15 +150,24 @@ Route::middleware(['auth:api', 'withoutlink'])->group(function () {
     
     /** Order Unsatisfied route */
     Route::post('orders/{order}/unsatisfy', [OrderController::class, 'unsatisfy']);
+    
+    /** Order Cancel route */
+    Route::post('orders/{order}/cancel', [OrderController::class, 'cancel']);
 
     /** Booking Satisfied route */
     Route::post('booking/{booking}/satisfy', [BookingController::class, 'satisfy']);
 
     /** Booking Unsatisfied route */
     Route::post('booking/{booking}/unsatisfy', [BookingController::class, 'unsatisfy']);
+    
+    /** Booking Cancel route */
+    Route::post('booking/{booking}/cancel', [BookingController::class, 'cancel']);
 
     /** Get records by type */
     Route::get('records/type/{type}', [RecordController::class, 'getRecordsByType']);
+
+    /** Cancel record (handles both orders and bookings) */
+    Route::post('records/{record}/cancel', [RecordController::class, 'cancel']);
 });
 
 Route::middleware('auth:api')->group(function () {

@@ -13,6 +13,7 @@ use App\Http\Resources\BookingSubServiceResource;
 use App\Models\BookingSubService;
 use App\Models\Booking;
 use App\Models\Order;
+use App\Services\NotificationService;
 
 class RecordController extends BaseController
 {
@@ -45,6 +46,7 @@ class RecordController extends BaseController
                     'sub_services' => $booking->bookingSubServices ? BookingSubServiceResource::collection($booking->bookingSubServices) : [],
                     'record_from' => 'booking',
                     'reference_number' => $booking->reference_number,
+                    'unsatisfied_reason' => $booking->unsatisfied_reason,
                     'created_at' => $booking->created_at,
                 ];
             });
@@ -54,6 +56,19 @@ class RecordController extends BaseController
             ->where('user_id', $client->id)
             ->get()
             ->map(function ($order) {
+                // Transform order products to match SubService structure for frontend
+                $subServices = [];
+                if ($order->products) {
+                    foreach ($order->products as $product) {
+                        $subServices[] = [
+                            'id' => $product->id,
+                            'title' => $product->p_name ?? 'Product',
+                            'price' => $product->p_price ?? '0',
+                            'description' => $product->p_name ?? 'Product',
+                            'image' => $product->p_image ?? null,
+                        ];
+                    }
+                }
                 return [
                     'id' => $order->id,
                     'status' => $order->status ?? 'pending',
@@ -63,9 +78,10 @@ class RecordController extends BaseController
                     'appointmentDate' => $order->created_at->format('Y-m-d'),
                     'appointmentTime' => $order->created_at->format('h:i:s A'),
                     'client' => $order->user ? new UserResource($order->user) : null,
-                    'sub_services' => $order->products ? OrderResource::collection($order->products) : [],
+                    'sub_services' => $subServices,
                     'record_from' => 'order',
                     'reference_number' => $order->reference_no,
+                    'unsatisfied_reason' => $order->unsatisfied_reason,
                     'created_at' => $order->created_at,
                 ];
             });
@@ -158,7 +174,7 @@ class RecordController extends BaseController
     public function destroy($id)
     {
         //delete record if exists and status is pending
-        
+
         if (!$record = Booking::find($id)) return $this->sendError('NOT_FOUND', 404);
         else {
         if ($record->status != 'pending') {
@@ -167,5 +183,87 @@ class RecordController extends BaseController
         $record->delete();
         return $this->sendResponse(new RecordResource($record), 'DELETE_SUCCESS');
         }
+    }
+
+    /**
+     * Cancel a record (booking or order) with reason
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $record
+     * @return \Illuminate\Http\Response
+     */
+    public function cancel(Request $request, $record)
+    {
+        // Log the incoming request for debugging
+        \Log::info('Cancel request received', ['id' => $record, 'data' => $request->all(), 'user' => auth()->user() ? auth()->user()->id : 'not authenticated']);
+
+        $request->validate([
+            'cancellation_reason' => 'required|string|max:1000'
+        ]);
+
+        // Use record_from parameter if provided to determine which table to query
+        $recordFrom = $request->input('record_from');
+
+        if ($recordFrom === 'order') {
+            $booking = \App\Models\Order::find($record);
+            $type = 'order';
+        } elseif ($recordFrom === 'booking') {
+            $booking = Booking::find($record);
+            $type = 'booking';
+        } else {
+            // Try to find as booking first (fallback for backward compatibility)
+            $booking = Booking::find($record);
+            $type = 'booking';
+
+            // If not found as booking, try as order
+            if (!$booking) {
+                $booking = \App\Models\Order::find($record);
+                $type = 'order';
+            }
+        }
+
+        if (!$booking) {
+            \Log::error('Record not found for cancellation', ['id' => $record]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Record not found',
+                'status_code' => 404
+            ], 404);
+        }
+
+        // Check if record can be cancelled (allow pending, accepted, confirmed, completed)
+        if (!in_array($booking->status, ['pending', 'accepted', 'confirmed', 'completed'])) {
+            \Log::error('Record cannot be cancelled', ['id' => $record, 'status' => $booking->status]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'This record cannot be cancelled. Current status: ' . $booking->status,
+                'status_code' => 400
+            ], 400);
+        }
+
+        $booking->status = 'cancelled';
+        $booking->cancellation_reason = $request->cancellation_reason;
+        $booking->save();
+
+        \Log::info('Record cancelled successfully', ['id' => $record, 'type' => $type]);
+
+        // Send notification for cancellation
+        if ($booking->user_id) {
+            $client = \App\Models\User::find($booking->user_id);
+            if ($client) {
+                if ($type === 'booking') {
+                    NotificationService::bookingCancelled($client->id, $booking->id, $booking->reference_number);
+                } else {
+                    NotificationService::orderStatusChanged($client->id, $booking->reference_no, 'cancelled', 'Your order has been cancelled');
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'CANCEL_SUCCESS',
+            'status_code' => 200,
+            'data' => $booking
+        ], 200);
     }
 }

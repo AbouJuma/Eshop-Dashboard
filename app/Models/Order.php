@@ -14,7 +14,9 @@ class Order extends Model
         'amount',
         'reference_no',
         'user_id',
-        'address_id'
+        'address_id',
+        'unsatisfied_reason',
+        'cancellation_reason'
     ];
 
     public function client()

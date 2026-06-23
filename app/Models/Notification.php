@@ -11,6 +11,9 @@ class Notification extends Model
 
     protected $table = 'notification'; // Use singular table name
 
+    public $incrementing = true;
+    protected $primaryKey = 'id';
+
     protected $fillable = [
         'title',
         'content',

@@ -16,4 +16,7 @@ class Address extends Model
         'type',
         'additional_info'
     ];
+
+    public $incrementing = true;
+    protected $primaryKey = 'id';
 }

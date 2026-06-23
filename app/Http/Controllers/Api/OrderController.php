@@ -110,20 +110,16 @@ class OrderController extends BaseController
 
 Log::alert($request->all());
         // var_dump($request->all()); die;
-        // $validator = Validator::make($request->all(), [
-        //     "user_id" => "required|integer",
-        //     "services" => "required",
-        //     "address" => "required",
-        //     "vehicleData" => "required",
-        //     "grandTotal" => "required",
-        //     "appointmentDate" => "required",
-        //     "appointmentTime" => "required",
-        //     "fcmToken" => "required"
-        // ]);
+        $validator = Validator::make($request->all(), [
+            "user_id" => "required|integer",
+            "products" => "required",
+            "address" => "required",
+            "cartTotal" => "required",
+        ]);
 
-        // if ($validator->fails()) {
-        //     return $this->sendError('VALIDATION_FAILED', $validator->errors(), 404);
-        // }
+        if ($validator->fails()) {
+            return $this->sendError('VALIDATION_FAILED', $validator->errors(), 422);
+        }
         $client_id = $request->user_id ? $request->user_id : auth()->user()->id;
         
         // Get user for later use
@@ -176,12 +172,13 @@ Log::alert($request->products);
             }
         
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error($th->getMessage());
+            Log::error($th->getTraceAsString());
             return $this->sendError('FAILED', $th->getMessage(), 500);
 
         }
 
-        // return $this->sendResponse(new RecordResource($booking), 'CREATE_SUCCESS')->response()->setStatusCode(200);
+        return $this->sendResponse(new OrderResource($order), 'CREATE_SUCCESS')->response()->setStatusCode(200);
 
     }
 

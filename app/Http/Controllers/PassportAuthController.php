@@ -29,7 +29,8 @@ class PassportAuthController extends Controller
             "phone" => "required",
             "otp" => "required",
             "email" => "nullable|email",
-            "password" => "nullable|min:8"
+            "password" => "nullable|min:8",
+            "fcm_token" => "nullable"
         ]);
 
         if ($validator->fails()) {
@@ -61,11 +62,20 @@ class PassportAuthController extends Controller
                 return response()->json(["error" => "Already logged in"]);
             }
 
+            // Update FCM token if provided
+            if ($request->has('fcm_token') && $request->fcm_token) {
+                $user->fcm_token = $request->fcm_token;
+                $user->save();
+                \Log::info('FCM token updated for existing user', ['user_id' => $user->id, 'fcm_token' => substr($request->fcm_token, 0, 20) . '...']);
+            } else {
+                \Log::warning('FCM token not provided in login request', ['user_id' => $user->id]);
+            }
+
             auth()->login($user);
             $token = auth()->user()->createToken('ClientAuthToken')->accessToken;
             return response()->json(
                 [
-                    "token" => $token, 
+                    "token" => $token,
                     "client_id" => auth()->user()->id
                 ], 200
             );
@@ -80,8 +90,15 @@ class PassportAuthController extends Controller
                 ],
                 [
                     "username" => $request->username ? $request->username : $randomUserName,
+                    "fcm_token" => $request->fcm_token ?? null,
                 ]
             );
+
+            if ($request->fcm_token) {
+                \Log::info('FCM token saved for new user', ['user_id' => $user->id, 'fcm_token' => substr($request->fcm_token, 0, 20) . '...']);
+            } else {
+                \Log::warning('FCM token not provided for new user', ['user_id' => $user->id]);
+            }
 
             $token = $user->createToken('LaravelAuthApp')->accessToken;
 

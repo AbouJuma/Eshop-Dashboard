@@ -22,8 +22,12 @@ class Booking extends Model
         'grand_total',
         'final_total',
         'vehicle',
-        'cancellation_reason'
+        'cancellation_reason',
+        'unsatisfied_reason'
     ];
+
+    public $incrementing = true;
+    protected $primaryKey = 'id';
 
     public function client()
     {
