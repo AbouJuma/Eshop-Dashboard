@@ -4932,3 +4932,369 @@
   \"name\": \"projects/dadis-45e94/messages/0:1782176463264311%c2291811c2291811\"
 }
 "} 
+[2026-06-24 01:53:16] live.ERROR: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '0' for key 'PRIMARY' (SQL: insert into `activity_log` (`log_name`, `properties`, `causer_id`, `causer_type`, `batch_uuid`, `subject_id`, `subject_type`, `description`, `updated_at`, `created_at`) values (default, [], 1, App\User, ?, 1, App\User, login, 2026-06-24 01:53:15, 2026-06-24 01:53:15)) {"userId":1,"exception":"[object] (Illuminate\\Database\\QueryException(code: 23000): SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '0' for key 'PRIMARY' (SQL: insert into `activity_log` (`log_name`, `properties`, `causer_id`, `causer_type`, `batch_uuid`, `subject_id`, `subject_type`, `description`, `updated_at`, `created_at`) values (default, [], 1, App\\User, ?, 1, App\\User, login, 2026-06-24 01:53:15, 2026-06-24 01:53:15)) at B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php:760)
+[stacktrace]
+#0 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback('insert into `ac...', Array, Object(Closure))
+#1 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(534): Illuminate\\Database\\Connection->run('insert into `ac...', Array, Object(Closure))
+#2 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(498): Illuminate\\Database\\Connection->statement('insert into `ac...', Array)
+#3 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Processors\\Processor.php(32): Illuminate\\Database\\Connection->insert('insert into `ac...', Array)
+#4 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Builder.php(3322): Illuminate\\Database\\Query\\Processors\\Processor->processInsertGetId(Object(Illuminate\\Database\\Query\\Builder), 'insert into `ac...', Array, 'id')
+#5 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Builder.php(1869): Illuminate\\Database\\Query\\Builder->insertGetId(Array, 'id')
+#6 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Model.php(1330): Illuminate\\Database\\Eloquent\\Builder->__call('insertGetId', Array)
+#7 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Model.php(1295): Illuminate\\Database\\Eloquent\\Model->insertAndSetId(Object(Illuminate\\Database\\Eloquent\\Builder), Array)
+#8 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Model.php(1138): Illuminate\\Database\\Eloquent\\Model->performInsert(Object(Illuminate\\Database\\Eloquent\\Builder))
+#9 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\spatie\\laravel-activitylog\\src\\ActivityLogger.php(174): Illuminate\\Database\\Eloquent\\Model->save()
+#10 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\app\\Utils\\Util.php(1450): Spatie\\Activitylog\\ActivityLogger->log('login')
+#11 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\app\\Http\\Controllers\\Auth\\LoginController.php(88): App\\Utils\\Util->activityLog(Object(App\\User), 'login', NULL, Array, false, 1)
+#12 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\ui\\auth-backend\\AuthenticatesUsers.php(114): App\\Http\\Controllers\\Auth\\LoginController->authenticated(Object(Illuminate\\Http\\Request), Object(App\\User))
+#13 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\ui\\auth-backend\\AuthenticatesUsers.php(51): App\\Http\\Controllers\\Auth\\LoginController->sendLoginResponse(Object(Illuminate\\Http\\Request))
+#14 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Controller.php(54): App\\Http\\Controllers\\Auth\\LoginController->login(Object(Illuminate\\Http\\Request))
+#15 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ControllerDispatcher.php(43): Illuminate\\Routing\\Controller->callAction('login', Array)
+#16 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(259): Illuminate\\Routing\\ControllerDispatcher->dispatch(Object(Illuminate\\Routing\\Route), Object(App\\Http\\Controllers\\Auth\\LoginController), 'login')
+#17 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(205): Illuminate\\Routing\\Route->runController()
+#18 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(798): Illuminate\\Routing\\Route->run()
+#19 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(141): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#20 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\app\\Http\\Middleware\\RedirectIfAuthenticated.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#21 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): App\\Http\\Middleware\\RedirectIfAuthenticated->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#22 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\app\\Http\\Middleware\\IsInstalled.php(26): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#23 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): App\\Http\\Middleware\\IsInstalled->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#24 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#25 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#26 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(50): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#27 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#28 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(78): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#29 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#30 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#31 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#32 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#33 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#34 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#35 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#36 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#37 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#38 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#39 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(116): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#40 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(797): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#41 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(776): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#42 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(740): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#43 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(729): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#44 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(190): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#45 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(141): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#46 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#47 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#48 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#49 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#50 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#51 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#52 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(40): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#53 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#54 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#55 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#56 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(86): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#57 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#58 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#59 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#60 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(39): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#61 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#62 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(116): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#63 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(165): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#64 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(134): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#65 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\public\\index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#66 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('B:\\\\Projects PHP...')
+#67 {main}
+
+[previous exception] [object] (PDOException(code: 23000): SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '0' for key 'PRIMARY' at B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php:545)
+[stacktrace]
+#0 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(545): PDOStatement->execute()
+#1 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(753): Illuminate\\Database\\Connection->Illuminate\\Database\\{closure}('insert into `ac...', Array)
+#2 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback('insert into `ac...', Array, Object(Closure))
+#3 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(534): Illuminate\\Database\\Connection->run('insert into `ac...', Array, Object(Closure))
+#4 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(498): Illuminate\\Database\\Connection->statement('insert into `ac...', Array)
+#5 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Processors\\Processor.php(32): Illuminate\\Database\\Connection->insert('insert into `ac...', Array)
+#6 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Builder.php(3322): Illuminate\\Database\\Query\\Processors\\Processor->processInsertGetId(Object(Illuminate\\Database\\Query\\Builder), 'insert into `ac...', Array, 'id')
+#7 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Builder.php(1869): Illuminate\\Database\\Query\\Builder->insertGetId(Array, 'id')
+#8 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Model.php(1330): Illuminate\\Database\\Eloquent\\Builder->__call('insertGetId', Array)
+#9 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Model.php(1295): Illuminate\\Database\\Eloquent\\Model->insertAndSetId(Object(Illuminate\\Database\\Eloquent\\Builder), Array)
+#10 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Model.php(1138): Illuminate\\Database\\Eloquent\\Model->performInsert(Object(Illuminate\\Database\\Eloquent\\Builder))
+#11 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\spatie\\laravel-activitylog\\src\\ActivityLogger.php(174): Illuminate\\Database\\Eloquent\\Model->save()
+#12 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\app\\Utils\\Util.php(1450): Spatie\\Activitylog\\ActivityLogger->log('login')
+#13 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\app\\Http\\Controllers\\Auth\\LoginController.php(88): App\\Utils\\Util->activityLog(Object(App\\User), 'login', NULL, Array, false, 1)
+#14 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\ui\\auth-backend\\AuthenticatesUsers.php(114): App\\Http\\Controllers\\Auth\\LoginController->authenticated(Object(Illuminate\\Http\\Request), Object(App\\User))
+#15 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\ui\\auth-backend\\AuthenticatesUsers.php(51): App\\Http\\Controllers\\Auth\\LoginController->sendLoginResponse(Object(Illuminate\\Http\\Request))
+#16 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Controller.php(54): App\\Http\\Controllers\\Auth\\LoginController->login(Object(Illuminate\\Http\\Request))
+#17 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ControllerDispatcher.php(43): Illuminate\\Routing\\Controller->callAction('login', Array)
+#18 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(259): Illuminate\\Routing\\ControllerDispatcher->dispatch(Object(Illuminate\\Routing\\Route), Object(App\\Http\\Controllers\\Auth\\LoginController), 'login')
+#19 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(205): Illuminate\\Routing\\Route->runController()
+#20 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(798): Illuminate\\Routing\\Route->run()
+#21 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(141): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#22 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\app\\Http\\Middleware\\RedirectIfAuthenticated.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#23 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): App\\Http\\Middleware\\RedirectIfAuthenticated->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#24 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\app\\Http\\Middleware\\IsInstalled.php(26): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#25 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): App\\Http\\Middleware\\IsInstalled->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#26 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#27 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#28 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(50): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#29 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#30 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(78): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#31 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#32 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#33 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#34 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#35 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#36 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#37 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#38 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#39 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#40 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#41 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(116): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#42 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(797): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#43 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(776): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#44 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(740): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#45 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(729): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#46 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(190): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#47 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(141): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#48 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#49 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#50 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#51 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#52 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#53 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#54 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(40): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#55 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#56 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#57 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#58 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(86): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#59 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#60 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#61 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#62 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(39): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#63 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(180): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#64 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(116): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#65 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(165): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#66 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(134): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#67 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\public\\index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#68 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('B:\\\\Projects PHP...')
+#69 {main}
+"} 
+[2026-06-24 01:56:03] live.INFO: Before save - FCM token in user object {"user_id":32,"current_fcm_token":"dBiRywNTTLOBSrmGLY_a-i:APA91bFX-71vs71neSwGP31OADrE0hNUILSmSl2ATVJBz9eV8ASi2kGHUQlg5Sk0Sn4ABLzyanyPl_7EcQMDY0_x8mChPUEvjzrATMPA1nJNqPuRZYe7LbM","new_fcm_token":"dBiRywNTTLOBSrmGLY_a-i:APA91bFX-71vs71neSwGP31OADrE0hNUILSmSl2ATVJBz9eV8ASi2kGHUQlg5Sk0Sn4ABLzyanyPl_7EcQMDY0_x8mChPUEvjzrATMPA1nJNqPuRZYe7LbM"} 
+[2026-06-24 01:56:03] live.INFO: After save - FCM token in user object {"user_id":32,"saved":true,"fcm_token_after_save":"dBiRywNTTLOBSrmGLY_a-i:APA91bFX-71vs71neSwGP31OADrE0hNUILSmSl2ATVJBz9eV8ASi2kGHUQlg5Sk0Sn4ABLzyanyPl_7EcQMDY0_x8mChPUEvjzrATMPA1nJNqPuRZYe7LbM"} 
+[2026-06-24 01:56:03] live.INFO: After refresh from database - FCM token {"user_id":32,"fcm_token_from_db":"dBiRywNTTLOBSrmGLY_a-i:APA91bFX-71vs71neSwGP31OADrE0hNUILSmSl2ATVJBz9eV8ASi2kGHUQlg5Sk0Sn4ABLzyanyPl_7EcQMDY0_x8mChPUEvjzrATMPA1nJNqPuRZYe7LbM"} 
+[2026-06-24 01:56:03] live.INFO: FCM token updated for existing user (OTP auto-login) {"user_id":32,"fcm_token":"dBiRywNTTLOBSrmGLY_a..."} 
+[2026-06-24 01:58:35] live.ALERT: array (
+  'name' => 'Abou',
+  'user_id' => '32',
+  'address' => 
+  array (
+    'location' => 'Tanga',
+  ),
+  'description' => NULL,
+  'products' => 
+  array (
+    0 => 'TOTAL QUARTZ 20 W50 5L|http://10.0.2.2:8081/uploads/img/1755762941_TOTAL QUARTZ 20 W50 5L.jfif|60000.00|1|',
+    1 => 'GP PETROGEN SAE 40 1L|http://10.0.2.2:8081/uploads/img/1755762261_GP PETROGEN 1L SAE 40.jfif|10000.00|1|',
+  ),
+  'cartTotal' => '70000.0',
+  'fcmToken' => 'dBiRywNTTLOBSrmGLY_a-i:APA91bFX-71vs71neSwGP31OADrE0hNUILSmSl2ATVJBz9eV8ASi2kGHUQlg5Sk0Sn4ABLzyanyPl_7EcQMDY0_x8mChPUEvjzrATMPA1nJNqPuRZYe7LbM',
+)  
+[2026-06-24 01:58:35] live.ALERT: array (
+  0 => 'TOTAL QUARTZ 20 W50 5L|http://10.0.2.2:8081/uploads/img/1755762941_TOTAL QUARTZ 20 W50 5L.jfif|60000.00|1|',
+  1 => 'GP PETROGEN SAE 40 1L|http://10.0.2.2:8081/uploads/img/1755762261_GP PETROGEN 1L SAE 40.jfif|10000.00|1|',
+)  
+[2026-06-24 01:58:35] live.ALERT: array (
+  0 => 'TOTAL QUARTZ 20 W50 5L',
+  1 => 'http://10.0.2.2:8081/uploads/img/1755762941_TOTAL QUARTZ 20 W50 5L.jfif',
+  2 => '60000.00',
+  3 => '1',
+  4 => '',
+)  
+[2026-06-24 01:58:35] live.ALERT: array (
+  0 => 'GP PETROGEN SAE 40 1L',
+  1 => 'http://10.0.2.2:8081/uploads/img/1755762261_GP PETROGEN 1L SAE 40.jfif',
+  2 => '10000.00',
+  3 => '1',
+  4 => '',
+)  
+[2026-06-24 01:58:36] live.INFO: SMS response: {"data":{"error_code":"DOMAIN_INSUFFICIENT_FUNDS","message":"You don't have enough balance to complete this.","status_code":400,"retryable":false}}  
+[2026-06-24 01:58:36] live.INFO: Creating notification {"user_id":32,"title":"Order Created","content":"Your order #526957 has been created successfully."} 
+[2026-06-24 01:58:37] live.INFO: Notification created {"id":192,"user_id":32} 
+[2026-06-24 01:58:37] live.INFO: Attempting to send FCM notification {"user_id":32,"title":"Order Created"} 
+[2026-06-24 01:58:37] live.INFO: User found {"user_id":32,"fcm_token_value":"dBiRywNTTLOBSrmGLY_a-i:APA91bFX-71vs71neSwGP31OADrE0hNUILSmSl2ATVJBz9eV8ASi2kGHUQlg5Sk0Sn4ABLzyanyPl_7EcQMDY0_x8mChPUEvjzrATMPA1nJNqPuRZYe7LbM","fcm_token_is_null":false,"fcm_token_is_empty":false} 
+[2026-06-24 01:58:37] live.INFO: User and FCM token found {"user_id":32,"fcm_token":"dBiRywNTTLOBSrmGLY_a..."} 
+[2026-06-24 01:58:37] live.INFO: Firebase credentials file found {"path":"B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\firebase-credentials.json"} 
+[2026-06-24 01:58:37] live.INFO: Firebase credentials decoded successfully {"project_id":"dadis-45e94"} 
+[2026-06-24 01:58:44] live.INFO: OAuth access token obtained successfully {"token_length":1024} 
+[2026-06-24 01:58:44] live.INFO: Sending FCM request {"url":"https://fcm.googleapis.com/v1/projects/dadis-45e94/messages:send","token":"dBiRywNTTLOBSrmGLY_a..."} 
+[2026-06-24 01:58:46] live.INFO: FCM notification sent via HTTP v1 API {"user_id":32,"status":200,"body":"{
+  \"name\": \"projects/dadis-45e94/messages/0:1782255529515010%c2291811c2291811\"
+}
+"} 
+[2026-06-24 02:02:05] live.INFO: array (
+  'name' => 'Abou',
+  'user_id' => '32',
+  'address' => 
+  array (
+    'location' => 'Zanz',
+  ),
+  'description' => NULL,
+  'services' => 
+  array (
+    0 => '46-bush & bearing press-10000.00',
+    1 => '43-upholstery-50000.00',
+    2 => '42-vehicle towing-50000.00',
+  ),
+  'grandTotal' => '110000.0',
+  'vehicleData' => 
+  array (
+    0 => 'make',
+    1 => 'model',
+  ),
+  'appointmentID' => 'INV202662421364EKB',
+  'appointmentDate' => '27-06-2026',
+  'appointmentTime' => '10AM - 12:00',
+  'fcmToken' => 'dBiRywNTTLOBSrmGLY_a-i:APA91bFX-71vs71neSwGP31OADrE0hNUILSmSl2ATVJBz9eV8ASi2kGHUQlg5Sk0Sn4ABLzyanyPl_7EcQMDY0_x8mChPUEvjzrATMPA1nJNqPuRZYe7LbM',
+  'vehicleName' => 'Subaru Forester 2012',
+)  
+[2026-06-24 02:02:07] live.INFO: SMS response: {"data":{"error_code":"DOMAIN_INSUFFICIENT_FUNDS","message":"You don't have enough balance to complete this.","status_code":400,"retryable":false}}  
+[2026-06-24 02:02:07] live.INFO: Creating notification {"user_id":32,"title":"Booking Confirmed","content":"Your booking #INV202662421364EKB has been confirmed."} 
+[2026-06-24 02:02:07] live.INFO: Notification created {"id":193,"user_id":32} 
+[2026-06-24 02:02:07] live.INFO: Attempting to send FCM notification {"user_id":32,"title":"Booking Confirmed"} 
+[2026-06-24 02:02:07] live.INFO: User found {"user_id":32,"fcm_token_value":"dBiRywNTTLOBSrmGLY_a-i:APA91bFX-71vs71neSwGP31OADrE0hNUILSmSl2ATVJBz9eV8ASi2kGHUQlg5Sk0Sn4ABLzyanyPl_7EcQMDY0_x8mChPUEvjzrATMPA1nJNqPuRZYe7LbM","fcm_token_is_null":false,"fcm_token_is_empty":false} 
+[2026-06-24 02:02:07] live.INFO: User and FCM token found {"user_id":32,"fcm_token":"dBiRywNTTLOBSrmGLY_a..."} 
+[2026-06-24 02:02:07] live.INFO: Firebase credentials file found {"path":"B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\firebase-credentials.json"} 
+[2026-06-24 02:02:07] live.INFO: Firebase credentials decoded successfully {"project_id":"dadis-45e94"} 
+[2026-06-24 02:02:12] live.INFO: OAuth access token obtained successfully {"token_length":1024} 
+[2026-06-24 02:02:12] live.INFO: Sending FCM request {"url":"https://fcm.googleapis.com/v1/projects/dadis-45e94/messages:send","token":"dBiRywNTTLOBSrmGLY_a..."} 
+[2026-06-24 02:02:16] live.INFO: FCM notification sent via HTTP v1 API {"user_id":32,"status":200,"body":"{
+  \"name\": \"projects/dadis-45e94/messages/0:1782255739361172%c2291811c2291811\"
+}
+"} 
+[2026-06-24 02:08:28] live.ERROR: SQLSTATE[23000]: Integrity constraint violation: 1062 ALTER TABLE causes auto_increment resequencing, resulting in duplicate entry '1' for key 'PRIMARY' (SQL: ALTER TABLE activity_log MODIFY COLUMN id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT) {"exception":"[object] (Illuminate\\Database\\QueryException(code: 23000): SQLSTATE[23000]: Integrity constraint violation: 1062 ALTER TABLE causes auto_increment resequencing, resulting in duplicate entry '1' for key 'PRIMARY' (SQL: ALTER TABLE activity_log MODIFY COLUMN id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT) at B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php:760)
+[stacktrace]
+#0 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback('ALTER TABLE act...', Array, Object(Closure))
+#1 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(534): Illuminate\\Database\\Connection->run('ALTER TABLE act...', Array, Object(Closure))
+#2 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\DatabaseManager.php(469): Illuminate\\Database\\Connection->statement('ALTER TABLE act...')
+#3 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Support\\Facades\\Facade.php(338): Illuminate\\Database\\DatabaseManager->__call('statement', Array)
+#4 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\database\\migrations\\2026_06_24_015456_fix_activity_log_id_auto_increment.php(17): Illuminate\\Support\\Facades\\Facade::__callStatic('statement', Array)
+#5 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(496): Illuminate\\Database\\Migrations\\Migration@anonymous->up()
+#6 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(414): Illuminate\\Database\\Migrations\\Migrator->runMethod(Object(Illuminate\\Database\\MySqlConnection), Object(Illuminate\\Database\\Migrations\\Migration@anonymous), 'up')
+#7 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(423): Illuminate\\Database\\Migrations\\Migrator->Illuminate\\Database\\Migrations\\{closure}()
+#8 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(224): Illuminate\\Database\\Migrations\\Migrator->runMigration(Object(Illuminate\\Database\\Migrations\\Migration@anonymous), 'up')
+#9 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\View\\Components\\Task.php(37): Illuminate\\Database\\Migrations\\Migrator->Illuminate\\Database\\Migrations\\{closure}()
+#10 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(778): Illuminate\\Console\\View\\Components\\Task->render('2026_06_24_0154...', Object(Closure))
+#11 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(224): Illuminate\\Database\\Migrations\\Migrator->write('Illuminate\\\\Cons...', '2026_06_24_0154...', Object(Closure))
+#12 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(189): Illuminate\\Database\\Migrations\\Migrator->runUp('B:\\\\Projects PHP...', 15, false)
+#13 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(132): Illuminate\\Database\\Migrations\\Migrator->runPending(Array, Array)
+#14 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Migrations\\MigrateCommand.php(88): Illuminate\\Database\\Migrations\\Migrator->run(Array, Array)
+#15 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(636): Illuminate\\Database\\Console\\Migrations\\MigrateCommand->Illuminate\\Database\\Console\\Migrations\\{closure}()
+#16 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Migrations\\MigrateCommand.php(81): Illuminate\\Database\\Migrations\\Migrator->usingConnection(NULL, Object(Closure))
+#17 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Database\\Console\\Migrations\\MigrateCommand->handle()
+#18 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#19 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#20 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#21 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(661): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#22 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(183): Illuminate\\Container\\Container->call(Array)
+#23 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\symfony\\console\\Command\\Command.php(326): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#24 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(152): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#25 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\symfony\\console\\Application.php(1083): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#26 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\symfony\\console\\Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Database\\Console\\Migrations\\MigrateCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#27 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\symfony\\console\\Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#28 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(102): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#29 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(155): Illuminate\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#30 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#31 {main}
+
+[previous exception] [object] (PDOException(code: 23000): SQLSTATE[23000]: Integrity constraint violation: 1062 ALTER TABLE causes auto_increment resequencing, resulting in duplicate entry '1' for key 'PRIMARY' at B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php:545)
+[stacktrace]
+#0 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(545): PDOStatement->execute()
+#1 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(753): Illuminate\\Database\\Connection->Illuminate\\Database\\{closure}('ALTER TABLE act...', Array)
+#2 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback('ALTER TABLE act...', Array, Object(Closure))
+#3 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(534): Illuminate\\Database\\Connection->run('ALTER TABLE act...', Array, Object(Closure))
+#4 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\DatabaseManager.php(469): Illuminate\\Database\\Connection->statement('ALTER TABLE act...')
+#5 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Support\\Facades\\Facade.php(338): Illuminate\\Database\\DatabaseManager->__call('statement', Array)
+#6 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\database\\migrations\\2026_06_24_015456_fix_activity_log_id_auto_increment.php(17): Illuminate\\Support\\Facades\\Facade::__callStatic('statement', Array)
+#7 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(496): Illuminate\\Database\\Migrations\\Migration@anonymous->up()
+#8 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(414): Illuminate\\Database\\Migrations\\Migrator->runMethod(Object(Illuminate\\Database\\MySqlConnection), Object(Illuminate\\Database\\Migrations\\Migration@anonymous), 'up')
+#9 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(423): Illuminate\\Database\\Migrations\\Migrator->Illuminate\\Database\\Migrations\\{closure}()
+#10 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(224): Illuminate\\Database\\Migrations\\Migrator->runMigration(Object(Illuminate\\Database\\Migrations\\Migration@anonymous), 'up')
+#11 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\View\\Components\\Task.php(37): Illuminate\\Database\\Migrations\\Migrator->Illuminate\\Database\\Migrations\\{closure}()
+#12 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(778): Illuminate\\Console\\View\\Components\\Task->render('2026_06_24_0154...', Object(Closure))
+#13 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(224): Illuminate\\Database\\Migrations\\Migrator->write('Illuminate\\\\Cons...', '2026_06_24_0154...', Object(Closure))
+#14 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(189): Illuminate\\Database\\Migrations\\Migrator->runUp('B:\\\\Projects PHP...', 15, false)
+#15 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(132): Illuminate\\Database\\Migrations\\Migrator->runPending(Array, Array)
+#16 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Migrations\\MigrateCommand.php(88): Illuminate\\Database\\Migrations\\Migrator->run(Array, Array)
+#17 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Migrations\\Migrator.php(636): Illuminate\\Database\\Console\\Migrations\\MigrateCommand->Illuminate\\Database\\Console\\Migrations\\{closure}()
+#18 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Migrations\\MigrateCommand.php(81): Illuminate\\Database\\Migrations\\Migrator->usingConnection(NULL, Object(Closure))
+#19 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Database\\Console\\Migrations\\MigrateCommand->handle()
+#20 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#21 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#22 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#23 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(661): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#24 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(183): Illuminate\\Container\\Container->call(Array)
+#25 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\symfony\\console\\Command\\Command.php(326): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#26 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(152): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#27 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\symfony\\console\\Application.php(1083): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#28 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\symfony\\console\\Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Database\\Console\\Migrations\\MigrateCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#29 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\symfony\\console\\Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#30 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(102): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#31 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(155): Illuminate\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#32 B:\\Projects PHP\\Dadis Project\\dasis Eshop\\public_html\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#33 {main}
+"} 
+[2026-06-24 02:09:40] live.INFO: Real SMS Balance from Beems API: 2  
+[2026-06-24 02:09:41] live.INFO: Real SMS Balance from Beems API: 2  
+[2026-06-24 02:11:25] live.INFO: Dashboard stats request: {"start_date":"2026-06-24","end_date":"2026-06-24","business_id":1} 
+[2026-06-24 02:11:25] live.INFO: Checking Order model...  
+[2026-06-24 02:11:25] live.INFO: Available order statuses: ["confirmed","cancelled","completed","pending"] 
+[2026-06-24 02:11:25] live.INFO: business_id column might not exist: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'business_id' in 'where clause' (SQL: select * from `orders` where `business_id` = 1 limit 1)  
+[2026-06-24 02:11:25] live.INFO: Pending orders query: {"business_id":null,"status":"pending","start":"2026-06-24","end":"2026-06-24","count":1,"total":"70000.00"} 
+[2026-06-24 02:11:25] live.INFO: Denied orders query SQL: select * from `orders` where LOWER(status) = ? and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-24 02:11:25] live.INFO: Denied orders bindings:  ["denied","2026-06-24","2026-06-24"] 
+[2026-06-24 02:11:25] live.INFO: Denied orders count: 0  
+[2026-06-24 02:11:25] live.INFO: Cancelled orders query SQL: select * from `orders` where LOWER(status) in (?, ?) and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-24 02:11:25] live.INFO: Cancelled orders bindings:  ["cancelled","canceled","2026-06-24","2026-06-24"] 
+[2026-06-24 02:11:25] live.INFO: Cancelled orders count: 0  
+[2026-06-24 02:11:25] live.INFO: Confirmed orders query: {"business_id":null,"status":"confirmed","start":"2026-06-24","end":"2026-06-24","count":0} 
+[2026-06-24 02:11:25] live.INFO: Pending bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-24 02:11:25] live.INFO: Pending bookings bindings:  ["2026-06-24","2026-06-24","pending"] 
+[2026-06-24 02:11:25] live.INFO: Pending bookings count: 1  
+[2026-06-24 02:11:25] live.INFO: Accepted bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-24 02:11:25] live.INFO: Accepted bookings bindings:  ["2026-06-24","2026-06-24","accepted"] 
+[2026-06-24 02:11:25] live.INFO: Accepted bookings count: 0  
+[2026-06-24 02:11:25] live.INFO: Denied bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-24 02:11:25] live.INFO: Denied bookings bindings:  ["2026-06-24","2026-06-24","denied"] 
+[2026-06-24 02:11:25] live.INFO: Denied bookings count: 0  
+[2026-06-24 02:11:25] live.INFO: Cancelled bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) in (?, ?)  
+[2026-06-24 02:11:25] live.INFO: Cancelled bookings bindings:  ["2026-06-24","2026-06-24","cancelled","canceled"] 
+[2026-06-24 02:11:25] live.INFO: Cancelled bookings count: 0  
+[2026-06-24 02:11:25] live.INFO: Dashboard stats results: {"pending_orders_count":1,"pending_orders_total":"70000.00","completed_orders_count":0,"denied_orders_count":0,"cancelled_orders_count":0,"pending_bookings_count":1,"accepted_bookings_count":0,"denied_bookings_count":0,"cancelled_bookings_count":0,"start_date":"2026-06-24","end_date":"2026-06-24","business_id":null} 
+[2026-06-24 02:14:03] live.INFO: Dashboard stats request: {"start_date":"2026-06-01","end_date":"2026-06-30","business_id":1} 
+[2026-06-24 02:14:03] live.INFO: Checking Order model...  
+[2026-06-24 02:14:03] live.INFO: Available order statuses: ["confirmed","cancelled","completed","pending"] 
+[2026-06-24 02:14:03] live.INFO: business_id column might not exist: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'business_id' in 'where clause' (SQL: select * from `orders` where `business_id` = 1 limit 1)  
+[2026-06-24 02:14:03] live.INFO: Pending orders query: {"business_id":null,"status":"pending","start":"2026-06-01","end":"2026-06-30","count":8,"total":"405000.00"} 
+[2026-06-24 02:14:03] live.INFO: Denied orders query SQL: select * from `orders` where LOWER(status) = ? and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-24 02:14:03] live.INFO: Denied orders bindings:  ["denied","2026-06-01","2026-06-30"] 
+[2026-06-24 02:14:03] live.INFO: Denied orders count: 0  
+[2026-06-24 02:14:03] live.INFO: Cancelled orders query SQL: select * from `orders` where LOWER(status) in (?, ?) and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-24 02:14:03] live.INFO: Cancelled orders bindings:  ["cancelled","canceled","2026-06-01","2026-06-30"] 
+[2026-06-24 02:14:03] live.INFO: Cancelled orders count: 1  
+[2026-06-24 02:14:03] live.INFO: Confirmed orders query: {"business_id":null,"status":"confirmed","start":"2026-06-01","end":"2026-06-30","count":0} 
+[2026-06-24 02:14:03] live.INFO: Pending bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-24 02:14:03] live.INFO: Pending bookings bindings:  ["2026-06-01","2026-06-30","pending"] 
+[2026-06-24 02:14:03] live.INFO: Pending bookings count: 5  
+[2026-06-24 02:14:03] live.INFO: Accepted bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-24 02:14:03] live.INFO: Accepted bookings bindings:  ["2026-06-01","2026-06-30","accepted"] 
+[2026-06-24 02:14:03] live.INFO: Accepted bookings count: 1  
+[2026-06-24 02:14:03] live.INFO: Denied bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-24 02:14:03] live.INFO: Denied bookings bindings:  ["2026-06-01","2026-06-30","denied"] 
+[2026-06-24 02:14:03] live.INFO: Denied bookings count: 0  
+[2026-06-24 02:14:03] live.INFO: Cancelled bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) in (?, ?)  
+[2026-06-24 02:14:03] live.INFO: Cancelled bookings bindings:  ["2026-06-01","2026-06-30","cancelled","canceled"] 
+[2026-06-24 02:14:03] live.INFO: Cancelled bookings count: 6  
+[2026-06-24 02:14:03] live.INFO: Dashboard stats results: {"pending_orders_count":8,"pending_orders_total":"405000.00","completed_orders_count":0,"denied_orders_count":0,"cancelled_orders_count":1,"pending_bookings_count":5,"accepted_bookings_count":1,"denied_bookings_count":0,"cancelled_bookings_count":6,"start_date":"2026-06-01","end_date":"2026-06-30","business_id":null} 
+[2026-06-24 02:14:07] live.INFO: Real SMS Balance from Beems API: 2  
+[2026-06-24 02:14:07] live.INFO: Real SMS Balance from Beems API: 2  
+[2026-06-24 02:15:41] live.INFO: Real SMS Balance from Beems API: 2  
+[2026-06-24 02:15:42] live.INFO: Real SMS Balance from Beems API: 2  
+[2026-06-24 02:41:01] live.INFO: Real SMS Balance from Beems API: 2  
+[2026-06-24 02:41:02] live.INFO: Real SMS Balance from Beems API: 2  
