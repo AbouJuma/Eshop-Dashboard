@@ -227,23 +227,27 @@ Log::alert($request->products);
     {
         try {
             $order = Order::find($id);
-            
+
             if (!$order) {
+                Log::warning('Satisfy order failed: Order not found', ['order_id' => $id]);
                 return $this->sendError('NOT_FOUND', 'Order not found', 404);
             }
-            
+
             // Optionally, verify that the order belongs to the authenticated user
             if (auth()->check() && $order->user_id !== auth()->user()->id) {
+                Log::warning('Satisfy order failed: Unauthorized', ['order_id' => $id, 'user_id' => auth()->user()->id, 'order_user_id' => $order->user_id]);
                 return $this->sendError('UNAUTHORIZED', 'You are not authorized to update this order', 403);
             }
-            
+
+            Log::info('Updating order to satisfied', ['order_id' => $id, 'current_status' => $order->status]);
             $order->status = 'satisfied';
             $order->save();
-            
+            Log::info('Order updated to satisfied successfully', ['order_id' => $id, 'new_status' => $order->status]);
+
             return $this->sendResponse(new OrderResource($order), 'Order status updated to Customer Satisfied successfully')->response()->setStatusCode(200);
-            
+
         } catch (\Exception $e) {
-            Log::error('Error updating order to satisfied: ' . $e->getMessage());
+            Log::error('Error updating order to satisfied: ' . $e->getMessage(), ['order_id' => $id, 'trace' => $e->getTraceAsString()]);
             return $this->sendError('FAILED', 'Error updating order status: ' . $e->getMessage(), 500);
         }
     }
@@ -259,31 +263,36 @@ Log::alert($request->products);
     {
         try {
             $order = Order::find($id);
-            
+
             if (!$order) {
+                Log::warning('Unsatisfy order failed: Order not found', ['order_id' => $id]);
                 return $this->sendError('NOT_FOUND', 'Order not found', 404);
             }
-            
+
             if (auth()->check() && $order->user_id !== auth()->user()->id) {
+                Log::warning('Unsatisfy order failed: Unauthorized', ['order_id' => $id, 'user_id' => auth()->user()->id, 'order_user_id' => $order->user_id]);
                 return $this->sendError('UNAUTHORIZED', 'You are not authorized to update this order', 403);
             }
-            
+
             $validator = Validator::make($request->all(), [
                 'reason' => 'required|string|max:1000'
             ]);
-            
+
             if ($validator->fails()) {
+                Log::warning('Unsatisfy order failed: Validation failed', ['order_id' => $id, 'errors' => $validator->errors()]);
                 return $this->sendError('VALIDATION_FAILED', $validator->errors(), 422);
             }
-            
+
+            Log::info('Updating order to not_satisfied', ['order_id' => $id, 'current_status' => $order->status, 'reason' => $request->input('reason')]);
             $order->status = 'not_satisfied';
             $order->unsatisfied_reason = $request->input('reason');
             $order->save();
-            
+            Log::info('Order updated to not_satisfied successfully', ['order_id' => $id, 'new_status' => $order->status]);
+
             return $this->sendResponse(new OrderResource($order), 'Order status updated to Customer Not Satisfied successfully')->response()->setStatusCode(200);
-            
+
         } catch (\Exception $e) {
-            Log::error('Error updating order to unsatisfied: ' . $e->getMessage());
+            Log::error('Error updating order to unsatisfied: ' . $e->getMessage(), ['order_id' => $id, 'trace' => $e->getTraceAsString()]);
             return $this->sendError('FAILED', 'Error updating order status: ' . $e->getMessage(), 500);
         }
     }
