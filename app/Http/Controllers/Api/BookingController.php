@@ -277,7 +277,7 @@ class BookingController extends BaseController
                 return $this->sendError('NOT_FOUND', 'Booking not found', 404);
             }
 
-            if (auth()->check() && $booking->user_id !== auth()->user()->id) {
+            if (auth()->check() && (int)$booking->user_id !== (int)auth()->user()->id) {
                 Log::warning('Satisfy booking failed: Unauthorized', ['booking_id' => $id, 'user_id' => auth()->user()->id, 'booking_user_id' => $booking->user_id]);
                 return $this->sendError('UNAUTHORIZED', 'You are not authorized to update this booking', 403);
             }
@@ -312,7 +312,7 @@ class BookingController extends BaseController
                 return $this->sendError('NOT_FOUND', 'Booking not found', 404);
             }
 
-            if (auth()->check() && $booking->user_id !== auth()->user()->id) {
+            if (auth()->check() && (int)$booking->user_id !== (int)auth()->user()->id) {
                 Log::warning('Unsatisfy booking failed: Unauthorized', ['booking_id' => $id, 'user_id' => auth()->user()->id, 'booking_user_id' => $booking->user_id]);
                 return $this->sendError('UNAUTHORIZED', 'You are not authorized to update this booking', 403);
             }

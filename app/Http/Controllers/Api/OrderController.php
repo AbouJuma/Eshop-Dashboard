@@ -234,7 +234,7 @@ Log::alert($request->products);
             }
 
             // Optionally, verify that the order belongs to the authenticated user
-            if (auth()->check() && $order->user_id !== auth()->user()->id) {
+            if (auth()->check() && (int)$order->user_id !== (int)auth()->user()->id) {
                 Log::warning('Satisfy order failed: Unauthorized', ['order_id' => $id, 'user_id' => auth()->user()->id, 'order_user_id' => $order->user_id]);
                 return $this->sendError('UNAUTHORIZED', 'You are not authorized to update this order', 403);
             }
@@ -269,7 +269,7 @@ Log::alert($request->products);
                 return $this->sendError('NOT_FOUND', 'Order not found', 404);
             }
 
-            if (auth()->check() && $order->user_id !== auth()->user()->id) {
+            if (auth()->check() && (int)$order->user_id !== (int)auth()->user()->id) {
                 Log::warning('Unsatisfy order failed: Unauthorized', ['order_id' => $id, 'user_id' => auth()->user()->id, 'order_user_id' => $order->user_id]);
                 return $this->sendError('UNAUTHORIZED', 'You are not authorized to update this order', 403);
             }
