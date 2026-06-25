@@ -5358,3 +5358,107 @@
 [2026-06-24 03:24:44] live.INFO: Real SMS Balance from Beems API: 2  
 [2026-06-24 03:51:15] live.INFO: Real SMS Balance from Beems API: 0  
 [2026-06-24 03:51:16] live.INFO: Real SMS Balance from Beems API: 0  
+[2026-06-25 17:20:50] live.INFO: Real SMS Balance from Beems API: 500  
+[2026-06-25 17:20:51] live.INFO: Real SMS Balance from Beems API: 500  
+[2026-06-25 17:20:54] live.INFO: Dashboard stats request: {"start_date":"2026-06-25","end_date":"2026-06-25","business_id":2} 
+[2026-06-25 17:20:54] live.INFO: Checking Order model...  
+[2026-06-25 17:20:54] live.INFO: Available order statuses: ["confirmed","cancelled","completed","pending"] 
+[2026-06-25 17:20:54] live.INFO: business_id column might not exist: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'business_id' in 'where clause' (SQL: select * from `orders` where `business_id` = 2 limit 1)  
+[2026-06-25 17:20:54] live.INFO: Pending orders query: {"business_id":null,"status":"pending","start":"2026-06-25","end":"2026-06-25","count":0,"total":0} 
+[2026-06-25 17:20:54] live.INFO: Denied orders query SQL: select * from `orders` where LOWER(status) = ? and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-25 17:20:54] live.INFO: Denied orders bindings:  ["denied","2026-06-25","2026-06-25"] 
+[2026-06-25 17:20:54] live.INFO: Denied orders count: 0  
+[2026-06-25 17:20:54] live.INFO: Cancelled orders query SQL: select * from `orders` where LOWER(status) in (?, ?) and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-25 17:20:54] live.INFO: Cancelled orders bindings:  ["cancelled","canceled","2026-06-25","2026-06-25"] 
+[2026-06-25 17:20:54] live.INFO: Cancelled orders count: 0  
+[2026-06-25 17:20:54] live.INFO: Confirmed orders query: {"business_id":null,"status":"confirmed","start":"2026-06-25","end":"2026-06-25","count":0} 
+[2026-06-25 17:20:54] live.INFO: Pending bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:20:54] live.INFO: Pending bookings bindings:  ["2026-06-25","2026-06-25","pending"] 
+[2026-06-25 17:20:54] live.INFO: Pending bookings count: 0  
+[2026-06-25 17:20:54] live.INFO: Accepted bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:20:54] live.INFO: Accepted bookings bindings:  ["2026-06-25","2026-06-25","accepted"] 
+[2026-06-25 17:20:54] live.INFO: Accepted bookings count: 0  
+[2026-06-25 17:20:54] live.INFO: Denied bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:20:54] live.INFO: Denied bookings bindings:  ["2026-06-25","2026-06-25","denied"] 
+[2026-06-25 17:20:54] live.INFO: Denied bookings count: 0  
+[2026-06-25 17:20:54] live.INFO: Cancelled bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) in (?, ?)  
+[2026-06-25 17:20:54] live.INFO: Cancelled bookings bindings:  ["2026-06-25","2026-06-25","cancelled","canceled"] 
+[2026-06-25 17:20:54] live.INFO: Cancelled bookings count: 0  
+[2026-06-25 17:20:54] live.INFO: Dashboard stats results: {"pending_orders_count":0,"pending_orders_total":0,"completed_orders_count":0,"denied_orders_count":0,"cancelled_orders_count":0,"pending_bookings_count":0,"accepted_bookings_count":0,"denied_bookings_count":0,"cancelled_bookings_count":0,"start_date":"2026-06-25","end_date":"2026-06-25","business_id":null} 
+[2026-06-25 17:21:04] live.INFO: Dashboard stats request: {"start_date":"2026-06-01","end_date":"2026-06-30","business_id":2} 
+[2026-06-25 17:21:04] live.INFO: Checking Order model...  
+[2026-06-25 17:21:04] live.INFO: Available order statuses: ["confirmed","cancelled","completed","pending"] 
+[2026-06-25 17:21:04] live.INFO: business_id column might not exist: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'business_id' in 'where clause' (SQL: select * from `orders` where `business_id` = 2 limit 1)  
+[2026-06-25 17:21:04] live.INFO: Pending orders query: {"business_id":null,"status":"pending","start":"2026-06-01","end":"2026-06-30","count":8,"total":"405000.00"} 
+[2026-06-25 17:21:04] live.INFO: Denied orders query SQL: select * from `orders` where LOWER(status) = ? and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-25 17:21:04] live.INFO: Denied orders bindings:  ["denied","2026-06-01","2026-06-30"] 
+[2026-06-25 17:21:04] live.INFO: Denied orders count: 0  
+[2026-06-25 17:21:04] live.INFO: Cancelled orders query SQL: select * from `orders` where LOWER(status) in (?, ?) and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-25 17:21:04] live.INFO: Cancelled orders bindings:  ["cancelled","canceled","2026-06-01","2026-06-30"] 
+[2026-06-25 17:21:04] live.INFO: Cancelled orders count: 1  
+[2026-06-25 17:21:04] live.INFO: Confirmed orders query: {"business_id":null,"status":"confirmed","start":"2026-06-01","end":"2026-06-30","count":0} 
+[2026-06-25 17:21:04] live.INFO: Pending bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:21:04] live.INFO: Pending bookings bindings:  ["2026-06-01","2026-06-30","pending"] 
+[2026-06-25 17:21:04] live.INFO: Pending bookings count: 5  
+[2026-06-25 17:21:04] live.INFO: Accepted bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:21:04] live.INFO: Accepted bookings bindings:  ["2026-06-01","2026-06-30","accepted"] 
+[2026-06-25 17:21:04] live.INFO: Accepted bookings count: 1  
+[2026-06-25 17:21:04] live.INFO: Denied bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:21:04] live.INFO: Denied bookings bindings:  ["2026-06-01","2026-06-30","denied"] 
+[2026-06-25 17:21:04] live.INFO: Denied bookings count: 0  
+[2026-06-25 17:21:04] live.INFO: Cancelled bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) in (?, ?)  
+[2026-06-25 17:21:04] live.INFO: Cancelled bookings bindings:  ["2026-06-01","2026-06-30","cancelled","canceled"] 
+[2026-06-25 17:21:04] live.INFO: Cancelled bookings count: 6  
+[2026-06-25 17:21:04] live.INFO: Dashboard stats results: {"pending_orders_count":8,"pending_orders_total":"405000.00","completed_orders_count":0,"denied_orders_count":0,"cancelled_orders_count":1,"pending_bookings_count":5,"accepted_bookings_count":1,"denied_bookings_count":0,"cancelled_bookings_count":6,"start_date":"2026-06-01","end_date":"2026-06-30","business_id":null} 
+[2026-06-25 17:26:46] live.INFO: Real SMS Balance from Beems API: 500  
+[2026-06-25 17:26:47] live.INFO: Real SMS Balance from Beems API: 500  
+[2026-06-25 17:26:50] live.INFO: Dashboard stats request: {"start_date":"2026-06-25","end_date":"2026-06-25","business_id":2} 
+[2026-06-25 17:26:50] live.INFO: Checking Order model...  
+[2026-06-25 17:26:50] live.INFO: Available order statuses: ["confirmed","cancelled","completed","pending"] 
+[2026-06-25 17:26:50] live.INFO: business_id column might not exist: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'business_id' in 'where clause' (SQL: select * from `orders` where `business_id` = 2 limit 1)  
+[2026-06-25 17:26:50] live.INFO: Pending orders query: {"business_id":null,"status":"pending","start":"2026-06-25","end":"2026-06-25","count":0,"total":0} 
+[2026-06-25 17:26:50] live.INFO: Denied orders query SQL: select * from `orders` where LOWER(status) = ? and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-25 17:26:50] live.INFO: Denied orders bindings:  ["denied","2026-06-25","2026-06-25"] 
+[2026-06-25 17:26:50] live.INFO: Denied orders count: 0  
+[2026-06-25 17:26:50] live.INFO: Cancelled orders query SQL: select * from `orders` where LOWER(status) in (?, ?) and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-25 17:26:50] live.INFO: Cancelled orders bindings:  ["cancelled","canceled","2026-06-25","2026-06-25"] 
+[2026-06-25 17:26:50] live.INFO: Cancelled orders count: 0  
+[2026-06-25 17:26:50] live.INFO: Confirmed orders query: {"business_id":null,"status":"confirmed","start":"2026-06-25","end":"2026-06-25","count":0} 
+[2026-06-25 17:26:50] live.INFO: Pending bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:26:50] live.INFO: Pending bookings bindings:  ["2026-06-25","2026-06-25","pending"] 
+[2026-06-25 17:26:50] live.INFO: Pending bookings count: 0  
+[2026-06-25 17:26:50] live.INFO: Accepted bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:26:50] live.INFO: Accepted bookings bindings:  ["2026-06-25","2026-06-25","accepted"] 
+[2026-06-25 17:26:50] live.INFO: Accepted bookings count: 0  
+[2026-06-25 17:26:50] live.INFO: Denied bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:26:50] live.INFO: Denied bookings bindings:  ["2026-06-25","2026-06-25","denied"] 
+[2026-06-25 17:26:50] live.INFO: Denied bookings count: 0  
+[2026-06-25 17:26:50] live.INFO: Cancelled bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) in (?, ?)  
+[2026-06-25 17:26:50] live.INFO: Cancelled bookings bindings:  ["2026-06-25","2026-06-25","cancelled","canceled"] 
+[2026-06-25 17:26:50] live.INFO: Cancelled bookings count: 0  
+[2026-06-25 17:26:50] live.INFO: Dashboard stats results: {"pending_orders_count":0,"pending_orders_total":0,"completed_orders_count":0,"denied_orders_count":0,"cancelled_orders_count":0,"pending_bookings_count":0,"accepted_bookings_count":0,"denied_bookings_count":0,"cancelled_bookings_count":0,"start_date":"2026-06-25","end_date":"2026-06-25","business_id":null} 
+[2026-06-25 17:27:04] live.INFO: Dashboard stats request: {"start_date":"2026-06-01","end_date":"2026-06-30","business_id":2} 
+[2026-06-25 17:27:04] live.INFO: Checking Order model...  
+[2026-06-25 17:27:04] live.INFO: Available order statuses: ["confirmed","cancelled","completed","pending"] 
+[2026-06-25 17:27:04] live.INFO: business_id column might not exist: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'business_id' in 'where clause' (SQL: select * from `orders` where `business_id` = 2 limit 1)  
+[2026-06-25 17:27:04] live.INFO: Pending orders query: {"business_id":null,"status":"pending","start":"2026-06-01","end":"2026-06-30","count":8,"total":"405000.00"} 
+[2026-06-25 17:27:04] live.INFO: Denied orders query SQL: select * from `orders` where LOWER(status) = ? and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-25 17:27:04] live.INFO: Denied orders bindings:  ["denied","2026-06-01","2026-06-30"] 
+[2026-06-25 17:27:04] live.INFO: Denied orders count: 0  
+[2026-06-25 17:27:04] live.INFO: Cancelled orders query SQL: select * from `orders` where LOWER(status) in (?, ?) and date(`created_at`) >= ? and date(`created_at`) <= ?  
+[2026-06-25 17:27:04] live.INFO: Cancelled orders bindings:  ["cancelled","canceled","2026-06-01","2026-06-30"] 
+[2026-06-25 17:27:04] live.INFO: Cancelled orders count: 1  
+[2026-06-25 17:27:04] live.INFO: Confirmed orders query: {"business_id":null,"status":"confirmed","start":"2026-06-01","end":"2026-06-30","count":0} 
+[2026-06-25 17:27:04] live.INFO: Pending bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:27:04] live.INFO: Pending bookings bindings:  ["2026-06-01","2026-06-30","pending"] 
+[2026-06-25 17:27:04] live.INFO: Pending bookings count: 5  
+[2026-06-25 17:27:04] live.INFO: Accepted bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:27:04] live.INFO: Accepted bookings bindings:  ["2026-06-01","2026-06-30","accepted"] 
+[2026-06-25 17:27:04] live.INFO: Accepted bookings count: 1  
+[2026-06-25 17:27:04] live.INFO: Denied bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) = ?  
+[2026-06-25 17:27:04] live.INFO: Denied bookings bindings:  ["2026-06-01","2026-06-30","denied"] 
+[2026-06-25 17:27:04] live.INFO: Denied bookings count: 0  
+[2026-06-25 17:27:04] live.INFO: Cancelled bookings query SQL: select * from `booking` where date(`created_at`) >= ? and date(`created_at`) <= ? and LOWER(status) in (?, ?)  
+[2026-06-25 17:27:04] live.INFO: Cancelled bookings bindings:  ["2026-06-01","2026-06-30","cancelled","canceled"] 
+[2026-06-25 17:27:04] live.INFO: Cancelled bookings count: 6  
+[2026-06-25 17:27:04] live.INFO: Dashboard stats results: {"pending_orders_count":8,"pending_orders_total":"405000.00","completed_orders_count":0,"denied_orders_count":0,"cancelled_orders_count":1,"pending_bookings_count":5,"accepted_bookings_count":1,"denied_bookings_count":0,"cancelled_bookings_count":6,"start_date":"2026-06-01","end_date":"2026-06-30","business_id":null} 

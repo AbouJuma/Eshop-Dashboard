@@ -322,9 +322,9 @@
                         <div class="form-group">
                             <label for="service_type">Service Type <span class="text-danger">*</span></label>
                             <select name="service_type" id="service_type" class="form-control" required>
-                                <option value="both" {{ old('service_type', 'both') == 'both' ? 'selected' : '' }}>Both (Normal & Spares)</option>
-                                <option value="normal" {{ old('service_type') == 'normal' ? 'selected' : '' }}>Normal Maintenance Only</option>
-                                <option value="spares" {{ old('service_type') == 'spares' ? 'selected' : '' }}>Spare Parts Only</option>
+                                <option value="car_services" {{ old('service_type', 'car_services') == 'car_services' ? 'selected' : '' }}>CAR SERVICES</option>
+                                <option value="periodic_maintanance" {{ old('service_type') == 'periodic_maintanance' ? 'selected' : '' }}>PERIODIC MAINTANANCE</option>
+                                <option value="repair" {{ old('service_type') == 'repair' ? 'selected' : '' }}>REPAIR</option>
                             </select>
                         </div>
                     </div>

@@ -38,6 +38,40 @@
             #toast-container.toast-top-left {
                 top: 60px !important;
             }
+
+            /* Fix: sidebar active item text overflow when bold is applied */
+            .sidebar-menu > li > a,
+            .sidebar-menu > li > a span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-weight: normal !important;
+            }
+
+            /* Keep the active state visually distinct via color only, not bold */
+            .sidebar-menu > li.active > a,
+            .sidebar-menu > li.active > a span {
+                font-weight: normal !important;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            /* Ensure the sidebar link text area does not expand beyond sidebar width */
+            .sidebar-menu > li > a {
+                display: flex;
+                align-items: center;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .sidebar-menu > li > a > span:not(.pull-right-container) {
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                min-width: 0;
+            }
         </style>
     </head>
 
