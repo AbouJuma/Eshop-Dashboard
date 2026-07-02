@@ -254,17 +254,19 @@
 @section('javascript')
 <script>
 $(document).ready(function() {
+    // Only show mileage section when 'CAR SERVICES' is selected
     function toggleMileageSection() {
         var serviceType = $('#service_type').val();
-        if (serviceType === 'spares') {
-            $('#mileage-section').slideUp(300);
-            $('#serviced_kilometer').removeAttr('required');
-            $('#next_service_kilometer').removeAttr('required');
-        } else {
+        if (serviceType === 'car_services') {
             $('#mileage-section').slideDown(300);
             $('#serviced_kilometer').attr('required', true);
             $('#next_service_kilometer').attr('required', true);
             calculateNextService();
+        } else {
+            // Hide for 'repair' and 'periodic_maintanance'
+            $('#mileage-section').slideUp(300);
+            $('#serviced_kilometer').removeAttr('required');
+            $('#next_service_kilometer').removeAttr('required');
         }
     }
 
