@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppDownloadController;
 use App\Http\Controllers\UserAccountDeletionController;
 use App\Http\Controllers\AccountDeletionRequestController;
 use App\Http\Controllers\AccountController;
@@ -577,3 +578,8 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::get('/account-deletion-requests', [AccountDeletionRequestController::class, 'adminIndex'])->name('account.deletion.requests');
     Route::get('/account-deletion-requests/{id}', [AccountDeletionRequestController::class, 'adminProcess'])->name('account.deletion.admin.process');
 });
+
+// Public Unauthenticated App Download Landing Page & QR Code Routes
+Route::get('/app-download', [AppDownloadController::class, 'index'])->name('app.download');
+Route::get('/app-download/qr', [AppDownloadController::class, 'qr'])->name('app.download.qr');
+Route::get('/app-download/qr/download', [AppDownloadController::class, 'downloadQr'])->name('app.download.qr.download');
