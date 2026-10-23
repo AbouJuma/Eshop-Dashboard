@@ -174,3 +174,34 @@ Route::middleware('auth:api')->group(function () {
     /** delete record by id */
     Route::delete('records/{record}', [RecordController::class, 'destroy']);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Mobile Admin Panel (D-World orders, bookings, car maintenance)
+|--------------------------------------------------------------------------
+| Portal admins (role Admin#<business_id>) log in with username & password.
+*/
+Route::prefix('admin')->group(function () {
+    Route::post('login', [\App\Http\Controllers\Api\Admin\AdminAuthController::class, 'login'])->middleware('throttle:10,1');
+
+    Route::middleware(['auth:api', 'mobile.admin'])->group(function () {
+        Route::get('me', [\App\Http\Controllers\Api\Admin\AdminAuthController::class, 'me']);
+        Route::post('logout', [\App\Http\Controllers\Api\Admin\AdminAuthController::class, 'logout']);
+
+        Route::get('dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
+
+        Route::get('orders', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'index']);
+        Route::get('orders/{id}', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'show']);
+        Route::post('orders/{id}/status', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'updateStatus']);
+
+        Route::get('bookings', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'index']);
+        Route::get('bookings/{id}', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'show']);
+        Route::post('bookings/{id}/status', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'updateStatus']);
+        Route::post('bookings/{id}/price', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'updatePrice']);
+
+        Route::get('car-maintenance/cars', [\App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class, 'cars']);
+        Route::apiResource('car-maintenance', \App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class)
+            ->parameters(['car-maintenance' => 'id'])
+            ->names('api.admin.car-maintenance'); // avoid clashing with the web car-maintenance.* route names
+    });
+});

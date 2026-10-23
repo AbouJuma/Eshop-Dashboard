@@ -71,5 +71,6 @@ class Kernel extends HttpKernel
         'superadmin' => \App\Http\Middleware\Superadmin::class,
         'CheckUserLogin' => \App\Http\Middleware\CheckUserLogin::class,
         'withoutlink' => \App\Http\Middleware\WithoutLinks::class,
+        'mobile.admin' => \App\Http\Middleware\MobileAdmin::class,
     ];
 }

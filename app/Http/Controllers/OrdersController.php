@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderEshop;
 use App\Models\User;
-use App\Services\NotificationService;
+use App\Services\DWorldStatusService;
 use Illuminate\Http\Request;
 
 class OrdersController extends Controller
@@ -121,48 +121,17 @@ class OrdersController extends Controller
             $newStatus = strtolower(trim((string) $request->input('status')));
             
             // Validate status
-            $validStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'denied', 'satisfied', 'not_satisfied'];
-            if (!in_array($newStatus, $validStatuses)) {
+            if (!in_array($newStatus, DWorldStatusService::ORDER_STATUSES)) {
                 return redirect()->back()->with('status', [
                     'success' => 0,
                     'msg' => 'Invalid status provided'
                 ]);
             }
-            
-            // Update status
-            $order->status = $newStatus;
-            
-            $message = 'Order status updated successfully';
-            
-            // Save cancellation reason if status is cancelled
-            if ($newStatus === 'cancelled') {
-                if ($request->filled('cancellation_reason')) {
-                    $order->cancellation_reason = $request->input('cancellation_reason');
-                }
-                $message = 'Your order has been cancelled';
-            }
-            
-            $order->save();
-            
-            // Send notification for status change
-            if ($order->user_id) {
-                $client = User::find($order->user_id);
-                if ($client) {
-                    $statusMessages = [
-                        'confirmed' => 'Your order has been confirmed',
-                        'completed' => 'Your order has been completed',
-                        'cancelled' => 'Your order has been cancelled',
-                        'denied' => 'Your order has been denied',
-                        'shipped' => 'Your order has been shipped',
-                        'delivered' => 'Your order has been delivered',
-                    ];
-                    
-                    if (isset($statusMessages[$newStatus])) {
-                        NotificationService::orderStatusChanged($client->id, $order->reference_no, $newStatus, $statusMessages[$newStatus]);
-                    }
-                }
-            }
-            
+
+            DWorldStatusService::updateOrderStatus($order, $newStatus, $request->input('cancellation_reason'));
+
+            $message = $newStatus === 'cancelled' ? 'Your order has been cancelled' : 'Order status updated successfully';
+
             return redirect()->back()->with('status', [
                 'success' => 1,
                 'msg' => $message
