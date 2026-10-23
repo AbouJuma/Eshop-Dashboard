@@ -32,11 +32,17 @@ class MobileAdmin
         return $next($request);
     }
 
+    /** Role for users who may use the mobile admin panel without being full portal admins. */
+    public static function mobileRoleName($businessId): string
+    {
+        return 'Mobile Admin#'.$businessId;
+    }
+
     public static function isAdmin(User $user): bool
     {
         return ! empty($user->business_id)
             && $user->status === 'active'
             && $user->allow_login
-            && $user->hasRole('Admin#'.$user->business_id);
+            && ($user->hasRole('Admin#'.$user->business_id) || $user->hasRole(self::mobileRoleName($user->business_id)));
     }
 }

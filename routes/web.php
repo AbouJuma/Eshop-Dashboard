@@ -242,6 +242,10 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
     Route::resource('users', ManageUserController::class);
 
+    // Accounts for the mobile app admin panel
+    Route::post('mobile-admins/{id}/revoke', [\App\Http\Controllers\MobileAdminController::class, 'revoke'])->name('mobile-admins.revoke');
+    Route::resource('mobile-admins', \App\Http\Controllers\MobileAdminController::class)->except(['show'])->parameters(['mobile-admins' => 'id']);
+
     Route::get('/car-maintenance/export-pdf', [\App\Http\Controllers\CarMaintenanceController::class, 'exportPdf'])->name('car-maintenance.export-pdf');
     Route::get('/car-maintenance/{id}/print-label', [\App\Http\Controllers\CarMaintenanceController::class, 'printLabel'])->name('car-maintenance.print-label');
     Route::resource('car-maintenance', \App\Http\Controllers\CarMaintenanceController::class);

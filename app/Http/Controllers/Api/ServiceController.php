@@ -122,7 +122,7 @@ class ServiceController extends BaseController
             $subServicesIds = SubService::where('service_id', $request->service_id)->pluck('id');
         }
     
-        $serviceVehiclePriceQuery = ServiceVehiclePrice::when($subServicesIds, function ($query, $subServicesIds) {
+        $serviceVehiclePriceQuery = ServiceVehiclePrice::with('subService')->when($subServicesIds, function ($query, $subServicesIds) {
             return $query->whereIn('sub_service_id', $subServicesIds);
         });
     

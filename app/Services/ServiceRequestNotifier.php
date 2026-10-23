@@ -19,11 +19,11 @@ class ServiceRequestNotifier
         $body = (ServiceRequest::SERVICE_TYPES[$serviceRequest->service_type] ?? 'Service')
             .($serviceRequest->address ? ' at '.$serviceRequest->address : '')
             .' — tap to respond';
-        $data = ['type' => 'service_request', 'service_request_id' => $serviceRequest->id];
+        $data = ['type' => 'service_request_alert', 'service_request_id' => $serviceRequest->id, 'audience' => 'admin'];
 
         dispatch(function () use ($title, $body, $data) {
             foreach (self::adminRecipients() as $admin) {
-                NotificationService::sendFCMNotification($admin->id, $title, $body, $data);
+                NotificationService::sendFCMNotification($admin->id, $title, $body, $data, true);
             }
         })->afterResponse();
     }
@@ -42,7 +42,9 @@ class ServiceRequestNotifier
         }
         $userId = $serviceRequest->user_id;
 
-        dispatch(fn () => NotificationService::create($userId, $title, $body))->afterResponse();
+        $data = ['type' => 'service_request', 'service_request_id' => $serviceRequest->id, 'audience' => 'customer'];
+
+        dispatch(fn () => NotificationService::create($userId, $title, $body, null, $data))->afterResponse();
     }
 
     public static function customerCancelled(ServiceRequest $serviceRequest): void
@@ -56,6 +58,7 @@ class ServiceRequestNotifier
         dispatch(fn () => NotificationService::sendFCMNotification($adminId, 'Request cancelled', $body, [
             'type' => 'service_request',
             'service_request_id' => $serviceRequest->id,
+            'audience' => 'admin',
         ]))->afterResponse();
     }
 

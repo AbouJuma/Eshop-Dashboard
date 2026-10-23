@@ -28,8 +28,11 @@ class CarMaintenanceAdminController extends Controller
         if ($request->filled('service_type')) {
             $query->where('service_type', $request->service_type);
         }
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('service_date', [$request->start_date, $request->end_date]);
+        if ($request->filled('date_from')) {
+            $query->whereDate('service_date', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('service_date', '<=', $request->date_to);
         }
 
         $records = $query->orderBy('service_date', 'desc')->orderBy('id', 'desc')

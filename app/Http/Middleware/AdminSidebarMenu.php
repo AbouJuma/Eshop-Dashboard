@@ -69,6 +69,13 @@ class AdminSidebarMenu
                                 ['icon' => 'fa fas fa-briefcase', 'active' => request()->segment(1) == 'roles']
                             );
                         }
+                        if (auth()->user()->can('user.view')) {
+                            $sub->url(
+                                route('mobile-admins.index'),
+                                'Mobile Admins',
+                                ['icon' => 'fa fas fa-mobile-alt', 'active' => request()->segment(1) == 'mobile-admins']
+                            );
+                        }
                         if (auth()->user()->can('user.create')) {
                             $sub->url(
                                 action([\App\Http\Controllers\SalesCommissionAgentController::class, 'index']),

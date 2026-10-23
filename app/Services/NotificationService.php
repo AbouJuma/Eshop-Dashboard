@@ -11,7 +11,7 @@ class NotificationService
     /**
      * Create a notification for a user
      */
-    public static function create($userId, $title, $content, $actionTime = null)
+    public static function create($userId, $title, $content, $actionTime = null, array $data = [])
     {
         \Log::info('Creating notification', ['user_id' => $userId, 'title' => $title, 'content' => $content]);
         $notification = Notification::create([
@@ -23,7 +23,7 @@ class NotificationService
         \Log::info('Notification created', ['id' => $notification->id, 'user_id' => $userId]);
 
         // Send FCM push notification using HTTP v1 API
-        self::sendFCMNotification($userId, $title, $content);
+        self::sendFCMNotification($userId, $title, $content, $data);
 
         return $notification;
     }
@@ -31,7 +31,7 @@ class NotificationService
     /**
      * Send FCM push notification to user using HTTP v1 API
      */
-    public static function sendFCMNotification($userId, $title, $content, array $data = [])
+    public static function sendFCMNotification($userId, $title, $content, array $data = [], bool $dataOnly = false)
     {
         \Log::info('Attempting to send FCM notification', ['user_id' => $userId, 'title' => $title]);
 
@@ -99,6 +99,11 @@ class NotificationService
                     ],
                 ],
             ];
+
+            // Data-only: the app builds the notification itself (e.g. a looping alarm for admins)
+            if ($dataOnly) {
+                unset($message['message']['notification'], $message['message']['android']['notification']);
+            }
 
             \Log::info('Sending FCM request', ['url' => $url, 'token' => substr($user->fcm_token, 0, 20) . '...']);
 
