@@ -234,3 +234,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('service-requests/{id}/messages', [\App\Http\Controllers\Api\ServiceRequestController::class, 'messages']);
     Route::post('service-requests/{id}/messages', [\App\Http\Controllers\Api\ServiceRequestController::class, 'sendMessage'])->middleware('throttle:60,1');
 });
+
+/** Device push token refresh (customers and admins; whichever user the token belongs to) */
+Route::post('device-token', [\App\Http\Controllers\PassportAuthController::class, 'updateDeviceToken'])->middleware(['auth:api', 'throttle:30,1']);

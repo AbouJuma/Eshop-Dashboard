@@ -121,6 +121,20 @@ class PassportAuthController extends Controller
     }
 
     /**
+     * Keep the device push token current. The app gets a fresh FCM token on every launch,
+     * so without this the server keeps sending pushes to an expired token.
+     */
+    public function updateDeviceToken(Request $request)
+    {
+        $request->validate(['fcm_token' => 'required|string|max:255']);
+        $user = $request->user();
+        $user->fcm_token = $request->fcm_token;
+        $user->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
      * Logout user (revoke token)
      *
      * @param  \Illuminate\Http\Request  $request
