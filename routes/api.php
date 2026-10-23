@@ -198,6 +198,8 @@ Route::prefix('admin')->group(function () {
         Route::post('service-requests/{id}/status', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'updateStatus']);
         Route::post('service-requests/{id}/cancel', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'cancel']);
         Route::post('service-requests/{id}/location', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'location']);
+        Route::get('service-requests/{id}/messages', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'messages']);
+        Route::post('service-requests/{id}/messages', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'sendMessage'])->middleware('throttle:60,1');
 
         Route::get('dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
 
@@ -229,4 +231,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('service-requests', [\App\Http\Controllers\Api\ServiceRequestController::class, 'store'])->middleware('throttle:10,1');
     Route::get('service-requests/{id}', [\App\Http\Controllers\Api\ServiceRequestController::class, 'show']);
     Route::post('service-requests/{id}/cancel', [\App\Http\Controllers\Api\ServiceRequestController::class, 'cancel']);
+    Route::get('service-requests/{id}/messages', [\App\Http\Controllers\Api\ServiceRequestController::class, 'messages']);
+    Route::post('service-requests/{id}/messages', [\App\Http\Controllers\Api\ServiceRequestController::class, 'sendMessage'])->middleware('throttle:60,1');
 });

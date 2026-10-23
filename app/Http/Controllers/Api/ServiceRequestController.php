@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
+use App\Services\ServiceRequestChat;
 use App\Services\ServiceRequestNotifier;
 use Illuminate\Http\Request;
 
@@ -90,7 +91,9 @@ class ServiceRequestController extends Controller
 
     public function show(Request $request, $id)
     {
-        return response()->json(['success' => true, 'data' => $this->find($request, $id)->toApiArray()]);
+        $serviceRequest = $this->find($request, $id);
+
+        return response()->json(['success' => true, 'data' => $serviceRequest->toApiArray() + ['unread_messages' => ServiceRequestChat::unreadFor($serviceRequest, 'customer')]]);
     }
 
     public function cancel(Request $request, $id)
@@ -111,6 +114,18 @@ class ServiceRequestController extends Controller
         ServiceRequestNotifier::customerCancelled($serviceRequest);
 
         return response()->json(['success' => true, 'message' => 'Request cancelled', 'data' => $serviceRequest->toApiArray()]);
+    }
+
+    public function messages(Request $request, $id)
+    {
+        return response()->json(ServiceRequestChat::list($this->find($request, $id), 'customer', $request));
+    }
+
+    public function sendMessage(Request $request, $id)
+    {
+        [$payload, $code] = ServiceRequestChat::send($this->find($request, $id), 'customer', $request->user()->id, $request);
+
+        return response()->json($payload, $code);
     }
 
     private function find(Request $request, $id): ServiceRequest

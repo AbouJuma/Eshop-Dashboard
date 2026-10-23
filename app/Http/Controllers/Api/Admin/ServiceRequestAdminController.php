@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
+use App\Services\ServiceRequestChat;
 use App\Services\ServiceRequestNotifier;
 use Illuminate\Http\Request;
 
@@ -53,7 +54,9 @@ class ServiceRequestAdminController extends Controller
 
     public function show($id)
     {
-        return response()->json(['success' => true, 'data' => $this->find($id)->toApiArray()]);
+        $serviceRequest = $this->find($id);
+
+        return response()->json(['success' => true, 'data' => $serviceRequest->toApiArray() + ['unread_messages' => ServiceRequestChat::unreadFor($serviceRequest, 'admin')]]);
     }
 
     public function accept(Request $request, $id)
@@ -181,6 +184,18 @@ class ServiceRequestAdminController extends Controller
         ]);
 
         return response()->json(['success' => true, 'status' => $serviceRequest->status]);
+    }
+
+    public function messages(Request $request, $id)
+    {
+        return response()->json(ServiceRequestChat::list($this->find($id), 'admin', $request));
+    }
+
+    public function sendMessage(Request $request, $id)
+    {
+        [$payload, $code] = ServiceRequestChat::send($this->find($id), 'admin', $request->user()->id, $request);
+
+        return response()->json($payload, $code);
     }
 
     private function find($id): ServiceRequest
