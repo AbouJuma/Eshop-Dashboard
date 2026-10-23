@@ -31,6 +31,11 @@ class AdminAuthController extends Controller
             return response()->json(['success' => false, 'message' => 'This account does not have admin access'], 403);
         }
 
+        if ($request->filled('fcm_token')) {
+            $user->fcm_token = $request->fcm_token;
+            $user->save();
+        }
+
         $token = $user->createToken(MobileAdmin::TOKEN_NAME)->accessToken;
 
         return response()->json([
@@ -43,6 +48,17 @@ class AdminAuthController extends Controller
     public function me(Request $request)
     {
         return response()->json(['success' => true, 'user' => $this->userPayload($request->user())]);
+    }
+
+    /** Device push token, so new roadside requests ring on this admin's phone. */
+    public function updateFcmToken(Request $request)
+    {
+        $request->validate(['fcm_token' => 'required|string|max:255']);
+        $user = $request->user();
+        $user->fcm_token = $request->fcm_token;
+        $user->save();
+
+        return response()->json(['success' => true]);
     }
 
     public function logout(Request $request)

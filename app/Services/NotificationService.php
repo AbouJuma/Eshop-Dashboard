@@ -31,7 +31,7 @@ class NotificationService
     /**
      * Send FCM push notification to user using HTTP v1 API
      */
-    private static function sendFCMNotification($userId, $title, $content)
+    public static function sendFCMNotification($userId, $title, $content, array $data = [])
     {
         \Log::info('Attempting to send FCM notification', ['user_id' => $userId, 'title' => $title]);
 
@@ -86,11 +86,11 @@ class NotificationService
                         'title' => $title,
                         'body' => $content,
                     ],
-                    'data' => [
+                    'data' => array_map('strval', array_merge([
                         'title' => $title,
                         'body' => $content,
                         'type' => 'notification',
-                    ],
+                    ], $data)),
                     'android' => [
                         'priority' => 'high',
                         'notification' => [

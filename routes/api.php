@@ -187,6 +187,17 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['auth:api', 'mobile.admin'])->group(function () {
         Route::get('me', [\App\Http\Controllers\Api\Admin\AdminAuthController::class, 'me']);
         Route::post('logout', [\App\Http\Controllers\Api\Admin\AdminAuthController::class, 'logout']);
+        Route::post('fcm-token', [\App\Http\Controllers\Api\Admin\AdminAuthController::class, 'updateFcmToken']);
+
+        // Roadside / on-demand service requests
+        Route::get('service-requests/poll', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'poll']);
+        Route::get('service-requests', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'index']);
+        Route::get('service-requests/{id}', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'show']);
+        Route::post('service-requests/{id}/accept', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'accept']);
+        Route::post('service-requests/{id}/reject', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'reject']);
+        Route::post('service-requests/{id}/status', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'updateStatus']);
+        Route::post('service-requests/{id}/cancel', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'cancel']);
+        Route::post('service-requests/{id}/location', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'location']);
 
         Route::get('dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
 
@@ -204,4 +215,18 @@ Route::prefix('admin')->group(function () {
             ->parameters(['car-maintenance' => 'id'])
             ->names('api.admin.car-maintenance'); // avoid clashing with the web car-maintenance.* route names
     });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Customer roadside / on-demand service requests (Uber-style)
+|--------------------------------------------------------------------------
+*/
+Route::get('service-requests/types', [\App\Http\Controllers\Api\ServiceRequestController::class, 'types']);
+Route::middleware('auth:api')->group(function () {
+    Route::get('service-requests/active', [\App\Http\Controllers\Api\ServiceRequestController::class, 'active']);
+    Route::get('service-requests', [\App\Http\Controllers\Api\ServiceRequestController::class, 'index']);
+    Route::post('service-requests', [\App\Http\Controllers\Api\ServiceRequestController::class, 'store'])->middleware('throttle:10,1');
+    Route::get('service-requests/{id}', [\App\Http\Controllers\Api\ServiceRequestController::class, 'show']);
+    Route::post('service-requests/{id}/cancel', [\App\Http\Controllers\Api\ServiceRequestController::class, 'cancel']);
 });
