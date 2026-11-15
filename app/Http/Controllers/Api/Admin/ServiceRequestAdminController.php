@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\MobileAdmin;
 use App\Models\ServiceRequest;
 use App\Services\ServiceRequestChat;
 use App\Services\ServiceRequestNotifier;
@@ -15,7 +16,7 @@ class ServiceRequestAdminController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ServiceRequest::with(['client', 'mechanic'])->latest();
+        $query = $this->visible($request)->latest();
 
         $status = $request->input('status');
         if ($status === 'active') {
@@ -52,9 +53,9 @@ class ServiceRequestAdminController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $serviceRequest = $this->find($id);
+        $serviceRequest = $this->find($request, $id);
 
         return response()->json(['success' => true, 'data' => $serviceRequest->toApiArray() + ['unread_messages' => ServiceRequestChat::unreadFor($serviceRequest, 'admin')]]);
     }
@@ -68,7 +69,7 @@ class ServiceRequestAdminController extends Controller
             'accepted_at' => now(),
         ]);
 
-        $serviceRequest = $this->find($id);
+        $serviceRequest = $this->find($request, $id);
 
         if (! $taken) {
             return response()->json([
@@ -86,8 +87,11 @@ class ServiceRequestAdminController extends Controller
     public function reject(Request $request, $id)
     {
         $request->validate(['reason' => 'required|string|max:1000']);
-        $serviceRequest = $this->find($id);
+        $serviceRequest = $this->find($request, $id);
 
+        if (MobileAdmin::isMechanic($request->user())) {
+            return response()->json(['success' => false, 'message' => 'Only admins can decline requests'], 422);
+        }
         if ($serviceRequest->status !== 'pending') {
             return response()->json(['success' => false, 'message' => 'Only pending requests can be declined'], 422);
         }
@@ -107,7 +111,10 @@ class ServiceRequestAdminController extends Controller
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
         ]);
-        $serviceRequest = $this->find($id);
+        $serviceRequest = $this->find($request, $id);
+        if ($denied = $this->denyIfNotMine($request, $serviceRequest)) {
+            return $denied;
+        }
         $next = $request->status;
 
         if (! in_array($next, ServiceRequest::TRANSITIONS[$serviceRequest->status] ?? [])) {
@@ -149,7 +156,10 @@ class ServiceRequestAdminController extends Controller
     public function cancel(Request $request, $id)
     {
         $request->validate(['reason' => 'required|string|max:1000']);
-        $serviceRequest = $this->find($id);
+        $serviceRequest = $this->find($request, $id);
+        if ($denied = $this->denyIfNotMine($request, $serviceRequest)) {
+            return $denied;
+        }
 
         if (! $serviceRequest->isActive()) {
             return response()->json(['success' => false, 'message' => 'This request is already closed'], 422);
@@ -168,13 +178,13 @@ class ServiceRequestAdminController extends Controller
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
         ]);
-        $serviceRequest = $this->find($id);
+        $serviceRequest = $this->find($request, $id);
 
         if (! in_array($serviceRequest->status, ['accepted', 'on_the_way', 'arrived', 'in_progress'])) {
             return response()->json(['success' => false, 'message' => 'This request is not active', 'status' => $serviceRequest->status], 422);
         }
         if ($serviceRequest->assigned_to && $serviceRequest->assigned_to != $request->user()->id) {
-            return response()->json(['success' => false, 'message' => 'This job is assigned to another mechanic'], 403);
+            return response()->json(['success' => false, 'message' => 'This job is assigned to another mechanic'], 409);
         }
 
         $serviceRequest->update([
@@ -188,19 +198,49 @@ class ServiceRequestAdminController extends Controller
 
     public function messages(Request $request, $id)
     {
-        return response()->json(ServiceRequestChat::list($this->find($id), 'admin', $request));
+        return response()->json(ServiceRequestChat::list($this->find($request, $id), 'admin', $request));
     }
 
     public function sendMessage(Request $request, $id)
     {
-        [$payload, $code] = ServiceRequestChat::send($this->find($id), 'admin', $request->user()->id, $request);
+        $serviceRequest = $this->find($request, $id);
+        if ($denied = $this->denyIfNotMine($request, $serviceRequest)) {
+            return $denied;
+        }
+        [$payload, $code] = ServiceRequestChat::send($serviceRequest, 'admin', $request->user()->id, $request);
 
         return response()->json($payload, $code);
     }
 
-    private function find($id): ServiceRequest
+    /**
+     * Requests this user may see: admins see everything; a mechanic sees requests still waiting
+     * to be accepted (so everyone can take them) plus the jobs they accepted themselves.
+     */
+    private function visible(Request $request)
     {
-        return ServiceRequest::with(['client', 'mechanic'])->findOrFail($id);
+        $query = ServiceRequest::with(['client', 'mechanic']);
+        $user = $request->user();
+
+        if (MobileAdmin::isMechanic($user)) {
+            $query->where(fn ($q) => $q->where('status', 'pending')->orWhere('assigned_to', $user->id));
+        }
+
+        return $query;
+    }
+
+    private function find(Request $request, $id): ServiceRequest
+    {
+        return $this->visible($request)->findOrFail($id);
+    }
+
+    /** Mechanics may only work on their own jobs (admins on any). 409, not 403: the app treats 403 as signed out. */
+    private function denyIfNotMine(Request $request, ServiceRequest $serviceRequest)
+    {
+        if (MobileAdmin::isMechanic($request->user()) && $serviceRequest->assigned_to != $request->user()->id) {
+            return response()->json(['success' => false, 'message' => 'This job is assigned to another mechanic'], 409);
+        }
+
+        return null;
     }
 
     private function respondWithRequest(ServiceRequest $serviceRequest, string $message)

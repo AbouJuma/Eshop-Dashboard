@@ -77,6 +77,7 @@ class AdminAuthController extends Controller
             'email' => $user->email,
             'business_id' => $user->business_id,
             'business_name' => optional(Business::find($user->business_id))->name,
+            'role' => MobileAdmin::accessLevel($user), // admin | mechanic
         ];
     }
 }

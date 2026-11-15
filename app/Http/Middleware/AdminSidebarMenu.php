@@ -72,7 +72,7 @@ class AdminSidebarMenu
                         if (auth()->user()->can('user.view')) {
                             $sub->url(
                                 route('mobile-admins.index'),
-                                'Mobile Admins',
+                                'App Admins & Mechanics',
                                 ['icon' => 'fa fas fa-mobile-alt', 'active' => request()->segment(1) == 'mobile-admins']
                             );
                         }

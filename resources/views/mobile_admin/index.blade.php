@@ -3,8 +3,8 @@
 
 @section('content')
 <section class="content-header">
-    <h1>Mobile Admins
-        <small>Accounts that can use the Admin Panel in the mobile app</small>
+    <h1>Mobile Admins &amp; Mechanics
+        <small>Accounts that can sign in to the Admin Panel in the mobile app</small>
     </h1>
 </section>
 
@@ -12,7 +12,8 @@
     <div class="callout callout-info">
         Mobile admins sign in from the app (<strong>Drawer → Admin Panel</strong>) with the username and password below.
         They can manage D-World orders, bookings, car maintenance and roadside requests and receive the new-request alarm.
-        Accounts created here only get app access, not the full web portal. Portal admins can also sign in to the app.
+        <strong>Mechanics</strong> only see roadside requests: everyone hears the alarm and can accept a new request, then each mechanic sees only the jobs they accepted.
+        <strong>App admins</strong> see everything in the app. Accounts created here never get access to the web portal. Portal admins can also sign in to the app.
     </div>
 
     @component('components.widget', ['class' => 'box-primary', 'title' => 'All mobile admins'])
@@ -20,7 +21,7 @@
             @slot('tool')
                 <div class="box-tools">
                     <a class="btn btn-block btn-primary" href="{{ route('mobile-admins.create') }}">
-                        <i class="fa fa-plus"></i> Add mobile admin</a>
+                        <i class="fa fa-plus"></i> Add mechanic / admin</a>
                 </div>
             @endslot
         @endcan
@@ -48,8 +49,10 @@
                             <td>
                                 @if($isPortalAdmin)
                                     <span class="label label-primary">Portal admin + app</span>
+                                @elseif($user->roles->contains('name', $mechanicRole->name))
+                                    <span class="label label-warning">Mechanic (roadside only)</span>
                                 @else
-                                    <span class="label label-info">App only</span>
+                                    <span class="label label-info">App admin</span>
                                 @endif
                             </td>
                             <td>

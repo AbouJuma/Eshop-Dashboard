@@ -201,21 +201,24 @@ Route::prefix('admin')->group(function () {
         Route::get('service-requests/{id}/messages', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'messages']);
         Route::post('service-requests/{id}/messages', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'sendMessage'])->middleware('throttle:60,1');
 
-        Route::get('dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
+        // Admins only (mechanics see roadside jobs only)
+        Route::middleware('mobile.admin:full')->group(function () {
+            Route::get('dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
 
-        Route::get('orders', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'index']);
-        Route::get('orders/{id}', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'show']);
-        Route::post('orders/{id}/status', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'updateStatus']);
+            Route::get('orders', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'index']);
+            Route::get('orders/{id}', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'show']);
+            Route::post('orders/{id}/status', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'updateStatus']);
 
-        Route::get('bookings', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'index']);
-        Route::get('bookings/{id}', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'show']);
-        Route::post('bookings/{id}/status', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'updateStatus']);
-        Route::post('bookings/{id}/price', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'updatePrice']);
+            Route::get('bookings', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'index']);
+            Route::get('bookings/{id}', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'show']);
+            Route::post('bookings/{id}/status', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'updateStatus']);
+            Route::post('bookings/{id}/price', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'updatePrice']);
 
-        Route::get('car-maintenance/cars', [\App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class, 'cars']);
-        Route::apiResource('car-maintenance', \App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class)
-            ->parameters(['car-maintenance' => 'id'])
-            ->names('api.admin.car-maintenance'); // avoid clashing with the web car-maintenance.* route names
+            Route::get('car-maintenance/cars', [\App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class, 'cars']);
+            Route::apiResource('car-maintenance', \App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class)
+                ->parameters(['car-maintenance' => 'id'])
+                ->names('api.admin.car-maintenance'); // avoid clashing with the web car-maintenance.* route names
+        });
     });
 });
 

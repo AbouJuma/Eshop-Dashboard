@@ -20,14 +20,15 @@ class MobileAdminController extends Controller
         $businessId = $this->businessId();
 
         $mobileRole = $this->mobileRole($businessId);
+        $mechanicRole = $this->mechanicRole($businessId);
         $users = User::where('business_id', $businessId)
-            ->whereHas('roles', fn ($q) => $q->whereIn('name', [$mobileRole->name, 'Admin#'.$businessId]))
+            ->whereHas('roles', fn ($q) => $q->whereIn('name', [$mobileRole->name, $mechanicRole->name, 'Admin#'.$businessId]))
             ->with('roles')
             ->withCount(['tokens as app_sessions' => fn ($q) => $q->where('name', MobileAdmin::TOKEN_NAME)->where('revoked', false)])
             ->orderBy('first_name')
             ->get();
 
-        return view('mobile_admin.index', compact('users', 'mobileRole', 'businessId'));
+        return view('mobile_admin.index', compact('users', 'mobileRole', 'mechanicRole', 'businessId'));
     }
 
     public function create()
@@ -47,10 +48,12 @@ class MobileAdminController extends Controller
         $this->fill($user, $data, $businessId);
         $user->password = bcrypt($data['password']);
         $user->save();
-        $user->assignRole($this->mobileRole($businessId));
+        $this->setAccess($user, $data['access']);
+
+        $label = $data['access'] === MobileAdmin::LEVEL_MECHANIC ? 'Mechanic' : 'Mobile admin';
 
         return redirect()->route('mobile-admins.index')
-            ->with('status', ['success' => 1, 'msg' => "Mobile admin {$user->username} created. They can now sign in to the app."]);
+            ->with('status', ['success' => 1, 'msg' => "{$label} {$user->username} created. They can now sign in to the app."]);
     }
 
     public function edit($id)
@@ -71,9 +74,10 @@ class MobileAdminController extends Controller
             $user->password = bcrypt($data['password']);
         }
         $user->save();
+        $accessChanged = $this->setAccess($user, $data['access']);
 
-        // deactivated or password changed: sign them out of the app
-        if ($user->status !== 'active' || ! empty($data['password'])) {
+        // deactivated, password or access changed: sign them out of the app
+        if ($user->status !== 'active' || ! empty($data['password']) || $accessChanged) {
             $this->revokeAppSessions($user);
         }
 
@@ -95,6 +99,7 @@ class MobileAdminController extends Controller
         // portal admins only lose app access; mobile-only accounts are removed
         if ($user->hasRole('Admin#'.$user->business_id)) {
             $user->removeRole($this->mobileRole($user->business_id));
+            $user->removeRole($this->mechanicRole($user->business_id));
             $msg = "{$user->username} is a portal admin; their app sessions were signed out.";
         } else {
             $user->delete();
@@ -125,6 +130,7 @@ class MobileAdminController extends Controller
             'contact_no' => 'nullable|string|max:15',
             'password' => [$user ? 'nullable' : 'required', 'string', 'min:8', 'confirmed'],
             'status' => 'required|in:active,inactive',
+            'access' => 'required|in:admin,mechanic',
         ], ['username.regex' => 'Username may only contain letters, numbers, dots, dashes and underscores.']);
     }
 
@@ -154,6 +160,36 @@ class MobileAdminController extends Controller
             ['name' => MobileAdmin::mobileRoleName($businessId), 'business_id' => $businessId],
             ['guard_name' => 'web', 'is_default' => 0]
         );
+    }
+
+    private function mechanicRole($businessId): Role
+    {
+        return Role::firstOrCreate(
+            ['name' => MobileAdmin::mechanicRoleName($businessId), 'business_id' => $businessId],
+            ['guard_name' => 'web', 'is_default' => 0]
+        );
+    }
+
+    /**
+     * Give the user app-admin or mechanic access (portal admin role, if any, is left alone).
+     * Returns true when the access level changed.
+     */
+    private function setAccess(User $user, string $access): bool
+    {
+        $before = MobileAdmin::accessLevel($user);
+        $mobile = $this->mobileRole($user->business_id);
+        $mechanic = $this->mechanicRole($user->business_id);
+
+        if ($access === MobileAdmin::LEVEL_MECHANIC) {
+            $user->removeRole($mobile);
+            $user->assignRole($mechanic);
+        } else {
+            $user->removeRole($mechanic);
+            $user->assignRole($mobile);
+        }
+        $user->unsetRelation('roles');
+
+        return $before !== null && $before !== MobileAdmin::accessLevel($user);
     }
 
     private function revokeAppSessions(User $user): void

@@ -4,7 +4,7 @@
 
 @section('content')
 <section class="content-header">
-    <h1>{{ $isEdit ? 'Edit mobile admin' : 'Add mobile admin' }}</h1>
+    <h1>{{ $isEdit ? 'Edit app account' : 'Add mechanic or app admin' }}</h1>
 </section>
 
 <section class="content">
@@ -41,6 +41,26 @@
                 <div class="col-md-6 form-group">
                     <label>Username * <small class="text-muted">(used to sign in to the app)</small></label>
                     <input type="text" name="username" class="form-control" required value="{{ old('username', $user->username) }}">
+                </div>
+                @php($currentAccess = old('access', $user->exists && \App\Http\Middleware\MobileAdmin::isMechanic($user) ? 'mechanic' : ($user->exists ? 'admin' : 'mechanic')))
+                <div class="col-md-12 form-group">
+                    <label>Access in the app *</label>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label style="font-weight: normal; display: block; border: 1px solid #ddd; border-radius: 6px; padding: 10px 12px; cursor: pointer;">
+                                <input type="radio" name="access" value="mechanic" {{ $currentAccess === 'mechanic' ? 'checked' : '' }}>
+                                <strong>Mechanic</strong><br>
+                                <small class="text-muted">Roadside requests only. Hears the alarm and can accept new requests; afterwards sees only the jobs they accepted.</small>
+                            </label>
+                        </div>
+                        <div class="col-sm-6">
+                            <label style="font-weight: normal; display: block; border: 1px solid #ddd; border-radius: 6px; padding: 10px 12px; cursor: pointer;">
+                                <input type="radio" name="access" value="admin" {{ $currentAccess === 'admin' ? 'checked' : '' }}>
+                                <strong>App admin</strong><br>
+                                <small class="text-muted">Whole app admin panel: dashboard, orders, bookings, car maintenance and all roadside requests.</small>
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-6 form-group">
                     <label>Status</label>
