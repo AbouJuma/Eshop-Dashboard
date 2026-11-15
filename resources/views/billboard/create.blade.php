@@ -168,15 +168,15 @@
                             <input type="hidden" name="visibility" value="public">
 
                             <div class="form-group mb-0">
-                                <label for="image">Cover Image <span class="text-danger">*</span></label>
+                                <label for="image">Image, GIF or short video <span class="text-danger">*</span> <small class="text-muted">(JPG, PNG, GIF, MP4 — max 20 MB, video best under 30 seconds)</small></label>
                                 <div class="input-group">
                                     <div class="custom-file">
                                         <input type="file" class="custom-file-input @error('image') is-invalid @enderror" 
-                                               id="image" name="image" accept="image/*" required>
-                                        <label class="custom-file-label" for="image">Choose image file...</label>
+                                               id="image" name="image" accept="image/*,video/mp4,video/webm,video/quicktime" required>
+                                        <label class="custom-file-label" for="image">Choose image, GIF or video...</label>
                                     </div>
                                 </div>
-                                <small class="form-text text-muted mt-2">Allowed formats: JPEG, PNG, JPG, GIF (Max: 2MB)</small>
+                                <small class="form-text text-muted mt-2">Allowed formats: JPG, PNG, GIF (animated), WEBP, MP4, WEBM, MOV (max 20 MB). Keep videos short (under 30 seconds) so the app loads them fast.</small>
                                 @error('image')
                                     <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                 @enderror
@@ -205,7 +205,7 @@
         const fileInput = document.querySelector('input[type=file]');
         if (fileInput) {
             fileInput.addEventListener('change', function(e) {
-                var fileName = e.target.files[0]?.name || 'Choose image file...';
+                var fileName = e.target.files[0]?.name || 'Choose image, GIF or video...';
                 var label = document.querySelector('label[for="image"]');
                 if (label) {
                     label.innerText = fileName;

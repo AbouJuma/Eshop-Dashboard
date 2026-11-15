@@ -15,6 +15,7 @@ class Schedule extends Model
         'date',
         'from',
         'image',
+        'media_type',
         'visibility',
         'to',
     ];

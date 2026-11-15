@@ -7,6 +7,11 @@ use App\Models\Schedule;
 
 class BillboardController extends Controller
 {
+    /** Images (incl. animated GIF) and short videos for the app's home slider. */
+    const MEDIA_MIMES = 'jpeg,png,jpg,gif,webp,mp4,webm,mov';
+    const VIDEO_EXTENSIONS = ['mp4', 'webm', 'mov'];
+    const MAX_UPLOAD_KB = 20480; // 20 MB
+
     public function index()
     {
         $schedules = Schedule::latest()->get();
@@ -26,7 +31,7 @@ class BillboardController extends Controller
             'date' => 'nullable|date',
             'from' => 'nullable',
             'to' => 'nullable',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|file|mimes:'.self::MEDIA_MIMES.'|max:'.self::MAX_UPLOAD_KB,
             'visibility' => 'nullable|in:public,private'
         ]);
 
@@ -40,10 +45,7 @@ class BillboardController extends Controller
         $data['visibility'] = $data['visibility'] ?? 'public';
         
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/schedules'), $imageName);
-            $data['image'] = 'schedules/' . $imageName;
+            [$data['image'], $data['media_type']] = $this->storeMedia($request->file('image'));
         }
 
         Schedule::create($data);
@@ -71,7 +73,7 @@ class BillboardController extends Controller
             'date' => 'nullable|date',
             'from' => 'nullable',
             'to' => 'nullable',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|file|mimes:'.self::MEDIA_MIMES.'|max:'.self::MAX_UPLOAD_KB,
             'visibility' => 'nullable|in:public,private'
         ]);
 
@@ -99,10 +101,7 @@ class BillboardController extends Controller
                 unlink(public_path('uploads/' . $schedule->image));
             }
             
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/schedules'), $imageName);
-            $data['image'] = 'schedules/' . $imageName;
+            [$data['image'], $data['media_type']] = $this->storeMedia($request->file('image'));
         }
 
         $schedule->update($data);
@@ -124,5 +123,15 @@ class BillboardController extends Controller
 
         return redirect()->route('billboard.index')
             ->with('success', 'Billboard deleted successfully.');
+    }
+
+    /** @return array [relative path under uploads/, media type] */
+    private function storeMedia(\Illuminate\Http\UploadedFile $file): array
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
+        $name = time().'_'.substr(md5(uniqid('', true)), 0, 6).'.'.$extension;
+        $file->move(public_path('uploads/schedules'), $name);
+
+        return ['schedules/'.$name, in_array($extension, self::VIDEO_EXTENSIONS) ? 'video' : 'image'];
     }
 }

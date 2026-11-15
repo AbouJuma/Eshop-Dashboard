@@ -17,6 +17,7 @@ class ScheduleResource extends JsonResource
         return [
             'id' => $this->id,
             'image' => $this->image ? url('/uploads/' . $this->image) : null,
+            'media_type' => $this->media_type ?? 'image', // image (incl. animated GIF) | video
             'title' => $this->title,
             'location' => $this->location,
             'date' => $this->date,

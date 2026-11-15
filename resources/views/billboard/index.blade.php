@@ -183,7 +183,12 @@
                     <div class="billboard-grid-card">
                         <div class="billboard-img-container">
                             @if(!empty($schedule->image))
-                                <img src="{{ asset('uploads/' . $schedule->image) }}" class="billboard-img" alt="{{ $schedule->title }}">
+                                @if(($schedule->media_type ?? 'image') === 'video')
+                                    <video src="{{ asset('uploads/' . $schedule->image) }}" class="billboard-img" muted autoplay loop playsinline style="object-fit: cover;"></video>
+                                    <span class="badge badge-dark" style="position:absolute; top:8px; left:8px;"><i class="fas fa-video"></i> Video</span>
+                                @else
+                                    <img src="{{ asset('uploads/' . $schedule->image) }}" class="billboard-img" alt="{{ $schedule->title }}">
+                                @endif
                             @else
                                 <div class="billboard-fallback-img">
                                     <i class="fas fa-image fa-3x"></i>
