@@ -73,6 +73,26 @@ class DWorldStatusService
         return $booking;
     }
 
+    /** Admin confirmed a new grand total for a booking: tell the customer. */
+    public static function updateBookingPrice(Booking $booking, $grandTotal): Booking
+    {
+        $booking->grand_total = $grandTotal;
+        $booking->final_total = $grandTotal;
+        $booking->save();
+
+        if ($booking->user_id && User::find($booking->user_id)) {
+            NotificationService::bookingStatusChanged(
+                $booking->user_id,
+                $booking->id,
+                $booking->reference_number,
+                'price updated',
+                'The price for your booking #'.($booking->reference_number ?? $booking->id).' is now TZS '.number_format((float) $grandTotal)
+            );
+        }
+
+        return $booking;
+    }
+
     /**
      * @throws InvalidArgumentException on invalid status
      */

@@ -165,9 +165,8 @@ class BookingViewController extends Controller
                 'price_note' => 'nullable|string|max:500'
             ]);
             
-            // Update booking price and note
-            $booking->grand_total = $request->confirmed_price;
-            $booking->save();
+            // Update booking price (keeps final_total in sync and notifies the customer)
+            DWorldStatusService::updateBookingPrice($booking, $request->confirmed_price);
             
             // If there's a price note, you could store it in a separate table or log it
             if ($request->filled('price_note')) {

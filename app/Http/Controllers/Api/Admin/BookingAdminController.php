@@ -77,10 +77,7 @@ class BookingAdminController extends Controller
     {
         $request->validate(['grand_total' => 'required|numeric|min:0']);
 
-        $booking = Booking::findOrFail($id);
-        $booking->grand_total = $request->grand_total;
-        $booking->final_total = $request->grand_total;
-        $booking->save();
+        $booking = DWorldStatusService::updateBookingPrice(Booking::findOrFail($id), $request->grand_total);
 
         return $this->respondWithDetail($booking, 'Booking price updated successfully');
     }
