@@ -254,6 +254,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/car-maintenance/export-pdf', [\App\Http\Controllers\CarMaintenanceController::class, 'exportPdf'])->name('car-maintenance.export-pdf');
     Route::get('/car-maintenance/{id}/print-label', [\App\Http\Controllers\CarMaintenanceController::class, 'printLabel'])->name('car-maintenance.print-label');
     Route::get('/car-maintenance/{id}/print', [\App\Http\Controllers\CarMaintenanceController::class, 'printDocument'])->name('car-maintenance.print');
+    Route::post('/car-maintenance/{id}/attachments', [\App\Http\Controllers\CarMaintenanceController::class, 'storeAttachment'])->name('car-maintenance.attachments.store');
+    Route::delete('/car-maintenance/{id}/attachments/{attachment}', [\App\Http\Controllers\CarMaintenanceController::class, 'destroyAttachment'])->name('car-maintenance.attachments.destroy');
     Route::resource('car-maintenance', \App\Http\Controllers\CarMaintenanceController::class);
 
     Route::resource('group-taxes', GroupTaxController::class);

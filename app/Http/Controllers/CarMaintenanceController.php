@@ -192,8 +192,28 @@ class CarMaintenanceController extends Controller
     {
         $business_id = request()->session()->get('business.id');
         $maintenance = CarMaintenance::where('business_id', $business_id)->with('car')->findOrFail($id);
+        $attachments = \App\Models\MediaAttachment::forItem('car_maintenance', $maintenance->id)->get();
 
-        return view('car_maintenance.edit', compact('maintenance'));
+        return view('car_maintenance.edit', compact('maintenance', 'attachments'));
+    }
+
+    /** Reference photo / video for a service record (portal). */
+    public function storeAttachment(Request $request, $id)
+    {
+        $maintenance = CarMaintenance::where('business_id', $request->session()->get('business.id'))->findOrFail($id);
+        [$payload, $code] = \App\Services\Attachments::upload('car_maintenance', $maintenance->id, auth()->id(), true, $request);
+
+        return redirect()->to(route('car-maintenance.edit', $maintenance->id).'#attachments')
+            ->with('status', ['success' => $code < 300 ? 1 : 0, 'msg' => $payload['message'] ?? '']);
+    }
+
+    public function destroyAttachment(Request $request, $id, $attachment)
+    {
+        $maintenance = CarMaintenance::where('business_id', $request->session()->get('business.id'))->findOrFail($id);
+        \App\Services\Attachments::delete('car_maintenance', $maintenance->id, $attachment, auth()->id(), true);
+
+        return redirect()->to(route('car-maintenance.edit', $maintenance->id).'#attachments')
+            ->with('status', ['success' => 1, 'msg' => 'File deleted']);
     }
 
     /**
@@ -229,7 +249,8 @@ class CarMaintenanceController extends Controller
     {
         $business_id = request()->session()->get('business.id');
         $maintenance = CarMaintenance::where('business_id', $business_id)->findOrFail($id);
-        
+
+        \App\Models\MediaAttachment::deleteAllFor('car_maintenance', $maintenance->id);
         $maintenance->delete();
 
         return redirect()->route('car-maintenance.index')

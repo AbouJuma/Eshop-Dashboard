@@ -114,6 +114,7 @@ class ServiceRequest extends Model
             'accepted_at' => optional($this->accepted_at)->format('Y-m-d H:i'),
             'arrived_at' => optional($this->arrived_at)->format('Y-m-d H:i'),
             'completed_at' => optional($this->completed_at)->format('Y-m-d H:i'),
+            'attachments_count' => MediaAttachment::countFor('service_request', $this->id),
         ];
     }
 }

@@ -140,7 +140,9 @@ class CarMaintenanceAdminController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $this->findRecord($request, $id)->delete();
+        $record = $this->findRecord($request, $id);
+        \App\Models\MediaAttachment::deleteAllFor('car_maintenance', $record->id);
+        $record->delete();
 
         return response()->json(['success' => true, 'message' => 'Service history record deleted successfully']);
     }
@@ -178,7 +180,31 @@ class CarMaintenanceAdminController extends Controller
             'details' => $record->details,
             'cost' => (float) $record->cost,
             'car' => $record->car ? $this->carPayload($record->car) : null,
+            'attachments_count' => \App\Models\MediaAttachment::countFor('car_maintenance', $record->id),
         ];
+    }
+
+    // ---- reference photos / videos of the work ----
+
+    public function attachments(Request $request, $id)
+    {
+        [$payload, $code] = \App\Services\Attachments::list('car_maintenance', $this->findRecord($request, $id)->id, $request->user()->id, true);
+
+        return response()->json($payload, $code);
+    }
+
+    public function uploadAttachment(Request $request, $id)
+    {
+        [$payload, $code] = \App\Services\Attachments::upload('car_maintenance', $this->findRecord($request, $id)->id, $request->user()->id, true, $request);
+
+        return response()->json($payload, $code);
+    }
+
+    public function deleteAttachment(Request $request, $id, $attachment)
+    {
+        [$payload, $code] = \App\Services\Attachments::delete('car_maintenance', $this->findRecord($request, $id)->id, $attachment, $request->user()->id, true);
+
+        return response()->json($payload, $code);
     }
 
     private function carPayload(Car $car): array

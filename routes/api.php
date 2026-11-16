@@ -200,6 +200,15 @@ Route::prefix('admin')->group(function () {
         Route::post('service-requests/{id}/location', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'location']);
         Route::get('service-requests/{id}/messages', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'messages']);
         Route::post('service-requests/{id}/messages', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'sendMessage'])->middleware('throttle:60,1');
+        // free in-app video call with the customer (server only relays the call set-up)
+        Route::post('service-requests/{id}/calls', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'startCall'])->middleware('throttle:20,1');
+        Route::get('service-requests/{id}/calls/{call}', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'showCall']);
+        Route::post('service-requests/{id}/calls/{call}/answer', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'answerCall']);
+        Route::post('service-requests/{id}/calls/{call}/end', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'endCall']);
+        // reference photos / videos on the job
+        Route::get('service-requests/{id}/attachments', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'attachments']);
+        Route::post('service-requests/{id}/attachments', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'uploadAttachment'])->middleware('throttle:30,1');
+        Route::delete('service-requests/{id}/attachments/{attachment}', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'deleteAttachment']);
 
         // The signed-in user's own figures (every role)
         Route::get('my-stats', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'mine']);
@@ -224,12 +233,15 @@ Route::prefix('admin')->group(function () {
 
         Route::middleware('mobile.admin:maintenance.view,maintenance.manage')->group(function () {
             Route::get('car-maintenance/cars', [\App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class, 'cars']);
+            Route::get('car-maintenance/{id}/attachments', [\App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class, 'attachments']);
             Route::apiResource('car-maintenance', \App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class)
                 ->only(['index', 'show'])
                 ->parameters(['car-maintenance' => 'id'])
                 ->names('api.admin.car-maintenance'); // avoid clashing with the web car-maintenance.* route names
         });
         Route::middleware('mobile.admin:maintenance.manage')->group(function () {
+            Route::post('car-maintenance/{id}/attachments', [\App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class, 'uploadAttachment'])->middleware('throttle:30,1');
+            Route::delete('car-maintenance/{id}/attachments/{attachment}', [\App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class, 'deleteAttachment']);
             Route::apiResource('car-maintenance', \App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class)
                 ->only(['store', 'update', 'destroy'])
                 ->parameters(['car-maintenance' => 'id'])
@@ -260,6 +272,13 @@ Route::middleware('auth:api')->group(function () {
     Route::post('service-requests/{id}/cancel', [\App\Http\Controllers\Api\ServiceRequestController::class, 'cancel']);
     Route::get('service-requests/{id}/messages', [\App\Http\Controllers\Api\ServiceRequestController::class, 'messages']);
     Route::post('service-requests/{id}/messages', [\App\Http\Controllers\Api\ServiceRequestController::class, 'sendMessage'])->middleware('throttle:60,1');
+    Route::post('service-requests/{id}/calls', [\App\Http\Controllers\Api\ServiceRequestController::class, 'startCall'])->middleware('throttle:20,1');
+    Route::get('service-requests/{id}/calls/{call}', [\App\Http\Controllers\Api\ServiceRequestController::class, 'showCall']);
+    Route::post('service-requests/{id}/calls/{call}/answer', [\App\Http\Controllers\Api\ServiceRequestController::class, 'answerCall']);
+    Route::post('service-requests/{id}/calls/{call}/end', [\App\Http\Controllers\Api\ServiceRequestController::class, 'endCall']);
+    Route::get('service-requests/{id}/attachments', [\App\Http\Controllers\Api\ServiceRequestController::class, 'attachments']);
+    Route::post('service-requests/{id}/attachments', [\App\Http\Controllers\Api\ServiceRequestController::class, 'uploadAttachment'])->middleware('throttle:30,1');
+    Route::delete('service-requests/{id}/attachments/{attachment}', [\App\Http\Controllers\Api\ServiceRequestController::class, 'deleteAttachment']);
 });
 
 /** Device push token refresh (customers and admins; whichever user the token belongs to) */

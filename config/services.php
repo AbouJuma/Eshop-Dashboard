@@ -31,4 +31,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // In-app video calls: optional TURN relay for networks where phones cannot connect directly
+    // (comma-separated urls, e.g. "turn:global.relay.metered.ca:80,turn:global.relay.metered.ca:443?transport=tcp")
+    'webrtc' => [
+        'turn_urls' => env('WEBRTC_TURN_URLS', ''),
+        'turn_username' => env('WEBRTC_TURN_USERNAME', ''),
+        'turn_credential' => env('WEBRTC_TURN_CREDENTIAL', ''),
+    ],
+
 ];

@@ -176,6 +176,8 @@
             </form>
         </div>
     </div>
+
+    @include('car_maintenance._attachments')
 </section>
 @endsection
 

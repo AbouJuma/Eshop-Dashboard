@@ -27,3 +27,5 @@
 # /public/js/skins/
 # Firebase credentials
 firebase-credentials.json
+# photos / videos attached to jobs and service records (user content)
+public/uploads/attachments/

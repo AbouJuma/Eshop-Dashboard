@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\MobileAdmin;
 use App\Models\ServiceRequest;
+use App\Models\ServiceRequestCall;
+use App\Services\Attachments;
+use App\Services\ServiceRequestCalls;
 use App\Services\ServiceRequestChat;
 use App\Services\ServiceRequestNotifier;
 use Illuminate\Http\Request;
@@ -56,14 +59,36 @@ class ServiceRequestAdminController extends Controller
             'pending' => $pending->map->toApiArray(),
             'my_active_count' => ServiceRequest::where('assigned_to', $request->user()->id)
                 ->whereIn('status', ['accepted', 'on_the_way', 'arrived', 'in_progress'])->count(),
+            // a customer is video-calling me (backup for when the push does not arrive)
+            'incoming_call' => $this->incomingCallForMe($request),
         ]);
+    }
+
+    private function incomingCallForMe(Request $request): ?array
+    {
+        $call = ServiceRequestCall::where('status', 'ringing')
+            ->where('caller_type', 'customer')
+            ->where('created_at', '>=', now()->subSeconds(ServiceRequestCall::RING_SECONDS))
+            ->whereHas('serviceRequest', fn ($q) => $q->where('assigned_to', $request->user()->id))
+            ->latest('id')->first();
+
+        return $call ? [
+            'id' => $call->id,
+            'service_request_id' => $call->service_request_id,
+            'caller_name' => $call->callerName(),
+        ] : null;
     }
 
     public function show(Request $request, $id)
     {
         $serviceRequest = $this->find($request, $id);
 
-        return response()->json(['success' => true, 'data' => $serviceRequest->toApiArray() + ['unread_messages' => ServiceRequestChat::unreadFor($serviceRequest, 'admin')]]);
+        return response()->json(['success' => true, 'data' => $serviceRequest->toApiArray() + [
+            'unread_messages' => ServiceRequestChat::unreadFor($serviceRequest, 'admin'),
+            'incoming_call' => $serviceRequest->assigned_to == $request->user()->id
+                ? ServiceRequestCalls::incoming($serviceRequest, 'admin') : null,
+            'call_ice_servers' => ServiceRequestCall::iceServers(),
+        ]]);
     }
 
     public function accept(Request $request, $id)
@@ -214,6 +239,72 @@ class ServiceRequestAdminController extends Controller
             return $denied;
         }
         [$payload, $code] = ServiceRequestChat::send($serviceRequest, 'admin', $request->user()->id, $request);
+
+        return response()->json($payload, $code);
+    }
+
+    // ---- video call with the customer (the assigned mechanic, or a supervisor) ----
+
+    public function startCall(Request $request, $id)
+    {
+        $serviceRequest = $this->find($request, $id);
+        if ($denied = $this->denyIfNotMine($request, $serviceRequest)) {
+            return $denied;
+        }
+
+        return $this->reply(ServiceRequestCalls::start($serviceRequest, 'admin', $request->user()->id, $request));
+    }
+
+    public function showCall(Request $request, $id, $call)
+    {
+        return $this->reply(ServiceRequestCalls::show($this->find($request, $id), 'admin', $call));
+    }
+
+    public function answerCall(Request $request, $id, $call)
+    {
+        $serviceRequest = $this->find($request, $id);
+        if ($denied = $this->denyIfNotMine($request, $serviceRequest)) {
+            return $denied;
+        }
+
+        return $this->reply(ServiceRequestCalls::answer($serviceRequest, 'admin', $request->user()->id, $call, $request));
+    }
+
+    public function endCall(Request $request, $id, $call)
+    {
+        return $this->reply(ServiceRequestCalls::end($this->find($request, $id), 'admin', $call, $request->boolean('decline')));
+    }
+
+    // ---- reference photos / videos (anyone who can see the job may look; those working it may add) ----
+
+    public function attachments(Request $request, $id)
+    {
+        return $this->reply(Attachments::list('service_request', $this->find($request, $id)->id, $request->user()->id, true));
+    }
+
+    public function uploadAttachment(Request $request, $id)
+    {
+        $serviceRequest = $this->find($request, $id);
+        if ($denied = $this->denyIfNotMine($request, $serviceRequest)) {
+            return $denied;
+        }
+
+        return $this->reply(Attachments::upload('service_request', $serviceRequest->id, $request->user()->id, true, $request));
+    }
+
+    public function deleteAttachment(Request $request, $id, $attachment)
+    {
+        $serviceRequest = $this->find($request, $id);
+        if ($denied = $this->denyIfNotMine($request, $serviceRequest)) {
+            return $denied;
+        }
+
+        return $this->reply(Attachments::delete('service_request', $serviceRequest->id, $attachment, $request->user()->id, true));
+    }
+
+    private function reply(array $result)
+    {
+        [$payload, $code] = $result;
 
         return response()->json($payload, $code);
     }

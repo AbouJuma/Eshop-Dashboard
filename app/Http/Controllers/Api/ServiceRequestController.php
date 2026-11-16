@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
+use App\Services\Attachments;
+use App\Services\ServiceRequestCalls;
 use App\Services\ServiceRequestChat;
 use App\Services\ServiceRequestNotifier;
 use Illuminate\Http\Request;
@@ -93,7 +95,11 @@ class ServiceRequestController extends Controller
     {
         $serviceRequest = $this->find($request, $id);
 
-        return response()->json(['success' => true, 'data' => $serviceRequest->toApiArray() + ['unread_messages' => ServiceRequestChat::unreadFor($serviceRequest, 'customer')]]);
+        return response()->json(['success' => true, 'data' => $serviceRequest->toApiArray() + [
+            'unread_messages' => ServiceRequestChat::unreadFor($serviceRequest, 'customer'),
+            'incoming_call' => ServiceRequestCalls::incoming($serviceRequest, 'customer'),
+            'call_ice_servers' => \App\Models\ServiceRequestCall::iceServers(),
+        ]]);
     }
 
     public function cancel(Request $request, $id)
@@ -124,6 +130,52 @@ class ServiceRequestController extends Controller
     public function sendMessage(Request $request, $id)
     {
         [$payload, $code] = ServiceRequestChat::send($this->find($request, $id), 'customer', $request->user()->id, $request);
+
+        return response()->json($payload, $code);
+    }
+
+    // ---- video call with the mechanic ----
+
+    public function startCall(Request $request, $id)
+    {
+        return $this->reply(ServiceRequestCalls::start($this->find($request, $id), 'customer', $request->user()->id, $request));
+    }
+
+    public function showCall(Request $request, $id, $call)
+    {
+        return $this->reply(ServiceRequestCalls::show($this->find($request, $id), 'customer', $call));
+    }
+
+    public function answerCall(Request $request, $id, $call)
+    {
+        return $this->reply(ServiceRequestCalls::answer($this->find($request, $id), 'customer', $request->user()->id, $call, $request));
+    }
+
+    public function endCall(Request $request, $id, $call)
+    {
+        return $this->reply(ServiceRequestCalls::end($this->find($request, $id), 'customer', $call, $request->boolean('decline')));
+    }
+
+    // ---- reference photos / videos ----
+
+    public function attachments(Request $request, $id)
+    {
+        return $this->reply(Attachments::list('service_request', $this->find($request, $id)->id, $request->user()->id, false));
+    }
+
+    public function uploadAttachment(Request $request, $id)
+    {
+        return $this->reply(Attachments::upload('service_request', $this->find($request, $id)->id, $request->user()->id, false, $request));
+    }
+
+    public function deleteAttachment(Request $request, $id, $attachment)
+    {
+        return $this->reply(Attachments::delete('service_request', $this->find($request, $id)->id, $attachment, $request->user()->id, false));
+    }
+
+    private function reply(array $result)
+    {
+        [$payload, $code] = $result;
 
         return response()->json($payload, $code);
     }
