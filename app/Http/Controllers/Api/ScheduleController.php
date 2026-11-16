@@ -18,7 +18,8 @@ class ScheduleController extends BaseController
      */
     public function index()
     {
-        $schedules = Schedule::latest('date')->limit(4)->get(); // for trial
+        // slides shown in the app, in the order arranged on the portal billboard page
+        $schedules = Schedule::visible()->ordered()->limit(Schedule::APP_LIMIT)->get();
         // $schedules = Schedule::where('date', '>=', date('Y-m-d'))->paginate($per_page); // for production
         return $this->sendResponse(ScheduleResource::collection($schedules), 'RETRIEVE_SUCCESS');
     }

@@ -146,7 +146,7 @@
                     $filters = [];
                     if($request->filled('car_plate_number')) $filters[] = "Plate Number: " . strtoupper($request->car_plate_number);
                     if($request->filled('owner_name')) $filters[] = "Owner: " . $request->owner_name;
-                    if($request->filled('service_type')) $filters[] = "Type: " . ucfirst($request->service_type);
+                    if($request->filled('service_type')) $filters[] = "Type: " . (\App\Models\CarMaintenance::TYPES[$request->service_type] ?? $request->service_type);
                     if($request->filled('start_date') && $request->filled('end_date')) $filters[] = "Date: " . $request->start_date . " to " . $request->end_date;
                 @endphp
                 {{ !empty($filters) ? implode(' | ', $filters) : 'General Report (All Records)' }}
@@ -188,27 +188,15 @@
                         @if($item->car->owner_phone) <br><span style="font-size: 9px; color: #64748b;">{{ $item->car->owner_phone }}</span> @endif
                     </td>
                     <td>
-                        @if($item->service_type == 'spares' && is_null($item->serviced_kilometer))
-                            N/A
-                        @else
-                            {{ number_format($item->serviced_kilometer) }} km
-                        @endif
+                        {{ is_null($item->serviced_kilometer) ? '—' : number_format($item->serviced_kilometer).' km' }}
                     </td>
                     <td>
-                        @if($item->service_type == 'spares' && is_null($item->next_service_kilometer))
-                            N/A
-                        @else
-                            {{ number_format($item->next_service_kilometer) }} km
-                        @endif
+                        {{ $item->next_service_kilometer ? number_format($item->next_service_kilometer).' km' : '' }}
+                        @if($item->next_service_date)<br><span style="font-size: 9px; color: #64748b;">{{ $item->next_service_date->format('Y-m-d') }}</span>@endif
+                        {{ $item->hasNextService() ? '' : '—' }}
                     </td>
                     <td>
-                        @if($item->service_type == 'normal')
-                            <span class="badge badge-normal">Normal</span>
-                        @elseif($item->service_type == 'spares')
-                            <span class="badge badge-spares">Spares</span>
-                        @else
-                            <span class="badge badge-both">Both</span>
-                        @endif
+                        <span class="badge {{ ['oil_change' => 'badge-spares', 'periodic_maintenance' => 'badge-normal', 'repair' => 'badge-both'][$item->service_type] ?? 'badge-both' }}">{{ $item->type_label }}</span>
                     </td>
                     <td class="text-right"><strong>{{ number_format($item->cost, 2) }}</strong></td>
                 </tr>

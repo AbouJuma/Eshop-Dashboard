@@ -12,8 +12,7 @@
     <div class="callout callout-info">
         Mobile admins sign in from the app (<strong>Drawer → Admin Panel</strong>) with the username and password below.
         They can manage D-World orders, bookings, car maintenance and roadside requests and receive the new-request alarm.
-        <strong>Mechanics</strong> only see roadside requests: everyone hears the alarm and can accept a new request, then each mechanic sees only the jobs they accepted.
-        <strong>App admins</strong> see everything in the app. Accounts created here never get access to the web portal. Portal admins can also sign in to the app.
+        What each account can see and do comes from its <a href="{{ route('app-roles.index') }}"><strong>role</strong></a> (for example <strong>Mechanic</strong>: roadside jobs only, or <strong>App Admin</strong>: everything). You can create your own roles with any mix of permissions. Accounts created here never get access to the web portal. Portal admins can also sign in to the app.
     </div>
 
     @component('components.widget', ['class' => 'box-primary', 'title' => 'All mobile admins'])
@@ -33,7 +32,7 @@
                         <th>Username</th>
                         <th>Name</th>
                         <th>Phone / Email</th>
-                        <th>Access</th>
+                        <th>Role</th>
                         <th>Status</th>
                         <th>Signed in to app</th>
                         <th>Actions</th>
@@ -48,11 +47,11 @@
                             <td>{{ $user->contact_no ?: '—' }}<br><small class="text-muted">{{ $user->email }}</small></td>
                             <td>
                                 @if($isPortalAdmin)
-                                    <span class="label label-primary">Portal admin + app</span>
-                                @elseif($user->roles->contains('name', $mechanicRole->name))
-                                    <span class="label label-warning">Mechanic (roadside only)</span>
+                                    <span class="label label-primary">Portal admin (everything)</span>
+                                @elseif($user->app_role_id && isset($appRoles[$user->app_role_id]))
+                                    <span class="label label-info">{{ $appRoles[$user->app_role_id] }}</span>
                                 @else
-                                    <span class="label label-info">App admin</span>
+                                    <span class="label label-warning">{{ \App\Http\Middleware\MobileAdmin::roleName($user) ?? 'No access' }}</span>
                                 @endif
                             </td>
                             <td>

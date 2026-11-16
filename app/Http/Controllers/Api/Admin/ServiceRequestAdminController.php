@@ -24,6 +24,9 @@ class ServiceRequestAdminController extends Controller
         } elseif ($status) {
             $query->where('status', $status);
         }
+        if ($request->boolean('mine')) {
+            $query->where('assigned_to', $request->user()->id);
+        }
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
@@ -42,7 +45,10 @@ class ServiceRequestAdminController extends Controller
      */
     public function poll(Request $request)
     {
-        $pending = ServiceRequest::with(['client', 'mechanic'])->where('status', 'pending')->latest()->limit(20)->get();
+        // only people who can take (or supervise) jobs are alerted about new requests
+        $pending = MobileAdmin::can($request->user(), 'roadside.accept', 'roadside.view_all')
+            ? ServiceRequest::with(['client', 'mechanic'])->where('status', 'pending')->latest()->limit(20)->get()
+            : collect();
 
         return response()->json([
             'success' => true,
@@ -89,8 +95,8 @@ class ServiceRequestAdminController extends Controller
         $request->validate(['reason' => 'required|string|max:1000']);
         $serviceRequest = $this->find($request, $id);
 
-        if (MobileAdmin::isMechanic($request->user())) {
-            return response()->json(['success' => false, 'message' => 'Only admins can decline requests'], 422);
+        if (! MobileAdmin::can($request->user(), 'roadside.manage')) {
+            return response()->json(['success' => false, 'message' => 'Your role does not allow declining requests'], 422);
         }
         if ($serviceRequest->status !== 'pending') {
             return response()->json(['success' => false, 'message' => 'Only pending requests can be declined'], 422);
@@ -213,16 +219,18 @@ class ServiceRequestAdminController extends Controller
     }
 
     /**
-     * Requests this user may see: admins see everything; a mechanic sees requests still waiting
-     * to be accepted (so everyone can take them) plus the jobs they accepted themselves.
+     * Requests this user may see: with roadside.view_all everything; otherwise requests still waiting
+     * to be accepted (when they may accept, so everyone can take them) plus their own jobs.
      */
     private function visible(Request $request)
     {
         $query = ServiceRequest::with(['client', 'mechanic']);
         $user = $request->user();
 
-        if (MobileAdmin::isMechanic($user)) {
-            $query->where(fn ($q) => $q->where('status', 'pending')->orWhere('assigned_to', $user->id));
+        if (! MobileAdmin::can($user, 'roadside.view_all')) {
+            $canAccept = MobileAdmin::can($user, 'roadside.accept');
+            $query->where(fn ($q) => $q->where('assigned_to', $user->id)
+                ->when($canAccept, fn ($q) => $q->orWhere('status', 'pending')));
         }
 
         return $query;
@@ -233,10 +241,10 @@ class ServiceRequestAdminController extends Controller
         return $this->visible($request)->findOrFail($id);
     }
 
-    /** Mechanics may only work on their own jobs (admins on any). 409, not 403: the app treats 403 as signed out. */
+    /** Only supervisors (roadside.manage) work on other people's jobs. 409, not 403: the app treats 403 as signed out. */
     private function denyIfNotMine(Request $request, ServiceRequest $serviceRequest)
     {
-        if (MobileAdmin::isMechanic($request->user()) && $serviceRequest->assigned_to != $request->user()->id) {
+        if ($serviceRequest->assigned_to != $request->user()->id && ! MobileAdmin::can($request->user(), 'roadside.manage')) {
             return response()->json(['success' => false, 'message' => 'This job is assigned to another mechanic'], 409);
         }
 

@@ -165,7 +165,14 @@
                             <input type="hidden" name="date" value="{{ date('Y-m-d') }}">
                             <input type="hidden" name="from" value="00:00">
                             <input type="hidden" name="to" value="23:59">
-                            <input type="hidden" name="visibility" value="public">
+                            <div class="form-group mb-4">
+                                <input type="hidden" name="visibility" value="0">
+                                <label style="display:flex; align-items:center; gap:10px; font-weight:600; cursor:pointer; margin:0;">
+                                    <input type="checkbox" name="visibility" value="1" style="width:18px; height:18px;" {{ old('visibility', true) ? 'checked' : '' }}>
+                                    Show this slide in the customer app
+                                </label>
+                                <small class="text-muted">Untick to hide it without deleting it. Drag slides on the Billboard page to choose which plays first.</small>
+                            </div>
 
                             <div class="form-group mb-0">
                                 <label for="image">Image, GIF or short video <span class="text-danger">*</span> <small class="text-muted">(JPG, PNG, GIF, MP4 — max 20 MB, video best under 30 seconds)</small></label>

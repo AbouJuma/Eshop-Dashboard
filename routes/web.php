@@ -101,6 +101,10 @@ Route::middleware(['setData'])->group(function () {
         ->name('confirm_payment');
 });
 
+// Service card / receipt opened from the mobile admin app (temporary signed link, no portal login)
+Route::get('/car-maintenance/{id}/print/shared', [\App\Http\Controllers\CarMaintenanceController::class, 'printShared'])
+    ->name('car-maintenance.print-shared'); // signature checked in the controller
+
 //Routes for authenticated users only
 Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 'AdminSidebarMenu', 'CheckUserLogin'])->group(function () {
     Route::get('pos/payment/{id}', [SellPosController::class, 'edit'])->name('edit-pos-payment');
@@ -245,9 +249,11 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     // Accounts for the mobile app admin panel
     Route::post('mobile-admins/{id}/revoke', [\App\Http\Controllers\MobileAdminController::class, 'revoke'])->name('mobile-admins.revoke');
     Route::resource('mobile-admins', \App\Http\Controllers\MobileAdminController::class)->except(['show'])->parameters(['mobile-admins' => 'id']);
+    Route::resource('app-roles', \App\Http\Controllers\AppRoleController::class)->except(['show'])->parameters(['app-roles' => 'id']);
 
     Route::get('/car-maintenance/export-pdf', [\App\Http\Controllers\CarMaintenanceController::class, 'exportPdf'])->name('car-maintenance.export-pdf');
     Route::get('/car-maintenance/{id}/print-label', [\App\Http\Controllers\CarMaintenanceController::class, 'printLabel'])->name('car-maintenance.print-label');
+    Route::get('/car-maintenance/{id}/print', [\App\Http\Controllers\CarMaintenanceController::class, 'printDocument'])->name('car-maintenance.print');
     Route::resource('car-maintenance', \App\Http\Controllers\CarMaintenanceController::class);
 
     Route::resource('group-taxes', GroupTaxController::class);
@@ -472,6 +478,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
     Route::get('billboard', [\App\Http\Controllers\BillboardController::class, 'index'])->name('billboard.index');
 Route::get('billboard/create', [\App\Http\Controllers\BillboardController::class, 'create'])->name('billboard.create');
+Route::post('billboard/reorder', [\App\Http\Controllers\BillboardController::class, 'reorder'])->name('billboard.reorder');
+Route::post('billboard/{id}/visibility', [\App\Http\Controllers\BillboardController::class, 'toggleVisibility'])->name('billboard.visibility');
 Route::post('billboard', [\App\Http\Controllers\BillboardController::class, 'store'])->name('billboard.store');
 Route::get('billboard/{id}/edit', [\App\Http\Controllers\BillboardController::class, 'edit'])->name('billboard.edit');
 Route::put('billboard/{id}', [\App\Http\Controllers\BillboardController::class, 'update'])->name('billboard.update');

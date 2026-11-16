@@ -177,7 +177,14 @@
                             <input type="hidden" name="date" value="{{ $schedule->date ?? date('Y-m-d') }}">
                             <input type="hidden" name="from" value="{{ $schedule->from ?? '00:00' }}">
                             <input type="hidden" name="to" value="{{ $schedule->to ?? '23:59' }}">
-                            <input type="hidden" name="visibility" value="public">
+                            <div class="form-group mb-4">
+                                <input type="hidden" name="visibility" value="0">
+                                <label style="display:flex; align-items:center; gap:10px; font-weight:600; cursor:pointer; margin:0;">
+                                    <input type="checkbox" name="visibility" value="1" style="width:18px; height:18px;" {{ old('visibility', (bool) $schedule->visibility) ? 'checked' : '' }}>
+                                    Show this slide in the customer app
+                                </label>
+                                <small class="text-muted">Untick to hide it without deleting it. Drag slides on the Billboard page to choose which plays first.</small>
+                            </div>
 
                             <div class="form-group mb-0">
                                 <label for="image">Image, GIF or short video <small class="text-muted">(JPG, PNG, GIF, MP4 — max 20 MB)</small></label>

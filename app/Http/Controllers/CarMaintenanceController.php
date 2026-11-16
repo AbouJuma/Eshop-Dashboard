@@ -83,22 +83,8 @@ class CarMaintenanceController extends Controller
     {
         $business_id = request()->session()->get('business.id');
 
-        // Dynamic validation
-        $rules = [
-            'service_type' => 'required|string|in:normal,spares,both',
-            'service_date' => 'required|date',
-            'details' => 'nullable|string',
-            'cost' => 'nullable|numeric|min:0',
-        ];
-
-        // Milages are only required if it's not "spares only" service type
-        if ($request->input('service_type') !== 'spares') {
-            $rules['serviced_kilometer'] = 'required|integer|min:0';
-            $rules['next_service_kilometer'] = 'required|integer|min:0';
-        } else {
-            $rules['serviced_kilometer'] = 'nullable|integer|min:0';
-            $rules['next_service_kilometer'] = 'nullable|integer|min:0';
-        }
+        // mileage is required for oil changes only
+        $rules = CarMaintenance::serviceRules($request);
 
         // Determine if using existing car or new car
         $is_existing = $request->input('vehicle_selection_type') === 'existing' || $request->filled('car_id');
@@ -168,22 +154,18 @@ class CarMaintenanceController extends Controller
         }
 
         // Save Maintenance record
-        CarMaintenance::create([
+        $record = CarMaintenance::create([
             'business_id' => $business_id,
             'car_id' => $car_id,
-            'service_date' => $request->input('service_date'),
-            'serviced_kilometer' => $request->input('service_type') !== 'spares' ? $request->input('serviced_kilometer') : null,
-            'next_service_kilometer' => $request->input('service_type') !== 'spares' ? $request->input('next_service_kilometer') : null,
-            'service_type' => $request->input('service_type'),
-            'details' => $request->input('details'),
-            'cost' => $request->input('cost') ?: 0
-        ]);
+            'created_by' => auth()->id(),
+        ] + CarMaintenance::serviceData($request));
 
         return redirect()->route('car-maintenance.index')
             ->with('status', [
                 'success' => true,
                 'msg' => 'Service history record added successfully!'
-            ]);
+            ])
+            ->with('print_record', $record->id); // offer to print the card / receipt right away
     }
 
     /**
@@ -226,33 +208,9 @@ class CarMaintenanceController extends Controller
         $business_id = request()->session()->get('business.id');
         $maintenance = CarMaintenance::where('business_id', $business_id)->findOrFail($id);
 
-        // Validation for editing service info
-        $rules = [
-            'service_type' => 'required|string|in:normal,spares,both',
-            'service_date' => 'required|date',
-            'details' => 'nullable|string',
-            'cost' => 'nullable|numeric|min:0',
-        ];
+        $request->validate(CarMaintenance::serviceRules($request));
 
-        // Milages are only required if it's not "spares only" service type
-        if ($request->input('service_type') !== 'spares') {
-            $rules['serviced_kilometer'] = 'required|integer|min:0';
-            $rules['next_service_kilometer'] = 'required|integer|min:0';
-        } else {
-            $rules['serviced_kilometer'] = 'nullable|integer|min:0';
-            $rules['next_service_kilometer'] = 'nullable|integer|min:0';
-        }
-
-        $request->validate($rules);
-
-        $maintenance->update([
-            'service_date' => $request->input('service_date'),
-            'serviced_kilometer' => $request->input('service_type') !== 'spares' ? $request->input('serviced_kilometer') : null,
-            'next_service_kilometer' => $request->input('service_type') !== 'spares' ? $request->input('next_service_kilometer') : null,
-            'service_type' => $request->input('service_type'),
-            'details' => $request->input('details'),
-            'cost' => $request->input('cost') ?: 0
-        ]);
+        $maintenance->update(CarMaintenance::serviceData($request));
 
         return redirect()->route('car-maintenance.index')
             ->with('status', [
@@ -312,14 +270,73 @@ class CarMaintenanceController extends Controller
         return $pdf->download('car_maintenance_report.pdf');
     }
 
-    /**
-     * Show printable sticker/label.
-     */
+    /** Old sticker link: now the next-service card on a label. */
     public function printLabel($id)
     {
-        $business_id = request()->session()->get('business.id');
-        $record = CarMaintenance::with('car')->where('business_id', $business_id)->findOrFail($id);
+        return redirect()->route('car-maintenance.print', ['id' => $id, 'doc' => 'card', 'size' => 'label']);
+    }
 
-        return view('car_maintenance.print_label', compact('record'));
+    /**
+     * Printable next-service card or company receipt.
+     * ?doc=card|receipt  ?size=58mm|80mm|label|a5|a4 (defaults depend on the service type)
+     */
+    public function printDocument(Request $request, $id)
+    {
+        $business_id = request()->session()->get('business.id');
+        $record = CarMaintenance::with(['car', 'creator'])->where('business_id', $business_id)->findOrFail($id);
+
+        return self::renderPrint($request, $record, false);
+    }
+
+    /** Same document opened from the mobile app through a temporary signed link (no portal session). */
+    public function printShared(Request $request, $id)
+    {
+        // relative signature (proxies may change http/https); the toolbar may change doc and size
+        abort_unless($request->hasValidSignatureWhileIgnoring(['doc', 'size'], false), 403, 'This print link has expired. Open it again from the app.');
+        $record = CarMaintenance::with(['car', 'creator'])->findOrFail($id);
+
+        return self::renderPrint($request, $record, true);
+    }
+
+    /** Signed link the app opens in the phone's browser to print or share. Valid for 2 hours. */
+    public static function sharedPrintUrl(CarMaintenance $record): string
+    {
+        return url(\Illuminate\Support\Facades\URL::temporarySignedRoute(
+            'car-maintenance.print-shared',
+            now()->addHours(2),
+            ['id' => $record->id],
+            false
+        ));
+    }
+
+    const PRINT_SIZES = [
+        '80mm' => 'Thermal 80 mm',
+        '58mm' => 'Thermal 58 mm',
+        'label' => 'Label 80 × 50 mm',
+        'a5' => 'A5',
+        'a4' => 'A4',
+    ];
+
+    private static function renderPrint(Request $request, CarMaintenance $record, bool $shared)
+    {
+        $doc = in_array($request->query('doc'), ['card', 'receipt']) ? $request->query('doc') : $record->defaultDocument();
+        $size = array_key_exists($request->query('size'), self::PRINT_SIZES)
+            ? $request->query('size')
+            : ($doc === 'card' ? 'label' : '80mm');
+
+        $business = \App\Business::find($record->business_id);
+        $location = \App\BusinessLocation::where('business_id', $record->business_id)->orderBy('id')->first();
+
+        return view('car_maintenance.print', [
+            'record' => $record,
+            'doc' => $doc,
+            'size' => $size,
+            'sizes' => self::PRINT_SIZES,
+            'business' => $business,
+            'location' => $location,
+            'logo' => $business && $business->logo ? asset('uploads/business_logos/'.$business->logo) : null,
+            'explicitSize' => $request->filled('size'),
+            'shared' => $shared,
+        ]);
     }
 }

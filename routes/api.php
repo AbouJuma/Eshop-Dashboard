@@ -193,7 +193,7 @@ Route::prefix('admin')->group(function () {
         Route::get('service-requests/poll', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'poll']);
         Route::get('service-requests', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'index']);
         Route::get('service-requests/{id}', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'show']);
-        Route::post('service-requests/{id}/accept', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'accept']);
+        Route::post('service-requests/{id}/accept', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'accept'])->middleware('mobile.admin:roadside.accept');
         Route::post('service-requests/{id}/reject', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'reject']);
         Route::post('service-requests/{id}/status', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'updateStatus']);
         Route::post('service-requests/{id}/cancel', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'cancel']);
@@ -201,23 +201,47 @@ Route::prefix('admin')->group(function () {
         Route::get('service-requests/{id}/messages', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'messages']);
         Route::post('service-requests/{id}/messages', [\App\Http\Controllers\Api\Admin\ServiceRequestAdminController::class, 'sendMessage'])->middleware('throttle:60,1');
 
-        // Admins only (mechanics see roadside jobs only)
-        Route::middleware('mobile.admin:full')->group(function () {
-            Route::get('dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
+        // The signed-in user's own figures (every role)
+        Route::get('my-stats', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'mine']);
 
+        // Everything below depends on the permissions of the user's app role (see App\Models\AppRole)
+        Route::get('dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index'])->middleware('mobile.admin:dashboard.view');
+
+        Route::middleware('mobile.admin:orders.view,orders.manage')->group(function () {
             Route::get('orders', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'index']);
             Route::get('orders/{id}', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'show']);
-            Route::post('orders/{id}/status', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'updateStatus']);
+        });
+        Route::post('orders/{id}/status', [\App\Http\Controllers\Api\Admin\OrderAdminController::class, 'updateStatus'])->middleware('mobile.admin:orders.manage');
 
+        Route::middleware('mobile.admin:bookings.view,bookings.manage')->group(function () {
             Route::get('bookings', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'index']);
             Route::get('bookings/{id}', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'show']);
+        });
+        Route::middleware('mobile.admin:bookings.manage')->group(function () {
             Route::post('bookings/{id}/status', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'updateStatus']);
             Route::post('bookings/{id}/price', [\App\Http\Controllers\Api\Admin\BookingAdminController::class, 'updatePrice']);
+        });
 
+        Route::middleware('mobile.admin:maintenance.view,maintenance.manage')->group(function () {
             Route::get('car-maintenance/cars', [\App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class, 'cars']);
             Route::apiResource('car-maintenance', \App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class)
+                ->only(['index', 'show'])
                 ->parameters(['car-maintenance' => 'id'])
                 ->names('api.admin.car-maintenance'); // avoid clashing with the web car-maintenance.* route names
+        });
+        Route::middleware('mobile.admin:maintenance.manage')->group(function () {
+            Route::apiResource('car-maintenance', \App\Http\Controllers\Api\Admin\CarMaintenanceAdminController::class)
+                ->only(['store', 'update', 'destroy'])
+                ->parameters(['car-maintenance' => 'id'])
+                ->names('api.admin.car-maintenance');
+        });
+
+        Route::middleware('mobile.admin:billboard.manage')->group(function () {
+            Route::get('billboard', [\App\Http\Controllers\Api\Admin\BillboardAdminController::class, 'index']);
+            Route::post('billboard', [\App\Http\Controllers\Api\Admin\BillboardAdminController::class, 'store']);
+            Route::post('billboard/reorder', [\App\Http\Controllers\Api\Admin\BillboardAdminController::class, 'reorder']);
+            Route::post('billboard/{id}', [\App\Http\Controllers\Api\Admin\BillboardAdminController::class, 'update']); // POST: multipart uploads
+            Route::delete('billboard/{id}', [\App\Http\Controllers\Api\Admin\BillboardAdminController::class, 'destroy']);
         });
     });
 });

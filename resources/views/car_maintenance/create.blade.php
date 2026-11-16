@@ -311,79 +311,7 @@
                     <i class="fa fas fa-tools"></i> 2. Service Log details
                 </h4>
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="service_date">Service Date <span class="text-danger">*</span></label>
-                            <input type="date" name="service_date" id="service_date" class="form-control" value="{{ old('service_date', date('Y-m-d')) }}" required>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="service_type">Service Type <span class="text-danger">*</span></label>
-                            <select name="service_type" id="service_type" class="form-control" required>
-                                <option value="car_services" {{ old('service_type', 'car_services') == 'car_services' ? 'selected' : '' }}>CAR SERVICES</option>
-                                <option value="periodic_maintanance" {{ old('service_type') == 'periodic_maintanance' ? 'selected' : '' }}>PERIODIC MAINTANANCE</option>
-                                <option value="repair" {{ old('service_type') == 'repair' ? 'selected' : '' }}>REPAIR</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="cost">Service Cost</label>
-                            <input type="number" step="0.01" name="cost" id="cost" class="form-control" value="{{ old('cost') }}" placeholder="0.00">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. MILEAGES INPUT SECTION (Hidden if Spares Only is selected) -->
-                <div id="mileage-section" style="margin-top: 15px;">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="serviced_kilometer">Current Mileage (Kilometers) <span class="text-danger">*</span></label>
-                                <input type="number" name="serviced_kilometer" id="serviced_kilometer" class="form-control" value="{{ old('serviced_kilometer') }}" placeholder="e.g. 85000">
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="next_service_interval">Next Service Interval</label>
-                                <select id="next_service_interval" class="form-control">
-                                    <option value="3000">After 3,000 km</option>
-                                    <option value="5000" selected>After 5,000 km</option>
-                                    <option value="10000">After 10,000 km</option>
-                                    <option value="custom">Custom Value</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="next_service_kilometer">Next Service At (Kilometers) <span class="text-danger">*</span></label>
-                                <input type="number" name="next_service_kilometer" id="next_service_kilometer" class="form-control" value="{{ old('next_service_kilometer') }}" placeholder="Calculated automatically">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row" style="margin-top: 5px; margin-bottom: 15px;">
-                        <div class="col-md-12">
-                            <div class="calculation-panel">
-                                <strong><i class="fa fas fa-info-circle"></i> Automatic Calculator:</strong>
-                                <span id="calc-summary">Please input current mileage to calculate next service.</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="details">Service description / Spares changed list</label>
-                            <textarea name="details" id="details" class="form-control" rows="5" placeholder="List the details of work done, spares changed, lubricants, or filters replaced..."></textarea>
-                        </div>
-                    </div>
-                </div>
+                @include('car_maintenance._service_fields', ['maintenance' => null])
 
                 <div class="row" style="margin-top: 30px; border-top: 1px solid #f1f5f9; padding-top: 20px;">
                     <div class="col-md-12 text-right">
@@ -436,73 +364,12 @@ $(document).ready(function() {
         });
     }
 
-    // Toggle mileage forms based on service type
-    // Only show mileage section when 'CAR SERVICES' is selected
-    function toggleMileageSection() {
-        var serviceType = $('#service_type').val();
-        if (serviceType === 'car_services') {
-            $('#mileage-section').slideDown(300);
-            $('#serviced_kilometer').attr('required', true);
-            $('#next_service_kilometer').attr('required', true);
-            calculateNextService();
-        } else {
-            // Hide for 'repair' and 'periodic_maintanance'
-            $('#mileage-section').slideUp(300);
-            $('#serviced_kilometer').removeAttr('required').val('');
-            $('#next_service_kilometer').removeAttr('required').val('');
-        }
-    }
-
-    function calculateNextService() {
-        var currentKm = parseInt($('#serviced_kilometer').val());
-        var intervalVal = $('#next_service_interval').val();
-        
-        if (isNaN(currentKm) || currentKm < 0) {
-            $('#next_service_kilometer').val('');
-            $('#calc-summary').text('Please input current mileage to calculate next service.');
-            return;
-        }
-
-        if (intervalVal === 'custom') {
-            $('#next_service_kilometer').removeAttr('readonly');
-            var nextKm = parseInt($('#next_service_kilometer').val());
-            if (isNaN(nextKm)) {
-                $('#calc-summary').text('Input custom mileage for next service.');
-            } else {
-                var diff = nextKm - currentKm;
-                $('#calc-summary').html('Next service scheduled after custom addition of <strong>' + diff.toLocaleString() + ' km</strong> (At <strong>' + nextKm.toLocaleString() + ' km</strong>).');
-            }
-        } else {
-            $('#next_service_kilometer').attr('readonly', true);
-            var addKm = parseInt(intervalVal);
-            var resultKm = currentKm + addKm;
-            $('#next_service_kilometer').val(resultKm);
-            $('#calc-summary').html('Auto-calculated next service: <strong>' + currentKm.toLocaleString() + ' km</strong> + <strong>' + addKm.toLocaleString() + ' km</strong> = <strong>' + resultKm.toLocaleString() + ' km</strong>.');
-        }
-    }
-
     // Initial setup for vehicle inputs
     @if(!$selected_car)
         toggleVehicleSource('existing');
     @endif
     
-    // Listen to changes
-    $('#service_type').change(function() {
-        toggleMileageSection();
-    });
-
-    $('#serviced_kilometer, #next_service_interval').on('input change', function() {
-        calculateNextService();
-    });
-
-    $('#next_service_kilometer').on('input', function() {
-        if ($('#next_service_interval').val() === 'custom') {
-            calculateNextService();
-        }
-    });
-
-    // Run initial status check
-    toggleMileageSection();
+@include('car_maintenance._service_fields_js')
 });
 </script>
 @endsection

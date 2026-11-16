@@ -15,7 +15,7 @@ class CarMaintenanceAdminController extends Controller
 {
     public function index(Request $request)
     {
-        $query = CarMaintenance::with('car')->where('business_id', $request->user()->business_id);
+        $query = CarMaintenance::with(['car', 'creator'])->where('business_id', $request->user()->business_id);
 
         if ($request->filled('search')) {
             $search = '%'.$request->search.'%';
@@ -115,7 +115,7 @@ class CarMaintenanceAdminController extends Controller
             ])->id;
         }
 
-        $record = CarMaintenance::create(['business_id' => $businessId, 'car_id' => $carId] + $this->serviceData($request));
+        $record = CarMaintenance::create(['business_id' => $businessId, 'car_id' => $carId, 'created_by' => $request->user()->id] + $this->serviceData($request));
 
         return response()->json([
             'success' => true,
@@ -147,36 +147,17 @@ class CarMaintenanceAdminController extends Controller
 
     private function findRecord(Request $request, $id): CarMaintenance
     {
-        return CarMaintenance::with('car')->where('business_id', $request->user()->business_id)->findOrFail($id);
+        return CarMaintenance::with(['car', 'creator'])->where('business_id', $request->user()->business_id)->findOrFail($id);
     }
 
-    /** Mileage is only required when the service is not "spares only" (same rule as the web portal). */
     private function serviceRules(Request $request): array
     {
-        $mileage = $request->input('service_type') !== 'spares' ? 'required|integer|min:0' : 'nullable|integer|min:0';
-
-        return [
-            'service_type' => 'required|string|in:normal,spares,both',
-            'service_date' => 'required|date',
-            'details' => 'nullable|string',
-            'cost' => 'nullable|numeric|min:0',
-            'serviced_kilometer' => $mileage,
-            'next_service_kilometer' => $mileage,
-        ];
+        return CarMaintenance::serviceRules($request); // mileage required for oil changes only
     }
 
     private function serviceData(Request $request): array
     {
-        $isSpares = $request->service_type === 'spares';
-
-        return [
-            'service_date' => $request->service_date,
-            'service_type' => $request->service_type,
-            'serviced_kilometer' => $isSpares ? null : $request->serviced_kilometer,
-            'next_service_kilometer' => $isSpares ? null : $request->next_service_kilometer,
-            'details' => $request->details,
-            'cost' => $request->cost ?: 0,
-        ];
+        return CarMaintenance::serviceData($request);
     }
 
     private function recordPayload(CarMaintenance $record): array
@@ -187,6 +168,13 @@ class CarMaintenanceAdminController extends Controller
             'service_type' => $record->service_type,
             'serviced_kilometer' => $record->serviced_kilometer,
             'next_service_kilometer' => $record->next_service_kilometer,
+            'next_service_date' => optional($record->next_service_date)->format('Y-m-d'),
+            'type_label' => $record->type_label,
+            'receipt_number' => $record->receipt_number,
+            'recorded_by' => $record->creator ? trim($record->creator->first_name.' '.$record->creator->last_name) : null,
+            // signed link (2 h) to the printable next-service card / receipt, opened in the phone's browser
+            'print_url' => \App\Http\Controllers\CarMaintenanceController::sharedPrintUrl($record),
+            'default_document' => $record->defaultDocument(),
             'details' => $record->details,
             'cost' => (float) $record->cost,
             'car' => $record->car ? $this->carPayload($record->car) : null,

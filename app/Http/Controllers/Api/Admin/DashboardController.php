@@ -13,6 +13,59 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     /**
+     * The signed-in user's own figures (every app account, whatever its role):
+     * roadside jobs they took and service records they entered. Optional date_from / date_to.
+     */
+    public function mine(Request $request)
+    {
+        $request->validate([
+            'date_from' => 'nullable|date',
+            'date_to' => 'nullable|date',
+        ]);
+        $user = $request->user();
+
+        $inRange = function ($query, string $column = 'created_at') use ($request) {
+            if ($request->filled('date_from')) {
+                $query->whereDate($column, '>=', $request->date_from);
+            }
+            if ($request->filled('date_to')) {
+                $query->whereDate($column, '<=', $request->date_to);
+            }
+
+            return $query;
+        };
+
+        $jobs = fn () => $inRange(ServiceRequest::where('assigned_to', $user->id), 'accepted_at');
+        $byStatus = $jobs()->selectRaw('status, COUNT(*) as total')->groupBy('status')->pluck('total', 'status');
+        $arrivalMinutes = $jobs()->whereNotNull('arrived_at')->whereNotNull('accepted_at')
+            ->selectRaw('AVG(TIMESTAMPDIFF(MINUTE, accepted_at, arrived_at)) as m')->value('m');
+
+        $records = fn () => $inRange(CarMaintenance::where('business_id', $user->business_id)->where('created_by', $user->id), 'service_date');
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'range' => ['date_from' => $request->date_from, 'date_to' => $request->date_to],
+                'roadside' => [
+                    'total' => (int) $byStatus->sum(),
+                    'by_status' => $byStatus,
+                    'active' => ServiceRequest::where('assigned_to', $user->id)
+                        ->whereIn('status', ['accepted', 'on_the_way', 'arrived', 'in_progress'])->count(),
+                    'completed' => (int) ($byStatus['completed'] ?? 0),
+                    'cancelled' => (int) ($byStatus['cancelled'] ?? 0),
+                    'earnings' => (float) $jobs()->where('status', 'completed')->sum('price'),
+                    'avg_arrival_minutes' => $arrivalMinutes === null ? null : (int) round($arrivalMinutes),
+                ],
+                'car_maintenance' => [
+                    'records' => $records()->count(),
+                    'value' => (float) $records()->sum('cost'),
+                    'by_type' => $records()->selectRaw('service_type, COUNT(*) as total')->groupBy('service_type')->pluck('total', 'service_type'),
+                ],
+            ],
+        ]);
+    }
+
+    /**
      * Summary figures for the order, booking, roadside and car maintenance dashboards.
      * Optional date_from / date_to (Y-m-d) limit every figure except "today" and "this month".
      */

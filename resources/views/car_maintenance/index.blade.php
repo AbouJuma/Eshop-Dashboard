@@ -236,6 +236,12 @@
         display: inline-block;
     }
 
+    .badge-oil_change { background-color: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .badge-periodic_maintenance { background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .badge-repair { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+    .print-menu .dropdown-menu > li > a { padding: 8px 16px; }
+    .print-menu .dropdown-header { font-weight: 700; color: #0f172a; }
+
     .badge-normal {
         background-color: #ecfdf5;
         color: #059669;
@@ -344,6 +350,15 @@
     </div>
 </div>
 
+@if(session('print_record') && ($justSaved = \App\Models\CarMaintenance::where('business_id', session('business.id'))->find(session('print_record'))))
+<div class="no-print" style="margin: 0 15px 15px; padding: 14px 18px; border-radius: 12px; background: #fff7ed; border: 1px solid #fed7aa; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;">
+    <div><i class="fa fas fa-print" style="color:#ea580c"></i> <strong>Record saved.</strong> Print the {{ $justSaved->defaultDocument() === 'card' ? 'next service card' : 'receipt' }} for {{ strtoupper(optional($justSaved->car)->car_plate_number) }}?</div>
+    <div>
+        <a target="_blank" class="btn btn-sm btn-warning" href="{{ route('car-maintenance.print', ['id' => $justSaved->id, 'doc' => 'card']) }}"><i class="fa fas fa-id-card"></i> Next service card</a>
+        <a target="_blank" class="btn btn-sm btn-default" href="{{ route('car-maintenance.print', ['id' => $justSaved->id, 'doc' => 'receipt']) }}"><i class="fa fas fa-receipt"></i> Receipt</a>
+    </div>
+</div>
+@endif
 <section class="content">
     
     <!-- Custom Navigation Tabs -->
@@ -453,9 +468,9 @@
                                     <label for="service_type">Service Type</label>
                                     <select name="service_type" id="service_type" class="form-control">
                                         <option value="">All</option>
-                                        <option value="normal" {{ request('service_type') == 'normal' ? 'selected' : '' }}>Normal Maintenance</option>
-                                        <option value="spares" {{ request('service_type') == 'spares' ? 'selected' : '' }}>Spares Changed</option>
-                                        <option value="both" {{ request('service_type') == 'both' ? 'selected' : '' }}>Both</option>
+                                        @foreach(\App\Models\CarMaintenance::TYPES as $value => $label)
+                                            <option value="{{ $value }}" {{ request('service_type') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -524,27 +539,25 @@
                                         </td>
                                         <td>{{ $item->service_date ? $item->service_date->format('Y-m-d') : 'N/A' }}</td>
                                         <td>
-                                            @if($item->service_type == 'spares' && is_null($item->serviced_kilometer))
-                                                <span class="text-muted">N/A (Spares Only)</span>
+                                            @if(is_null($item->serviced_kilometer))
+                                                <span class="text-muted">—</span>
                                             @else
                                                 {{ number_format($item->serviced_kilometer) }} km
                                             @endif
                                         </td>
                                         <td>
-                                            @if($item->service_type == 'spares' && is_null($item->next_service_kilometer))
-                                                <span class="text-muted">N/A (Spares Only)</span>
-                                            @else
+                                            @if($item->next_service_kilometer)
                                                 <strong class="text-primary">{{ number_format($item->next_service_kilometer) }} km</strong>
+                                            @endif
+                                            @if($item->next_service_date)
+                                                <div><small class="text-muted"><i class="fa fas fa-calendar"></i> {{ $item->next_service_date->format('Y-m-d') }}</small></div>
+                                            @endif
+                                            @if(! $item->hasNextService())
+                                                <span class="text-muted">—</span>
                                             @endif
                                         </td>
                                         <td>
-                                            @if($item->service_type == 'normal')
-                                                <span class="badge-service-type badge-normal">Normal</span>
-                                            @elseif($item->service_type == 'spares')
-                                                <span class="badge-service-type badge-spares">Spares</span>
-                                            @else
-                                                <span class="badge-service-type badge-both">Both</span>
-                                            @endif
+                                            <span class="badge-service-type badge-{{ $item->service_type }}">{{ $item->type_label }}</span>
                                         </td>
                                         <td>
                                             <strong>{{ @num_format($item->cost) }}</strong>
@@ -562,15 +575,15 @@
                                                 data-km="{{ $item->serviced_kilometer ?? 'N/A' }}"
                                                 data-next-km="{{ $item->next_service_kilometer ?? 'N/A' }}"
                                                 data-type="{{ $item->service_type }}"
+                                                data-type-label="{{ $item->type_label }}"
+                                                data-next-date="{{ optional($item->next_service_date)->format('Y-m-d') }}"
                                                 data-cost="{{ $item->cost }}"
                                                 data-details="{{ $item->details }}"
                                                 title="View Details">
                                                 <i class="fa fas fa-eye"></i>
                                             </button>
 
-                                            <a href="{{ route('car-maintenance.print-label', $item->id) }}" target="_blank" class="action-btn action-btn-print" title="Print Sticker Label">
-                                                <i class="fa fas fa-print"></i>
-                                            </a>
+                                            @include('car_maintenance._print_menu', ['record' => $item])
 
                                             <a href="{{ route('car-maintenance.edit', $item->id) }}" class="action-btn action-btn-edit" title="Edit">
                                                 <i class="fa fas fa-edit"></i>
@@ -699,19 +712,12 @@ $(document).ready(function() {
         var km = btn.data('km');
         var nextKm = btn.data('next-km');
         
-        $('#modal-km').text(km === 'N/A' || km === '' ? 'N/A (Spares Only)' : parseInt(km).toLocaleString() + ' km');
-        $('#modal-next-km').text(nextKm === 'N/A' || nextKm === '' ? 'N/A (Spares Only)' : parseInt(nextKm).toLocaleString() + ' km');
+        var nextDate = btn.data('next-date');
+        $('#modal-km').text(km === 'N/A' || km === '' ? '—' : parseInt(km).toLocaleString() + ' km');
+        $('#modal-next-km').text((nextKm === 'N/A' || nextKm === '' ? '' : parseInt(nextKm).toLocaleString() + ' km') + (nextDate ? (nextKm === 'N/A' || nextKm === '' ? '' : ' or ') + nextDate : '') || '—');
         
         var type = btn.data('type');
-        var typeHtml = '';
-        if(type === 'normal') {
-            typeHtml = '<span class="badge-service-type badge-normal">Normal Maintenance</span>';
-        } else if(type === 'spares') {
-            typeHtml = '<span class="badge-service-type badge-spares">Spares Changed</span>';
-        } else {
-            typeHtml = '<span class="badge-service-type badge-both">Both</span>';
-        }
-        $('#modal-type').html(typeHtml);
+        $('#modal-type').html($('<span>').addClass('badge-service-type badge-' + type).text(btn.data('type-label')));
         
         // Formatted cost
         var cost = parseFloat(btn.data('cost'));
@@ -721,6 +727,10 @@ $(document).ready(function() {
         
         $('#detailsModal').modal('show');
     });
+
+    // print dropdowns inside the scrollable tables must not be clipped
+    $(document).on('show.bs.dropdown', '.print-menu', function () { $(this).closest('.table-responsive').css('overflow', 'visible'); })
+               .on('hide.bs.dropdown', '.print-menu', function () { $(this).closest('.table-responsive').css('overflow', ''); });
 
     // Handle export pdf with current filters
     $('#btn-export-pdf').click(function(e) {

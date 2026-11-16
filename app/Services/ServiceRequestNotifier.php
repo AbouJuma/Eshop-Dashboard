@@ -12,7 +12,7 @@ use App\User;
  */
 class ServiceRequestNotifier
 {
-    /** Alert every admin signed in to the mobile admin panel. */
+    /** Alert everyone signed in to the app panel whose role takes roadside jobs. */
     public static function newRequest(ServiceRequest $serviceRequest): void
     {
         $title = '🚨 New roadside request';
@@ -62,12 +62,12 @@ class ServiceRequestNotifier
         ]))->afterResponse();
     }
 
-    /** Admins with a device token that have signed in to the mobile admin panel. */
+    /** App accounts (signed in, with a device token) whose role may accept roadside jobs. */
     private static function adminRecipients()
     {
         return User::whereNotNull('fcm_token')->where('fcm_token', '!=', '')
             ->whereHas('tokens', fn ($q) => $q->where('name', MobileAdmin::TOKEN_NAME)->where('revoked', false))
             ->get()
-            ->filter(fn ($user) => MobileAdmin::isAdmin($user));
+            ->filter(fn ($user) => MobileAdmin::can($user, 'roadside.accept'));
     }
 }

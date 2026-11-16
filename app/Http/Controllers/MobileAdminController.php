@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Middleware\MobileAdmin;
+use App\Models\AppRole;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Spatie\Permission\Models\Role;
 
 /**
  * Portal CRUD for accounts that can sign in to the mobile app's admin panel
@@ -19,23 +19,24 @@ class MobileAdminController extends Controller
         $this->authorizeAccess('user.view');
         $businessId = $this->businessId();
 
-        $mobileRole = $this->mobileRole($businessId);
-        $mechanicRole = $this->mechanicRole($businessId);
+        AppRole::ensureDefaults($businessId);
+        $appRoles = AppRole::where('business_id', $businessId)->pluck('name', 'id');
         $users = User::where('business_id', $businessId)
-            ->whereHas('roles', fn ($q) => $q->whereIn('name', [$mobileRole->name, $mechanicRole->name, 'Admin#'.$businessId]))
+            ->where(fn ($q) => $q->whereNotNull('app_role_id')
+                ->orWhereHas('roles', fn ($r) => $r->whereIn('name', [MobileAdmin::mobileRoleName($businessId), MobileAdmin::mechanicRoleName($businessId), 'Admin#'.$businessId])))
             ->with('roles')
             ->withCount(['tokens as app_sessions' => fn ($q) => $q->where('name', MobileAdmin::TOKEN_NAME)->where('revoked', false)])
             ->orderBy('first_name')
             ->get();
 
-        return view('mobile_admin.index', compact('users', 'mobileRole', 'mechanicRole', 'businessId'));
+        return view('mobile_admin.index', compact('users', 'appRoles', 'businessId'));
     }
 
     public function create()
     {
         $this->authorizeAccess('user.create');
 
-        return view('mobile_admin.form', ['user' => new User()]);
+        return view('mobile_admin.form', ['user' => new User(), 'roles' => $this->roles()]);
     }
 
     public function store(Request $request)
@@ -48,19 +49,17 @@ class MobileAdminController extends Controller
         $this->fill($user, $data, $businessId);
         $user->password = bcrypt($data['password']);
         $user->save();
-        $this->setAccess($user, $data['access']);
-
-        $label = $data['access'] === MobileAdmin::LEVEL_MECHANIC ? 'Mechanic' : 'Mobile admin';
+        $this->setRole($user, (int) $data['app_role_id']);
 
         return redirect()->route('mobile-admins.index')
-            ->with('status', ['success' => 1, 'msg' => "{$label} {$user->username} created. They can now sign in to the app."]);
+            ->with('status', ['success' => 1, 'msg' => "{$user->username} created. They can now sign in to the app."]);
     }
 
     public function edit($id)
     {
         $this->authorizeAccess('user.update');
 
-        return view('mobile_admin.form', ['user' => $this->findUser($id)]);
+        return view('mobile_admin.form', ['user' => $this->findUser($id), 'roles' => $this->roles()]);
     }
 
     public function update(Request $request, $id)
@@ -74,9 +73,9 @@ class MobileAdminController extends Controller
             $user->password = bcrypt($data['password']);
         }
         $user->save();
-        $accessChanged = $this->setAccess($user, $data['access']);
+        $accessChanged = $this->setRole($user, (int) $data['app_role_id']);
 
-        // deactivated, password or access changed: sign them out of the app
+        // deactivated, password or role changed: sign them out so the app reloads with the new permissions
         if ($user->status !== 'active' || ! empty($data['password']) || $accessChanged) {
             $this->revokeAppSessions($user);
         }
@@ -98,8 +97,9 @@ class MobileAdminController extends Controller
 
         // portal admins only lose app access; mobile-only accounts are removed
         if ($user->hasRole('Admin#'.$user->business_id)) {
-            $user->removeRole($this->mobileRole($user->business_id));
-            $user->removeRole($this->mechanicRole($user->business_id));
+            $this->clearLegacyRoles($user);
+            $user->app_role_id = null;
+            $user->save();
             $msg = "{$user->username} is a portal admin; their app sessions were signed out.";
         } else {
             $user->delete();
@@ -130,7 +130,7 @@ class MobileAdminController extends Controller
             'contact_no' => 'nullable|string|max:15',
             'password' => [$user ? 'nullable' : 'required', 'string', 'min:8', 'confirmed'],
             'status' => 'required|in:active,inactive',
-            'access' => 'required|in:admin,mechanic',
+            'app_role_id' => ['required', 'integer', Rule::exists('app_roles', 'id')->where('business_id', $this->businessId())],
         ], ['username.regex' => 'Username may only contain letters, numbers, dots, dashes and underscores.']);
     }
 
@@ -154,44 +154,35 @@ class MobileAdminController extends Controller
         return User::where('business_id', $this->businessId())->findOrFail($id);
     }
 
-    private function mobileRole($businessId): Role
+    private function roles()
     {
-        return Role::firstOrCreate(
-            ['name' => MobileAdmin::mobileRoleName($businessId), 'business_id' => $businessId],
-            ['guard_name' => 'web', 'is_default' => 0]
-        );
+        AppRole::ensureDefaults($this->businessId());
+
+        return AppRole::where('business_id', $this->businessId())->orderByDesc('is_system')->orderBy('name')->get();
     }
 
-    private function mechanicRole($businessId): Role
+    /** Remove the pre-app-role Spatie roles (Mobile Admin#<bid> / Mechanic#<bid>), if the user still has them. */
+    private function clearLegacyRoles(User $user): void
     {
-        return Role::firstOrCreate(
-            ['name' => MobileAdmin::mechanicRoleName($businessId), 'business_id' => $businessId],
-            ['guard_name' => 'web', 'is_default' => 0]
-        );
-    }
-
-    /**
-     * Give the user app-admin or mechanic access (portal admin role, if any, is left alone).
-     * Returns true when the access level changed.
-     */
-    private function setAccess(User $user, string $access): bool
-    {
-        $before = MobileAdmin::accessLevel($user);
-        $mobile = $this->mobileRole($user->business_id);
-        $mechanic = $this->mechanicRole($user->business_id);
-
-        if ($access === MobileAdmin::LEVEL_MECHANIC) {
-            $user->removeRole($mobile);
-            $user->assignRole($mechanic);
-        } else {
-            $user->removeRole($mechanic);
-            $user->assignRole($mobile);
+        foreach ([MobileAdmin::mobileRoleName($user->business_id), MobileAdmin::mechanicRoleName($user->business_id)] as $legacy) {
+            if ($user->hasRole($legacy)) {
+                $user->removeRole($legacy);
+            }
         }
         $user->unsetRelation('roles');
-
-        return $before !== null && $before !== MobileAdmin::accessLevel($user);
     }
 
+    /** Give the user an app role. Returns true when their permissions changed. */
+    private function setRole(User $user, int $roleId): bool
+    {
+        $before = MobileAdmin::permissions($user);
+        $user->app_role_id = $roleId;
+        $user->save();
+        $this->clearLegacyRoles($user);
+        MobileAdmin::flush($user);
+
+        return $before !== null && $before != MobileAdmin::permissions($user);
+    }
     private function revokeAppSessions(User $user): void
     {
         $user->tokens()->where('name', MobileAdmin::TOKEN_NAME)->update(['revoked' => true]);
