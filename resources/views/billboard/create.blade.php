@@ -183,7 +183,8 @@
                                         <label class="custom-file-label" for="image">Choose image, GIF or video...</label>
                                     </div>
                                 </div>
-                                <small class="form-text text-muted mt-2">Allowed formats: JPG, PNG, GIF (animated), WEBP, MP4, WEBM, MOV (max 20 MB). Keep videos short (under 30 seconds) so the app loads them fast.</small>
+                                <small class="form-text text-muted mt-2">Allowed formats: JPG, PNG, GIF (animated), WEBP, MP4, WEBM, MOV (max 20 MB).</small>
+                                @include('billboard._media_standard')
                                 @error('image')
                                     <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                 @enderror

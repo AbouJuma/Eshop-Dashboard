@@ -196,6 +196,7 @@
                                     </div>
                                 </div>
                                 <small class="form-text text-muted mt-2">Allowed formats: JPG, PNG, GIF (animated), WEBP, MP4, WEBM, MOV (max 20 MB). Uploading a new file replaces the current one.</small>
+                                @include('billboard._media_standard')
                                 
                                 @if($schedule->image)
                                     <div class="mt-3 p-3 bg-light rounded-lg border d-inline-block">
