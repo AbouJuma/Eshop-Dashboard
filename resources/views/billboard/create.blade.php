@@ -175,19 +175,7 @@
                             </div>
 
                             <div class="form-group mb-0">
-                                <label for="image">Image, GIF or short video <span class="text-danger">*</span> <small class="text-muted">(JPG, PNG, GIF, MP4 — max 20 MB, video best under 30 seconds)</small></label>
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input @error('image') is-invalid @enderror" 
-                                               id="image" name="image" accept="image/*,video/mp4,video/webm,video/quicktime" required>
-                                        <label class="custom-file-label" for="image">Choose image, GIF or video...</label>
-                                    </div>
-                                </div>
-                                <small class="form-text text-muted mt-2">Allowed formats: JPG, PNG, GIF (animated), WEBP, MP4, WEBM, MOV (max 20 MB).</small>
-                                @include('billboard._media_standard')
-                                @error('image')
-                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                @enderror
+                                @include('billboard._media_input', ['current' => null, 'required' => true])
                             </div>
                         </div>
                         <div class="card-footer bg-light border-top p-4 d-flex justify-content-start">

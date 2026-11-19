@@ -187,32 +187,7 @@
                             </div>
 
                             <div class="form-group mb-0">
-                                <label for="image">Image, GIF or short video <small class="text-muted">(JPG, PNG, GIF, MP4 — max 20 MB)</small></label>
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input @error('image') is-invalid @enderror" 
-                                               id="image" name="image" accept="image/*,video/mp4,video/webm,video/quicktime">
-                                        <label class="custom-file-label" for="image">Choose image, GIF or video...</label>
-                                    </div>
-                                </div>
-                                <small class="form-text text-muted mt-2">Allowed formats: JPG, PNG, GIF (animated), WEBP, MP4, WEBM, MOV (max 20 MB). Uploading a new file replaces the current one.</small>
-                                @include('billboard._media_standard')
-                                
-                                @if($schedule->image)
-                                    <div class="mt-3 p-3 bg-light rounded-lg border d-inline-block">
-                                        <small class="text-muted d-block mb-2 font-weight-bold">Current Billboard {{ ($schedule->media_type ?? 'image') === 'video' ? 'Video' : 'Image' }}:</small>
-                                        @if(($schedule->media_type ?? 'image') === 'video')
-                                            <video src="{{ asset('uploads/' . $schedule->image) }}" muted autoplay loop playsinline controls
-                                                   style="max-height: 160px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);"></video>
-                                        @else
-                                        <img src="{{ asset('uploads/' . $schedule->image) }}" alt="Current billboard image" 
-                                             style="max-height: 120px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                                        @endif
-                                    </div>
-                                @endif
-                                @error('image')
-                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                @enderror
+                                @include('billboard._media_input', ['current' => $schedule, 'required' => false])
                             </div>
                         </div>
                         <div class="card-footer bg-light border-top p-4 d-flex justify-content-start">
