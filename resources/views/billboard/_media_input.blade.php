@@ -62,6 +62,7 @@
     .bb-media .bb-status.bad { display:flex; background:#fef2f2; color:#991b1b; }
     .bb-media .bb-status.info { display:flex; background:#eff6ff; color:#1e40af; }
     .bb-media .bb-status .fa { margin-top:2px; }
+    .bb-media .bb-status > div { flex:1; min-width:0; }
     .bb-media .bb-actions { display:none; gap:8px; margin-top:10px; flex-wrap:wrap; }
     .bb-media.shake { animation: bb-shake .4s; }
     @keyframes bb-shake { 20%,60% { transform:translateX(-6px); } 40%,80% { transform:translateX(6px); } }
@@ -85,7 +86,7 @@
                 <div class="bb-icon"><i class="fa fa-cloud-upload-alt"></i></div>
                 <strong id="bb-drop-title">Drop a picture, GIF or video here</strong>
                 <span>or <span class="bb-browse">browse your files</span></span>
-                <span style="margin-top:8px">Pictures are cropped to the billboard size right here.<br>Videos and GIFs must already be {{ $S::standardLabel() }}.</span>
+                <span style="margin-top:8px">Pictures are cropped to the billboard size right here.<br>Videos and GIFs of another size can be resized here in one click.</span>
             </label>
 
             <div class="bb-crop" id="bb-crop">
@@ -139,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var W = {{ $S::STANDARD_WIDTH }}, H = {{ $S::STANDARD_HEIGHT }}, RATIO = W / H;
     var TOL = {{ $S::RATIO_TOLERANCE }}, MIN_W = {{ $S::MIN_WIDTH }}, MAX_S = {{ $S::MAX_VIDEO_SECONDS }};
     var MAX_BYTES = {{ $S::MAX_UPLOAD_KB }} * 1024, LABEL = '{{ $S::standardLabel() }}';
+    var MAX_SOURCE_BYTES = 500 * 1048576; // biggest file we'll resize in the browser
 
     var root = document.getElementById('bb-media');
     var input = document.getElementById('image');
@@ -150,12 +152,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var statusBox = document.getElementById('bb-status');
     var statusText = document.getElementById('bb-status-text');
     var actions = document.getElementById('bb-actions');
+    var recropBtn = document.getElementById('bb-recrop');
     var banner = document.getElementById('bb-banner');
     var caption = document.getElementById('bb-caption');
     var form = input.form;
 
-    var cropper = null, source = null, sourceUrl = null, ready = !!banner.querySelector('img,video') && root.dataset.required !== '1';
-    var problem = null, settingFile = false;
+    // mode: 'picture' (crop -> JPG), 'video' / 'gif' (choose area -> re-record as video)
+    var cropper = null, source = null, sourceUrl = null, mode = 'picture', media = null;
+    var problem = null, settingFile = false, busy = false;
 
     function status(kind, html) {
         statusBox.className = 'bb-status ' + kind;
@@ -163,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
         statusText.innerHTML = html;
     }
     function fits(w, h) { return w > 0 && h > 0 && Math.abs((w / h) / RATIO - 1) <= TOL; }
+    function mb(bytes) { return (bytes / 1048576).toFixed(1) + ' MB'; }
     function preview(url, isVideo, text) {
         banner.innerHTML = '';
         var el = document.createElement(isVideo ? 'video' : 'img');
@@ -176,97 +181,242 @@ document.addEventListener('DOMContentLoaded', function () {
         cropBox.style.display = 'none';
     }
     function showDrop(show) { drop.style.display = show ? 'flex' : 'none'; }
-    function fail(html) {
-        problem = html; ready = false;
-        closeCropper(); showDrop(true); actions.style.display = 'none';
-        status('bad', html);
-    }
-    function setFile(file) { // put the (cropped) file into the form field
+    function showActions(recrop) { actions.style.display = 'flex'; recropBtn.style.display = recrop ? '' : 'none'; }
+    function setFile(file) { // put the (resized) file into the form field
         var dt = new DataTransfer();
         dt.items.add(file);
         settingFile = true; input.files = dt.files; settingFile = false;
     }
+    var lastOffer = null; // the resize offer on screen, to show again (with a working button) on save
+    function fail(html) {
+        problem = html; lastOffer = null;
+        closeCropper(); showDrop(true); actions.style.display = 'none';
+        status('bad', html);
+    }
+    /** A problem the browser can fix: show it with a one-click resize button. */
+    function offerResize(html, buttonText, onResize) {
+        problem = html; lastOffer = { html: html, buttonText: buttonText, onResize: onResize };
+        closeCropper(); showDrop(true); actions.style.display = 'none';
+        status('bad', html + '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">'
+            + '<button type="button" class="bb-btn primary" id="bb-fix"><i class="fa fa-magic"></i> ' + buttonText + '</button>'
+            + '<label for="image" class="bb-btn light" style="margin:0">Choose another file</label></div>');
+        document.getElementById('bb-fix').addEventListener('click', onResize);
+    }
+    function ready(html, url, isVideo, recrop) {
+        problem = null; lastOffer = null; closeCropper(); showDrop(false); showActions(recrop);
+        if (url) preview(url, isVideo);
+        status('ok', '<b>Ready.</b> ' + html);
+    }
 
     function handle(file) {
-        problem = null; ready = false; closeCropper(); actions.style.display = 'none';
-        if (!file) return;
-        if (file.size > MAX_BYTES) return fail('This file is <b>' + (file.size / 1048576).toFixed(1) + ' MB</b>. The limit is ' + Math.round(MAX_BYTES / 1048576) + ' MB.');
-        var url = URL.createObjectURL(file);
+        problem = null; closeCropper(); actions.style.display = 'none';
+        if (!file || busy) return;
+        if (file.size > MAX_SOURCE_BYTES) return fail('This file is <b>' + mb(file.size) + '</b> - too big to work with here. Use a file under ' + mb(MAX_SOURCE_BYTES) + '.');
+        source = file;
+        if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+        var url = sourceUrl = URL.createObjectURL(file);
+
         if (file.type.indexOf('video/') === 0) {
             status('info', 'Checking the video…');
             var v = document.createElement('video');
-            v.preload = 'metadata';
+            v.preload = 'auto'; v.muted = true; v.playsInline = true;
             v.onloadedmetadata = function () {
-                var w = v.videoWidth, h = v.videoHeight, s = v.duration;
-                if (!fits(w, h)) return fail('This video is <b>' + w + ' × ' + h + ' px</b>. Billboard videos must be <b>' + LABEL + '</b> (9:4) so they fill the banner exactly. In your video editor, set the canvas / export size to ' + LABEL + ' and upload again.');
-                if (w < MIN_W) return fail('This video is only <b>' + w + ' × ' + h + ' px</b> and would look blurry. Export it at <b>' + LABEL + '</b>.');
-                if (s > MAX_S + 0.5) return fail('This video is <b>' + Math.round(s) + ' seconds</b>. Billboard videos can be up to ' + MAX_S + ' seconds - please trim it.');
-                ready = true; showDrop(false); actions.style.display = 'flex'; document.getElementById('bb-recrop').style.display = 'none';
-                preview(url, true);
-                status('ok', '<b>Ready.</b> Video ' + w + ' × ' + h + ' px, ' + Math.round(s) + ' s - fits the billboard exactly.');
+                var w = v.videoWidth, h = v.videoHeight, s = v.duration, issues = [];
+                media = { el: v, width: w, height: h, duration: s };
+                if (!fits(w, h)) issues.push('it is <b>' + w + ' × ' + h + ' px</b> (the billboard is ' + LABEL + ')');
+                else if (w < MIN_W) issues.push('it is only <b>' + w + ' × ' + h + ' px</b>');
+                if (s > MAX_S + 0.5) issues.push('it is <b>' + Math.round(s) + ' seconds</b> (max ' + MAX_S + ')');
+                if (file.size > MAX_BYTES) issues.push('it is <b>' + mb(file.size) + '</b> (max ' + mb(MAX_BYTES) + ')');
+                if (!issues.length) return ready('Video ' + w + ' × ' + h + ' px, ' + Math.round(s) + ' s - fits the billboard exactly.', url, true, false);
+                offerResize('This video doesn\'t meet the billboard standard: ' + issues.join(', ') + '.',
+                    'Resize to ' + LABEL, function () { openVideoCropper(); });
             };
-            v.onerror = function () { // e.g. a MOV this browser can't preview: the server checks it
-                ready = true; showDrop(false); actions.style.display = 'flex'; document.getElementById('bb-recrop').style.display = 'none';
-                status('info', 'This browser can\'t preview this video. It will be checked when you save - it must be <b>' + LABEL + '</b> and up to ' + MAX_S + ' seconds.');
+            v.onerror = function () { // e.g. a MOV this browser can't open: the server checks it
+                if (file.size > MAX_BYTES) return fail('This video is <b>' + mb(file.size) + '</b> and this browser can\'t open it to resize it. Export it at ' + LABEL + ', under ' + mb(MAX_BYTES) + '.');
+                ready('This browser can\'t preview this video. It will be checked when you save - it must be ' + LABEL + ' and up to ' + MAX_S + ' seconds.', null, true, false);
+                status('info', statusText.innerHTML.replace('<b>Ready.</b> ', ''));
             };
             v.src = url;
             return;
         }
+
         var img = new Image();
         img.onload = function () {
             var w = img.naturalWidth, h = img.naturalHeight, gif = file.type === 'image/gif';
+            media = { el: img, width: w, height: h };
             if (gif) {
-                if (!fits(w, h)) return fail('This GIF is <b>' + w + ' × ' + h + ' px</b>. GIFs can\'t be cropped without losing the animation, so they must be made at <b>' + LABEL + '</b> (9:4).');
-                if (w < MIN_W) return fail('This GIF is only <b>' + w + ' × ' + h + ' px</b> and would look blurry. Make it <b>' + LABEL + '</b>.');
-                ready = true; showDrop(false); actions.style.display = 'flex'; document.getElementById('bb-recrop').style.display = 'none';
-                preview(url, false);
-                return status('ok', '<b>Ready.</b> Animated GIF ' + w + ' × ' + h + ' px - fits the billboard exactly.');
+                if (fits(w, h) && w >= MIN_W && file.size <= MAX_BYTES) return ready('Animated GIF ' + w + ' × ' + h + ' px - fits the billboard exactly.', url, false, false);
+                var why = !fits(w, h) ? 'it is <b>' + w + ' × ' + h + ' px</b> (the billboard is ' + LABEL + ')'
+                    : w < MIN_W ? 'it is only <b>' + w + ' × ' + h + ' px</b>' : 'it is <b>' + mb(file.size) + '</b> (max ' + mb(MAX_BYTES) + ')';
+                return offerResize('This GIF doesn\'t meet the billboard standard: ' + why + '. It can be turned into a ' + LABEL + ' video that keeps the animation.',
+                    'Convert to ' + LABEL + ' video', function () { openGifCropper(); });
             }
             if (w < MIN_W || h < MIN_W / RATIO) return fail('This picture is only <b>' + w + ' × ' + h + ' px</b> and would look blurry on the billboard. Use a picture at least ' + MIN_W + ' px wide - <b>' + LABEL + '</b> is ideal.');
-            source = file; if (sourceUrl) URL.revokeObjectURL(sourceUrl); sourceUrl = url;
-            openCropper();
+            openPictureCropper(); // any size or weight: the crop saves a light 1800 x 800 picture
         };
         img.onerror = function () { fail('This file can\'t be opened as a picture. Use JPG, PNG, WEBP or GIF.'); };
         img.src = url;
     }
 
-    function openCropper() {
-        ready = false; problem = 'crop';
+    // ---------- crop ----------
+    function openCropper(imageUrl, newMode, minSharp, applyLabel, intro) {
+        mode = newMode; problem = 'crop';
         showDrop(false); actions.style.display = 'none';
         cropBox.style.display = 'block';
-        status('info', 'Drag and zoom to choose what shows on the billboard, then press <b>Use this crop</b>. It will be saved at exactly <b>' + LABEL + '</b>.');
-        cropImg.src = sourceUrl;
+        applyBtn.innerHTML = '<i class="fa fa-check"></i> ' + applyLabel;
+        status('info', intro);
+        cropImg.src = imageUrl;
         if (cropper) cropper.destroy();
         cropper = new Cropper(cropImg, {
             aspectRatio: RATIO, viewMode: 1, autoCropArea: 1, dragMode: 'move', background: false,
             guides: true, center: true, toggleDragModeOnDblclick: false, responsive: true,
             crop: function (e) {
-                var cw = Math.round(e.detail.width), ch = Math.round(e.detail.height), sharp = cw >= MIN_W;
+                var cw = Math.round(e.detail.width), ch = Math.round(e.detail.height);
+                var sharp = cw >= MIN_W, usable = cw >= minSharp;
                 areaText.innerHTML = (sharp ? '<i class="fa fa-check" style="color:#34d399"></i> ' : '<i class="fa fa-exclamation-triangle" style="color:#fbbf24"></i> ')
-                    + 'Area ' + cw + ' × ' + ch + ' px' + (sharp ? '' : ' - zoom out, too small to stay sharp');
-                applyBtn.disabled = !sharp;
+                    + 'Area ' + cw + ' × ' + ch + ' px'
+                    + (sharp ? '' : usable ? ' - will be enlarged, may look a little soft' : ' - zoom out, too small to stay sharp');
+                applyBtn.disabled = !usable;
             }
         });
     }
+    function openPictureCropper() {
+        openCropper(sourceUrl, 'picture', MIN_W, 'Use this crop',
+            'Drag and zoom to choose what shows on the billboard, then press <b>Use this crop</b>. It is saved at exactly <b>' + LABEL + '</b> in full quality.');
+    }
+    function frameUrl(el, w, h) { // a still of the video / GIF to choose the area on
+        var c = document.createElement('canvas'); c.width = w; c.height = h;
+        c.getContext('2d').drawImage(el, 0, 0, w, h);
+        return c.toDataURL('image/jpeg', 0.9);
+    }
+    function openVideoCropper() {
+        var v = media.el;
+        var show = function () {
+            openCropper(frameUrl(v, media.width, media.height), 'video', 480, 'Resize video',
+                'Choose the part of the video to keep, then press <b>Resize video</b>. It is re-recorded at exactly <b>' + LABEL + '</b>'
+                + (media.duration > MAX_S + 0.5 ? ', using the first ' + MAX_S + ' seconds' : '') + ', in high quality, without sound.');
+        };
+        if (v.readyState >= 2 && v.currentTime > 0) return show();
+        v.addEventListener('seeked', function once() { v.removeEventListener('seeked', once); show(); });
+        v.currentTime = Math.min(1, (media.duration || 2) / 2);
+    }
+    function openGifCropper() {
+        openCropper(frameUrl(media.el, media.width, media.height), 'gif', 320, 'Convert to video',
+            'Choose the part of the GIF to keep, then press <b>Convert to video</b>. It becomes a <b>' + LABEL + '</b> video with the same animation.');
+    }
 
     applyBtn.addEventListener('click', function () {
-        if (!cropper) return;
+        if (!cropper || busy) return;
+        var area = cropper.getData(true); // in the source's own pixels
+        if (mode === 'picture') return savePicture();
+        closeCropper();
+        record(area);
+    });
+
+    function savePicture() {
         var canvas = cropper.getCroppedCanvas({ width: W, height: H, fillColor: '#fff', imageSmoothingEnabled: true, imageSmoothingQuality: 'high' });
         canvas.toBlob(function (blob) {
             var name = (source.name || 'billboard').replace(/\.[^.]+$/, '') + '-billboard.jpg';
             setFile(new File([blob], name, { type: 'image/jpeg' }));
-            var url = URL.createObjectURL(blob);
-            closeCropper(); ready = true; problem = null;
-            actions.style.display = 'flex'; document.getElementById('bb-recrop').style.display = '';
-            preview(url, false);
-            status('ok', '<b>Ready.</b> Picture cropped to exactly ' + LABEL + ' (' + Math.round(blob.size / 1024) + ' KB).');
-        }, 'image/jpeg', 0.9);
-    });
+            ready('Picture cropped to exactly ' + LABEL + ' (' + Math.round(blob.size / 1024) + ' KB).', URL.createObjectURL(blob), false, true);
+        }, 'image/jpeg', 0.95);
+    }
+
+    // ---------- re-record a video / GIF at the standard size ----------
+    function recorderType() {
+        var types = ['video/mp4;codecs=avc1.640028', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+        for (var i = 0; i < types.length; i++) if (window.MediaRecorder && MediaRecorder.isTypeSupported(types[i])) return types[i];
+        return null;
+    }
+    function gifSeconds(buffer) { // total frame time of a GIF, from its frame delays
+        var b = new Uint8Array(buffer), total = 0, frames = 0;
+        for (var i = 0; i + 5 < b.length; i++) {
+            if (b[i] === 0x21 && b[i + 1] === 0xF9 && b[i + 2] === 0x04) {
+                var delay = b[i + 4] | (b[i + 5] << 8);
+                total += delay < 2 ? 10 : delay; frames++; i += 7;
+            }
+        }
+        return frames ? total / 100 : 3;
+    }
+
+    function record(area) {
+        var type = recorderType();
+        if (!type) return fail('This browser can\'t resize videos. Please use a recent Chrome or Edge, or export the file at ' + LABEL + '.');
+        busy = true; problem = 'busy';
+        showDrop(false); actions.style.display = 'none';
+        var canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
+        var g = canvas.getContext('2d', { alpha: false });
+        g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+        var el = media.el, isGif = mode === 'gif';
+
+        var start = function (seconds) {
+            seconds = Math.max(0.5, Math.min(seconds, MAX_S));
+            // highest quality the size limit allows for this length (max 12 Mbps)
+            var bitrate = Math.min(12000000, Math.floor((MAX_BYTES * 8 * 0.88) / seconds));
+            var stream = canvas.captureStream(30);
+            var recorder = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: bitrate });
+            var parts = [], began = 0, timer = null, stopped = false;
+            recorder.ondataavailable = function (e) { if (e.data && e.data.size) parts.push(e.data); };
+            var draw = function () {
+                g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
+                g.drawImage(el, area.x, area.y, area.width, area.height, 0, 0, W, H);
+            };
+            var tick = function () {
+                if (stopped) return;
+                draw();
+                var done = isGif ? (performance.now() - began) / 1000 : el.currentTime;
+                var pct = Math.min(100, Math.round(done / seconds * 100));
+                status('info', '<b>Resizing… ' + pct + '%</b> Keep this page open.'
+                    + '<div style="margin-top:8px;height:6px;border-radius:6px;background:#dbeafe;overflow:hidden"><div style="height:100%;width:' + pct + '%;background:#2563eb;transition:width .2s"></div></div>');
+                if (done >= seconds || (!isGif && el.ended)) return finish();
+                requestAnimationFrame(tick);
+            };
+            var finish = function () {
+                if (stopped) return; stopped = true;
+                if (!isGif) el.pause();
+                if (timer) clearInterval(timer);
+                recorder.onstop = function () {
+                    busy = false;
+                    var ext = type.indexOf('mp4') >= 0 ? 'mp4' : 'webm';
+                    var blob = new Blob(parts, { type: type.split(';')[0] });
+                    if (blob.size > MAX_BYTES) return fail('The resized video is still ' + mb(blob.size) + '. Please use a shorter clip.');
+                    var name = (source.name || 'billboard').replace(/\.[^.]+$/, '') + '-billboard.' + ext;
+                    setFile(new File([blob], name, { type: blob.type }));
+                    ready((isGif ? 'GIF converted to a ' + LABEL + ' video, ' : 'Video resized to ' + LABEL + ', ') + Math.round(seconds) + ' s, ' + mb(blob.size) + '.', URL.createObjectURL(blob), true, false);
+                };
+                recorder.stop();
+            };
+            draw();
+            recorder.start(250);
+            began = performance.now();
+            if (isGif) {
+                timer = setInterval(draw, 33); // keeps frames coming when the tab is in the background
+                requestAnimationFrame(tick);
+            } else {
+                el.muted = true; el.currentTime = 0;
+                el.onseeked = function () { el.onseeked = null; el.play().then(function () { requestAnimationFrame(tick); }).catch(function () { finish(); }); };
+            }
+        };
+
+        if (isGif) {
+            // the GIF must be on the page to animate while it is drawn
+            el.style.cssText = 'position:fixed;left:0;top:0;width:2px;height:2px;opacity:0.01;pointer-events:none';
+            document.body.appendChild(el);
+            source.arrayBuffer().then(function (buffer) {
+                var once = gifSeconds(buffer), seconds = once;
+                while (seconds < 3 && once > 0) seconds += once; // very short GIFs: loop a few times
+                start(seconds);
+            });
+        } else {
+            start(media.duration || MAX_S);
+        }
+    }
+
     document.getElementById('bb-crop-cancel').addEventListener('click', function () {
-        closeCropper(); showDrop(true); problem = null; ready = false; statusBox.className = 'bb-status';
+        closeCropper(); showDrop(true); problem = null; statusBox.className = 'bb-status';
         input.value = '';
     });
-    document.getElementById('bb-recrop').addEventListener('click', function () { if (source) openCropper(); });
+    recropBtn.addEventListener('click', function () { if (source && mode === 'picture') openPictureCropper(); });
     cropBox.querySelectorAll('[data-zoom]').forEach(function (b) {
         b.addEventListener('click', function () { if (cropper) cropper.zoom(parseFloat(b.dataset.zoom)); });
     });
@@ -276,19 +426,21 @@ document.addEventListener('DOMContentLoaded', function () {
     ['dragleave', 'drop'].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
     drop.addEventListener('drop', function (e) {
         var f = e.dataTransfer.files && e.dataTransfer.files[0];
-        if (!f) return;
+        if (!f || busy) return;
         setFile(f); handle(f);
     });
 
     if (form) form.addEventListener('submit', function (e) {
         var hasFile = input.files && input.files.length > 0;
-        var message = null;
-        if (problem === 'crop') message = 'Press <b>Use this crop</b> first (or choose another file).';
+        var message = null, kind = 'bad';
+        if (problem === 'busy') { message = 'Please wait - the video is still being resized.'; kind = 'info'; }
+        else if (problem === 'crop') { message = 'Press <b>' + applyBtn.textContent.trim() + '</b> first (or choose another file).'; kind = 'info'; }
         else if (problem) message = problem;
         else if (!hasFile && root.dataset.required === '1') message = 'Add a picture, GIF or video for this slide.';
         if (message) {
             e.preventDefault();
-            status(problem === 'crop' ? 'info' : 'bad', message);
+            if (lastOffer && problem === lastOffer.html) offerResize(lastOffer.html, lastOffer.buttonText, lastOffer.onResize);
+            else if (problem !== 'busy') status(kind, message);
             root.scrollIntoView({ behavior: 'smooth', block: 'center' });
             root.classList.remove('shake'); void root.offsetWidth; root.classList.add('shake');
         }

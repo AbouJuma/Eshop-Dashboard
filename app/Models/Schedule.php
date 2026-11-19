@@ -232,6 +232,9 @@ class Schedule extends Model
                 return null;
             }
             [$width, $height] = $size;
+            if ($width === self::STANDARD_WIDTH && $height === self::STANDARD_HEIGHT && in_array($extension, ['jpg', 'jpeg'])) {
+                return null; // already the standard JPG (e.g. cropped on the portal): keep it untouched, no quality loss
+            }
             $source = match ($extension) {
                 'jpg', 'jpeg' => @imagecreatefromjpeg($path),
                 'png' => @imagecreatefrompng($path),
@@ -258,7 +261,7 @@ class Schedule extends Model
             $newName = pathinfo($path, PATHINFO_FILENAME).'.jpg';
             $newPath = dirname($path).'/'.$newName;
             $temp = $newPath.'.tmp';
-            $saved = imagejpeg($target, $temp, 88);
+            $saved = imagejpeg($target, $temp, 92);
             imagedestroy($source);
             imagedestroy($target);
             if (! $saved || ! filesize($temp)) {
