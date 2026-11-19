@@ -351,8 +351,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var start = function (seconds) {
             seconds = Math.max(0.5, Math.min(seconds, MAX_S));
-            // highest quality the size limit allows for this length (max 12 Mbps)
-            var bitrate = Math.min(12000000, Math.floor((MAX_BYTES * 8 * 0.88) / seconds));
+            // sharp at the banner size yet quick to download on mobile data: 5 Mbps (about
+            // streaming-service quality at this size), less only if needed to stay under the limit
+            var bitrate = Math.min(5000000, Math.floor((MAX_BYTES * 8 * 0.88) / seconds));
             var stream = canvas.captureStream(30);
             var recorder = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: bitrate });
             var parts = [], began = 0, timer = null, stopped = false;
